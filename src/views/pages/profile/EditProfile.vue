@@ -53,13 +53,21 @@
                 :placeholder="placeholder.studentId"
               />
             </CCol>
-            <CCol :md="6">
+            <CCol :md="4">
               <CFormInput
                 type="file"
                 id="formFile"
                 label="Foto Profil"
                 v-on:change="handleFileUpload"
               />
+              <CProgress v-show="toggle" class="mt-3">
+                <CProgressBar
+                  color="info"
+                  variant="striped"
+                  animated
+                  :value="uploadPercentage"
+                />
+              </CProgress>
             </CCol>
             <CCol :xs="12">
               <SubmitButton title="Simpan" :isSendingForm="isSendingForm" />
@@ -91,6 +99,8 @@ export default {
         email: '',
       },
       file: '',
+      toggle: false,
+      uploadPercentage: 0,
       errorMgs: '',
       ShowError: false,
       successMsg: '',
@@ -142,12 +152,19 @@ export default {
               'Content-Type': 'multipart/form-data',
               Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
+            onUploadProgress: function (progressEvent) {
+              this.uploadPercentage = parseInt(
+                Math.round((progressEvent.loaded / progressEvent.total) * 100),
+              )
+              this.toggle = true
+            }.bind(this),
           })
           .then((response) => {
             if (response.status === 201) {
               this.success = true
               this.successMsg = 'Berhasil merubah data.'
               this.isSendingForm = false
+              this.toggle = false
               this.reloadPage()
             }
           })
@@ -156,6 +173,7 @@ export default {
             this.ShowError = true
             this.errorMgs = error.response.data.message
             this.isSendingForm = false
+            this.toggle = false
           })
       }
     },

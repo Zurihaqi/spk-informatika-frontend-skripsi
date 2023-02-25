@@ -10,6 +10,9 @@
               Halaman tidak ditemukan.
             </p>
           </div>
+          <CButton color="info" @click="goBack"
+            >Kembali ke halaman utama</CButton
+          >
         </CCol>
       </CRow>
     </CContainer>
@@ -19,5 +22,10 @@
 <script>
 export default {
   name: 'Page404',
+  methods: {
+    goBack() {
+      this.$router.push('/')
+    },
+  },
 }
 </script>

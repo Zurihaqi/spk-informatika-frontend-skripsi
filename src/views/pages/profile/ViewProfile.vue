@@ -10,11 +10,7 @@
       </CToastBody>
     </CToast>
   </CToaster>
-  <CSpinner
-    class="d-flex flex-column align-items-center text-center"
-    v-if="!isLoaded"
-  />
-  <div class="row gutters-sm" v-if="isLoaded">
+  <div class="row gutters-sm">
     <div class="col-md-4 mb-3">
       <div class="card">
         <div class="card-body">
@@ -94,7 +90,6 @@ export default {
   components: {},
   data() {
     return {
-      isLoaded: false,
       toasts: [],
       profilePic: '',
       role: '',
@@ -133,7 +128,6 @@ export default {
           this.email = userData.email
           this.updatedAt = new Date(userData.updatedAt).toLocaleString('en-GB')
           this.createdAt = new Date(userData.createdAt).toLocaleString('en-GB')
-          this.isLoaded = true
           return result
         })
         .catch((error) => {

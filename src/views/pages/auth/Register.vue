@@ -31,7 +31,9 @@
               </CAlert>
               <CForm @submit="onSubmit">
                 <h1>Daftar</h1>
-                <p class="text-medium-emphasis">Daftarkan akun baru.</p>
+                <p class="text-medium-emphasis">
+                  Daftar untuk menggunakan SPK Peminatan Informatika.
+                </p>
                 <CInputGroup class="mb-3">
                   <CInputGroupText>
                     <CIcon icon="cil-user" />
@@ -175,10 +177,12 @@ export default {
               this.success = true
               this.successMsg = 'Berhasil mendaftar.'
               this.isSendingForm = false
+              setTimeout(() => {
+                this.goBack()
+              }, 1000)
             }
           })
           .catch((error) => {
-            // login failed
             console.log(error)
             this.ShowError = true
             this.errorMgs = error.response.data.message

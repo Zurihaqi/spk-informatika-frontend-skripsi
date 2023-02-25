@@ -11,7 +11,7 @@
         })
     "
   >
-    <CSidebarBrand> SPK Peminatan Informatika </CSidebarBrand>
+    <CSidebarBrand> SPK Peminatan Informatika</CSidebarBrand>
     <AppSidebarNav />
     <CSidebarToggler
       class="d-none d-lg-flex"

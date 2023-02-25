@@ -55,6 +55,19 @@ export default [
       },
     ],
   },
+  {
+    component: 'CNavGroup',
+    name: 'Mata Kuliah',
+    to: '/',
+    icon: 'cil-book',
+    items: [
+      {
+        component: 'CNavItem',
+        name: 'Data Mata Kuliah',
+        to: '/course/view',
+      },
+    ],
+  },
 
   // {
   //   component: 'CNavItem',

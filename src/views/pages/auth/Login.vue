@@ -51,7 +51,7 @@
                 <div>
                   <h2>Daftar</h2>
                   <p>
-                    Belum punya akun? Daftar di sini.
+                    Belum memiliki akun? Daftar di sini.
                   </p>
                   <CButton color="light" variant="outline" class="mt-3" @click="Register">
                     Daftar
