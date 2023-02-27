@@ -1,5 +1,5 @@
 <template>
-  <CRow>
+  <CRow class="row">
     <CCol :xs="12">
       <CCard class="mb-4">
         <CCardBody>
@@ -28,7 +28,7 @@
             {{ successMsg }}
           </CAlert>
           <CForm class="row g-3 needs-validation" @submit="onSubmit">
-            <CCol :md="4">
+            <CCol :md="6">
               <CFormLabel>Nama Lengkap</CFormLabel>
               <CFormInput
                 v-model.trim="form.name"
@@ -36,7 +36,7 @@
                 :placeholder="placeholder.username"
               />
             </CCol>
-            <CCol :md="4">
+            <CCol :md="6">
               <CFormLabel>Email</CFormLabel>
               <CFormInput
                 v-model.trim="form.email"
@@ -45,7 +45,7 @@
                 autocomplete="email"
               />
             </CCol>
-            <CCol :md="4">
+            <CCol :md="6">
               <CFormLabel>Nomor Pokok Mahasiswa</CFormLabel>
               <CFormInput
                 v-model.trim="form.student_id"
@@ -53,7 +53,7 @@
                 :placeholder="placeholder.studentId"
               />
             </CCol>
-            <CCol :md="4">
+            <CCol :md="6">
               <CFormInput
                 type="file"
                 id="formFile"

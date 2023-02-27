@@ -20,14 +20,14 @@
                       <CIcon icon="cil-user" />
                     </CInputGroupText>
                     <CFormInput v-model.trim="form.email" @input="setTouched('email')" type="text" placeholder="Email/NPM" 
-                      autocomplete="email" feedback="Masukkan email atau npm." :invalid="v$.form.email.$error" />
+                      autocomplete="email" feedback="Masukan email atau npm." :invalid="v$.form.email.$error" />
                   </CInputGroup>
                   <CInputGroup class="mb-3">
                     <CInputGroupText>
                       <CIcon icon="cil-lock-locked" />
                     </CInputGroupText>
                     <CFormInput v-model.trim="form.password" @input="setTouched('password')" :type="passwordFieldType"
-                    placeholder="Kata sandi" autocomplete="current-password" feedback="Masukkan kata sandi."
+                    placeholder="Kata sandi" autocomplete="current-password" feedback="Masukan kata sandi."
                     :invalid="v$.form.password.$error" />    
                   </CInputGroup>
                   <div class="form-check form-switch mb-3">
@@ -72,7 +72,8 @@ import axios from 'axios'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import SubmitButton from '@/components/SubmitButton.vue'
-import { CButton } from '@coreui/vue'
+import jwt_decode from "jwt-decode";
+
 export default {
   name: 'Login',
   setup() {
@@ -126,7 +127,9 @@ export default {
             headers: { "Content-Type": "application/json", }
           })
           .then((response) => {
-            // saving the login data after success
+            const decoded = jwt_decode(response.data.token)
+            localStorage.setItem('role', decoded.role)
+            
             this.$store.commit('saveLogin',
               {
                 "token": response.data.token,

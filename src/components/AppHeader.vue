@@ -4,7 +4,7 @@
       <CHeaderToggler class="ps-1" @click="$store.commit('toggleSidebar')">
         <CIcon icon="cil-menu" size="lg" />
       </CHeaderToggler>
-      <CHeaderBrand> SPK Peminatan Informatika </CHeaderBrand>
+      <CHeaderBrand>SPK Informatika</CHeaderBrand>
       <CHeaderNav>
         <AppHeaderDropdownAccnt />
       </CHeaderNav>
