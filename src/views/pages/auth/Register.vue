@@ -44,7 +44,7 @@
                     type="text"
                     placeholder="Nama lengkap"
                     autocomplete="username"
-                    feedback="Masukkan nama lengkap."
+                    feedback="Masukan nama lengkap."
                     :invalid="v$.form.name.$error"
                   />
                 </CInputGroup>
@@ -56,7 +56,7 @@
                     type="text"
                     placeholder="Email"
                     autocomplete="email"
-                    feedback="Masukkan email yang valid."
+                    feedback="Masukan email yang valid."
                     :invalid="v$.form.email.$error"
                   />
                 </CInputGroup>
