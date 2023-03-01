@@ -24,7 +24,7 @@
                   </CInputGroup>
                   <CInputGroup class="mb-3">
                     <CInputGroupText>
-                      <CIcon icon="cil-lock-locked" />
+                      <CIcon icon="cil-lock-locked"/>
                     </CInputGroupText>
                     <CFormInput v-model.trim="form.password" @input="setTouched('password')" :type="passwordFieldType"
                     placeholder="Kata sandi" autocomplete="current-password" feedback="Masukan kata sandi."
