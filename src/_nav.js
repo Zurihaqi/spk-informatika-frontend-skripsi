@@ -6,7 +6,7 @@ export default [
   },
   {
     component: 'CNavItem',
-    name: <h6 class="text-center user-select-none">Masuk sebagai {role}</h6>,
+    name: <p class="text-center user-select-none h6">Masuk sebagai {role}</p>,
   },
   {
     component: 'hr',
