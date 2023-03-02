@@ -146,7 +146,6 @@ export default {
       {
         if (this.file) this.form.profile_pic = this.file
         this.isSendingForm = true
-        console.log(obj)
         axios
           .patch(this.$store.state.backendUrl + 'user', obj, {
             headers: {

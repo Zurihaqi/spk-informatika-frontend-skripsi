@@ -2,8 +2,11 @@ const role = localStorage.getItem('role')
 
 export default [
   {
-    component: 'CNavTitle',
-    name: 'Masuk sebagai ' + role,
+    component: 'hr',
+  },
+  {
+    component: 'CNavItem',
+    name: <h6 class="text-center user-select-none">Masuk sebagai {role}</h6>,
   },
   {
     component: 'hr',
@@ -13,6 +16,10 @@ export default [
     name: 'Petunjuk Penggunaan',
     to: '/',
     icon: 'cil-info',
+  },
+  {
+    component: 'CNavTitle',
+    name: 'Mata Kuliah dan Peminatan',
   },
   {
     component: 'CNavGroup',

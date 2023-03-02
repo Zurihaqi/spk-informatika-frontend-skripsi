@@ -36,7 +36,7 @@
     </CModalBody>
     <CModalFooter>
       <CButton
-        color="primary"
+        color="secondary"
         @click="
           () => {
             visible = false
