@@ -10,6 +10,14 @@
       Loading...
     </CCardBody>
     <CCardBody v-if="isLoaded">
+      <Alerts
+        :showError="showError"
+        :showSuccess="showSuccess"
+        :errorMsg="errorMsg"
+        :successMsg="successMsg"
+        @update:showError="updateError"
+        @update:showSuccess="updateSuccess"
+      />
       <CForm>
         <CRow>
           <CCol sm="6">
@@ -77,7 +85,7 @@
     </CCardBody>
     <CCardFooter
       ><div class="d-md-flex justify-content-md-start me-6">
-        <CButton color="primary">Simpan</CButton>
+        <CButton color="primary" @click="sendData()">Simpan</CButton>
       </div>
     </CCardFooter>
   </CCard>
@@ -85,13 +93,15 @@
 
 <script>
 import axios from 'axios'
+import Alerts from '../../../components/Alerts.vue'
 
 export default {
   name: 'GradeInput',
+  components: { Alerts },
   data() {
     return {
       options: [
-        { label: 'Pilih', value: '' },
+        { label: 'Pilih', value: undefined },
         { label: 'A', value: 'A' },
         { label: 'B+', value: 'B+' },
         { label: 'B', value: 'B' },
@@ -103,15 +113,16 @@ export default {
         { label: 'D', value: 'D' },
         { label: 'E', value: 'E' },
       ],
-      endpoints: [
-        this.$store.state.backendUrl + 'course',
-        this.$store.state.backendUrl + 'grade',
-      ],
       softDevCourses: [],
       dataSciCourses: [],
       networkingCourses: [],
-      gradesToPatch: {},
+      gradesToPatch: [],
+      gradesToAdd: [],
       isLoaded: false,
+      showError: false,
+      showSuccess: false,
+      successMsg: '',
+      errorMsg: '',
     }
   },
   async beforeMount() {
@@ -121,8 +132,12 @@ export default {
   methods: {
     async getData() {
       try {
+        const endpoints = [
+          this.$store.state.backendUrl + 'course',
+          this.$store.state.backendUrl + 'grade',
+        ]
         await Promise.all(
-          this.endpoints.map((endpoint) =>
+          endpoints.map((endpoint) =>
             axios.get(endpoint, {
               headers: {
                 'Content-Type': 'application/json',
@@ -131,40 +146,151 @@ export default {
             }),
           ),
         ).then((results) => {
-          const courses = results[0].data.data
-          const grades = results[1].data.data
+          if (results[0].status === 201 && results[1].status === 201) {
+            const courses = results[0].data.data
+            const grades = results[1].data.data
 
-          this.softDevCourses = courses.filter((e) => {
-            return e.spec_id === 1
-          })
-          this.dataSciCourses = courses.filter((e) => {
-            return e.spec_id === 2
-          })
-          this.networkingCourses = courses.filter((e) => {
-            return e.spec_id === 3
-          })
+            this.softDevCourses = courses.filter((e) => {
+              return e.spec_id === 1
+            })
+            this.dataSciCourses = courses.filter((e) => {
+              return e.spec_id === 2
+            })
+            this.networkingCourses = courses.filter((e) => {
+              return e.spec_id === 3
+            })
 
-          for (const grade of grades) {
-            for (const course of this.softDevCourses) {
-              if (grade.course_id === course.id) {
-                course.grade = grade.lettered_grade
+            for (const grade of grades) {
+              for (const course of this.softDevCourses) {
+                if (grade.course_id === course.id) {
+                  course.grade = grade.lettered_grade
+                  this.gradesToPatch.push({
+                    id: grade.id,
+                    course_id: grade.course_id,
+                    lettered_grade: grade.lettered_grade,
+                  })
+                }
               }
-            }
-            for (const course of this.dataSciCourses) {
-              if (grade.course_id === course.id) {
-                course.grade = grade.lettered_grade
+              for (const course of this.dataSciCourses) {
+                if (grade.course_id === course.id) {
+                  course.grade = grade.lettered_grade
+                  this.gradesToPatch.push({
+                    id: grade.id,
+                    course_id: grade.course_id,
+                    lettered_grade: grade.lettered_grade,
+                  })
+                }
               }
-            }
-            for (const course of this.networkingCourses) {
-              if (grade.course_id === course.id) {
-                course.grade = grade.lettered_grade
+              for (const course of this.networkingCourses) {
+                if (grade.course_id === course.id) {
+                  course.grade = grade.lettered_grade
+                  this.gradesToPatch.push({
+                    id: grade.id,
+                    course_id: grade.course_id,
+                    lettered_grade: grade.lettered_grade,
+                  })
+                }
               }
             }
           }
         })
       } catch (error) {
-        console.log(error)
+        this.showError = true
+        this.errorMsg = error.data.message
       }
+    },
+    async sendData() {
+      try {
+        for (const item of this.softDevCourses) {
+          if (item.grade !== undefined) {
+            this.gradesToAdd.push({
+              lettered_grade: item.grade,
+              course_id: item.id,
+            })
+          }
+        }
+        for (const item of this.dataSciCourses) {
+          if (item.grade !== undefined) {
+            this.gradesToAdd.push({
+              lettered_grade: item.grade,
+              course_id: item.id,
+            })
+          }
+        }
+        for (const item of this.networkingCourses) {
+          if (item.grade !== undefined) {
+            this.gradesToAdd.push({
+              lettered_grade: item.grade,
+              course_id: item.id,
+            })
+          }
+        }
+        let cleanAddData = this.gradesToAdd.filter(
+          (elem, index, arr) =>
+            arr.findIndex((e) => e.course_id === elem.course_id) === index,
+        )
+
+        const gradesToPatchkeys = Object.keys(this.gradesToPatch)
+        gradesToPatchkeys.forEach((key) => {
+          if (Object.prototype.hasOwnProperty.call(cleanAddData, key)) {
+            delete cleanAddData[key]
+          }
+        })
+
+        cleanAddData = JSON.parse(JSON.stringify(cleanAddData)).filter((el) => {
+          return el !== null
+        })
+
+        if (cleanAddData !== undefined) {
+          for (const item of cleanAddData) {
+            const post = await axios.post(
+              this.$store.state.backendUrl + 'grade',
+              item,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+              },
+            )
+            if (post) {
+              this.showSuccess = true
+              this.successMsg = 'Berhasil meyimpan nilai!'
+            }
+          }
+        }
+
+        if (this.gradesToPatch !== undefined) {
+          for (const item of this.gradesToPatch) {
+            console.log(item)
+            const patch = await axios.patch(
+              this.$store.state.backendUrl + 'grade/' + item.id,
+              {
+                lettered_grade: item.lettered_grade,
+              },
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+              },
+            )
+            if (patch) {
+              this.showSuccess = true
+              this.successMsg = 'Berhasil meyimpan nilai!'
+            }
+          }
+        }
+      } catch (error) {
+        this.showError = true
+        this.errorMsg = error.response.data.message
+      }
+    },
+    updateError(value) {
+      this.showError = value
+    },
+    updateSuccess(value) {
+      this.showSuccess = value
     },
   },
 }
