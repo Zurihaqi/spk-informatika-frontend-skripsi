@@ -248,7 +248,7 @@
         enabled: true,
         mode: 'records',
       }"
-      :fixed-header="isMobile()"
+      :fixed-header="!isMobile()"
       compactMode
       max-height="350px"
       v-on:row-click="onRowClick"

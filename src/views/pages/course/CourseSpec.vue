@@ -8,6 +8,7 @@
         :columns="columns1"
         :rows="rows1"
         :sort-options="{ enabled: false }"
+        styleClass="vgt-table condensed bordered"
       />
     </CCardBody>
   </CCard>
@@ -20,6 +21,7 @@
         :columns="columns2"
         :rows="rows2"
         :sort-options="{ enabled: false }"
+        styleClass="vgt-table condensed bordered"
       />
     </CCardBody>
   </CCard>
@@ -32,6 +34,7 @@
         :columns="columns3"
         :rows="rows3"
         :sort-options="{ enabled: false }"
+        styleClass="vgt-table condensed bordered"
       />
     </CCardBody>
   </CCard>
@@ -57,6 +60,7 @@ export default {
         {
           label: 'Kode Mata Kuliah',
           field: 'course_code',
+          width: '200px',
         },
       ],
       columns2: [
@@ -67,6 +71,7 @@ export default {
         {
           label: 'Kode Mata Kuliah',
           field: 'course_code',
+          width: '200px',
         },
       ],
       columns3: [
@@ -77,6 +82,7 @@ export default {
         {
           label: 'Kode Mata Kuliah',
           field: 'course_code',
+          width: '200px',
         },
       ],
       rows1: [],

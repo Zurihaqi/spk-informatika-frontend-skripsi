@@ -1,4 +1,5 @@
 const role = localStorage.getItem('role')
+const shownRole = role === 'ADMIN' ? 'Admin' : 'Mahasiswa'
 
 export default [
   {
@@ -6,7 +7,11 @@ export default [
   },
   {
     component: 'CNavItem',
-    name: <p class="text-center user-select-none h6">Masuk sebagai {role}</p>,
+    name: (
+      <p class="mt-2 text-center user-select-none h6">
+        Masuk sebagai {shownRole}
+      </p>
+    ),
   },
   {
     component: 'hr',
@@ -18,8 +23,27 @@ export default [
     icon: 'cil-info',
   },
   {
-    component: 'CNavTitle',
-    name: 'Mata Kuliah dan Peminatan',
+    component: 'CNavGroup',
+    name: 'SPK',
+    to: '/',
+    icon: 'cil-education',
+    items: [
+      {
+        component: 'CNavItem',
+        name: 'Input Nilai',
+        to: '/spk/grade',
+      },
+      {
+        component: 'CNavItem',
+        name: 'Daftar Rule',
+        to: '/spk/rule',
+      },
+      {
+        component: 'CNavItem',
+        name: 'Hitung Peminatan',
+        to: '/spk/calculate',
+      },
+    ],
   },
   {
     component: 'CNavGroup',
@@ -38,6 +62,9 @@ export default [
         to: '/course/spec',
       },
     ],
+  },
+  {
+    component: 'hr',
   },
   {
     component: 'CNavGroup',

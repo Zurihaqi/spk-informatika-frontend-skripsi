@@ -59,6 +59,29 @@ const routes = [
     ],
   },
   {
+    path: '/spk',
+    name: 'SPK',
+    component: DefaultLayout,
+    redirect: '/spk/rule',
+    children: [
+      {
+        path: '/spk/grade',
+        name: 'Input Nilai',
+        component: () => import('@/views/pages/spk/GradeInput.vue'),
+      },
+      {
+        path: '/spk/rule',
+        name: 'Daftar Rule',
+        component: () => import('@/views/pages/spk/RuleSets.vue'),
+      },
+      {
+        path: '/spk/calculate',
+        name: 'Hitung Peminatan',
+        component: () => import('@/views/pages/spk/CalculateFis.vue'),
+      },
+    ],
+  },
+  {
     path: '/login',
     name: 'Login',
     meta: {

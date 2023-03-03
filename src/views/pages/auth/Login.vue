@@ -140,7 +140,6 @@ export default {
           })
           .catch((error) => {
             // login failed
-            console.log(error);
             this.ShowError = true;
             this.errorMgs = error.response.data.message;
             this.isSendingForm = false;

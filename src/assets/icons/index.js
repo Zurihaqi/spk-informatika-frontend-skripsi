@@ -1,4 +1,5 @@
 import {
+  cilEducation,
   cibFacebook,
   cibTwitter,
   cibLinkedin,
@@ -86,6 +87,7 @@ import {
 } from '@coreui/icons'
 
 export const iconsSet = {
+  cilEducation,
   cilArrowBottom,
   cilArrowRight,
   cilArrowTop,
