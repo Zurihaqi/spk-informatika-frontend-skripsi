@@ -151,14 +151,10 @@ export default {
             const courses = results[0].data.data
             const grades = results[1].data.data
 
-            this.softDevCourses = courses.filter((e) => {
-              return e.spec_id === 1
-            })
-            this.dataSciCourses = courses.filter((e) => {
-              return e.spec_id === 2
-            })
-            this.networkingCourses = courses.filter((e) => {
-              return e.spec_id === 3
+            courses.filter((e) => {
+              if (e.spec_id === 1) this.softDevCourses.push(e)
+              if (e.spec_id === 2) this.dataSciCourses.push(e)
+              if (e.spec_id === 3) this.networkingCourses.push(e)
             })
 
             for (const grade of grades) {
@@ -235,14 +231,14 @@ export default {
           })
           if (isExcluded) {
             this.gradesToPatch.push(obj1)
+            // console.log(this.gradesToPatch)
+            // this.gradesToPatch = this.gradesToPatch.filter((obj1) => {
+            //   return !this.allGrades.some((obj2) => {
+            //     return obj1.lettered_grade === obj2.lettered_grade
+            //   })
+            // })
           }
           return !isExcluded
-        })
-
-        this.gradesToPatch = this.gradesToPatch.filter((obj1) => {
-          return !this.allGrades.some((obj2) => {
-            return obj1.lettered_grade === obj2.lettered_grade
-          })
         })
 
         this.gradesToAdd = this.gradesToAdd.filter((obj, index, self) => {
@@ -267,6 +263,9 @@ export default {
           )
         })
 
+        console.log(this.gradesToAdd)
+        console.log(this.gradesToPatch)
+
         if (this.gradesToAdd !== undefined) {
           for (const item of this.gradesToAdd) {
             if (item.lettered_grade !== undefined) {
@@ -285,26 +284,25 @@ export default {
                 this.successMsg = 'Berhasil meyimpan nilai!'
               }
             }
-            if (this.gradesToPatch !== undefined) {
-              for (const item of this.gradesToPatch) {
-                const patch = await axios.patch(
-                  this.$store.state.backendUrl + 'grade/' + item.grade_id,
-                  {
-                    lettered_grade: item.lettered_grade,
-                  },
-                  {
-                    headers: {
-                      'Content-Type': 'application/json',
-                      Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    },
-                  },
-                )
-                if (patch.status === 201) {
-                  this.showSuccess = true
-                  this.successMsg = 'Berhasil meyimpan nilai!'
-                }
-                return false
-              }
+          }
+        }
+        if (this.gradesToPatch !== undefined) {
+          for (const item of this.gradesToPatch) {
+            const patch = await axios.patch(
+              this.$store.state.backendUrl + 'grade/' + item.grade_id,
+              {
+                lettered_grade: item.lettered_grade,
+              },
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+              },
+            )
+            if (patch.status === 201) {
+              this.showSuccess = true
+              this.successMsg = 'Berhasil meyimpan nilai!'
             }
           }
         }
