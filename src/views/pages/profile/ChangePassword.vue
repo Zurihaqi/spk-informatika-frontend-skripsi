@@ -3,30 +3,14 @@
     <CCol class="col-sm-6 mx-auto">
       <CCard>
         <CCardBody>
-          <CAlert
-            color="danger"
-            :visible="ShowError"
-            dismissible
-            @close="
-              () => {
-                ShowError = false
-              }
-            "
-          >
-            {{ errorMgs }}
-          </CAlert>
-          <CAlert
-            color="success"
-            :visible="success"
-            dismissible
-            @close="
-              () => {
-                success = false
-              }
-            "
-          >
-            {{ successMsg }}
-          </CAlert>
+          <Alerts
+            :showError="showError"
+            :showSuccess="showSuccess"
+            :errorMsg="errorMsg"
+            :successMsg="successMsg"
+            @update:showError="updateError"
+            @update:showSuccess="updateSuccess"
+          />
           <CForm class="row g-3 needs-validation" @submit="onSubmit">
             <CRow>
               <CCol class="mt-3">
@@ -86,6 +70,7 @@
 <script>
 import axios from 'axios'
 import SubmitButton from '@/components/SubmitButton.vue'
+import Alerts from '@/components/Alerts.vue'
 import useVuelidate from '@vuelidate/core'
 import { required, minLength, sameAs } from '@vuelidate/validators'
 
@@ -94,13 +79,14 @@ export default {
   setup() {
     return { v$: useVuelidate() }
   },
-  components: { SubmitButton },
+  components: { SubmitButton, Alerts },
   data() {
     return {
       form: { oldPassword: '', password: '', confirmPassword: '' },
-      ShowError: false,
+      showError: false,
+      errorMsg: '',
       successMsg: '',
-      success: false,
+      showSuccess: false,
       isSendingForm: false,
       passwordFieldType: 'password',
     }
@@ -158,25 +144,28 @@ export default {
           )
           .then((response) => {
             if (response.status === 201) {
-              this.success = true
+              this.showSuccess = true
               this.successMsg =
                 'Berhasil merubah password. Lakukan login ulang.'
               this.isSendingForm = false
-              this.backToLogin()
+              setTimeout(() => {
+                this.$store.commit('Logout')
+                this.$router.push('/login')
+              }, 1000)
             }
           })
           .catch((error) => {
-            console.log(error)
-            this.ShowError = true
-            this.errorMgs = error.response.data.message
+            this.showError = true
+            this.errorMsg = error.response.data.message
             this.isSendingForm = false
           })
       }
     },
-    backToLogin() {
-      setTimeout(() => {
-        window.location.reload()
-      }, 1000)
+    updateError(value) {
+      this.showError = value
+    },
+    updateSuccess(value) {
+      this.showSuccess = value
     },
   },
 }

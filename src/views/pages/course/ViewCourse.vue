@@ -210,6 +210,10 @@
       :pagination-options="{
         enabled: true,
         mode: 'records',
+        nextLabel: 'Selanjutnya',
+        prevLabel: 'Kembali',
+        rowsPerPageLabel: 'Data per halaman',
+        perPageDropdownEnabled: !isMobile(),
       }"
       :fixed-header="!isMobile()"
       compactMode
@@ -218,9 +222,9 @@
     >
       <template #table-actions>
         <CButton
+          v-if="admin"
           color="primary"
           class="me-3"
-          :class="{ invisible: !admin }"
           size="sm"
           @click="
             () => {
@@ -267,7 +271,7 @@ import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import 'vue-good-table-next/dist/vue-good-table-next.css'
 import { VueGoodTable } from 'vue-good-table-next'
-import Alerts from '../../../components/Alerts.vue'
+import Alerts from '@/components/Alerts.vue'
 import SubmitButton from '@/components/SubmitButton.vue'
 import axios from 'axios'
 
@@ -291,12 +295,12 @@ export default {
       },
       columns: [
         {
-          label: 'Kode Mata Kuliah',
+          label: this.isMobile() ? 'Kode Matkul' : 'Kode Mata Kuliah',
           field: 'course_code',
           type: 'number',
         },
         {
-          label: 'Nama Mata Kuliah',
+          label: this.isMobile() ? 'Nama Matkul' : 'Nama Mata Kuliah',
           field: 'course_name',
         },
         {
@@ -463,9 +467,9 @@ export default {
         })
     },
     addCourse() {
-      this.isSendingForm = true
       this.setTouched('all')
       if (!this.v$.$invalid) {
+        this.isSendingForm = true
         const obj = this.form
         Object.keys(obj).forEach(
           (k) => !obj[k] && obj[k] !== undefined && delete obj[k],

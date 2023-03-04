@@ -22,7 +22,7 @@
           }
         "
       >
-        {{ errorMgs }}
+        {{ errorMsg }}
       </CAlert>
       <div class="mb-3">Masukan kata sandi untuk menghapus akun.</div>
       <CFormInput
@@ -71,30 +71,14 @@
     <div class="col-md-8">
       <div class="card mb-3">
         <div class="card-body">
-          <CAlert
-            color="danger"
-            :visible="ShowError"
-            dismissible
-            @close="
-              () => {
-                ShowError = false
-              }
-            "
-          >
-            {{ errorMgs }}
-          </CAlert>
-          <CAlert
-            color="success"
-            :visible="success"
-            dismissible
-            @close="
-              () => {
-                success = false
-              }
-            "
-          >
-            {{ successMsg }}
-          </CAlert>
+          <Alerts
+            :showError="showError"
+            :showSuccess="showSuccess"
+            :errorMsg="errorMsg"
+            :successMsg="successMsg"
+            @update:showError="updateError"
+            @update:showSuccess="updateSuccess"
+          />
           <div class="row">
             <div class="col-sm-3">
               <h6 class="mb-0">Nama</h6>
@@ -155,9 +139,13 @@ import axios from 'axios'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import placeholder from '@/assets/images/avatars/placeholder.png'
+import Alerts from '@/components/Alerts.vue'
 
 export default {
   name: 'ViewProfile',
+  components: {
+    Alerts,
+  },
   setup() {
     return { v$: useVuelidate() }
   },
@@ -173,12 +161,11 @@ export default {
       username: '',
       updatedAt: '',
       createdAt: '',
-      errorMgs: '',
-      ShowError: false,
+      errorMsg: '',
+      showError: false,
       successMsg: '',
-      success: false,
+      showSuccess: false,
       visible: false,
-      modalError: false,
     }
   },
   beforeMount() {
@@ -215,18 +202,18 @@ export default {
               this.successMsg = 'Berhasil menghapus akun.'
               this.success = true
               setTimeout(() => {
-                location.reload()
+                this.$store.commit('Logout')
+                this.$router.push('/login')
               }, 1000)
             }
           })
           .catch((error) => {
-            console.log(error)
             if (!this.visible) {
-              this.ShowError = true
-              this.errorMgs = error.response.data.message
+              this.showError = true
+              this.errorMsg = error.response.data.message
             }
-            this.modalError = true
-            this.errorMgs = error.response.data.message
+            this.showError = true
+            this.errorMsg = error.response.data.message
           })
       }
     },
@@ -256,9 +243,15 @@ export default {
         })
         .catch((error) => {
           console.log(error)
-          this.ShowError = true
-          this.errorMgs = error.response.data.message
+          this.showError = true
+          this.errorMsg = error.response.data.message
         })
+    },
+    updateError(value) {
+      this.showError = value
+    },
+    updateSuccess(value) {
+      this.showSuccess = value
     },
   },
 }

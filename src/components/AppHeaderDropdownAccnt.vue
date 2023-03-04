@@ -28,7 +28,7 @@
       <CDropdownDivider />
       <CDropdownItem @click="logout()" class="btn">
         <CIcon icon="cil-lock-locked" />
-        Logout
+        Keluar
       </CDropdownItem>
     </CDropdownMenu>
   </CDropdown>

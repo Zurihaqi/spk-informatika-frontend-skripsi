@@ -3,30 +3,14 @@
     <CCol :xs="12">
       <CCard class="mb-4">
         <CCardBody>
-          <CAlert
-            color="danger"
-            :visible="ShowError"
-            dismissible
-            @close="
-              () => {
-                ShowError = false
-              }
-            "
-          >
-            {{ errorMgs }}
-          </CAlert>
-          <CAlert
-            color="success"
-            :visible="success"
-            dismissible
-            @close="
-              () => {
-                success = false
-              }
-            "
-          >
-            {{ successMsg }}
-          </CAlert>
+          <Alerts
+            :showError="showError"
+            :showSuccess="showSuccess"
+            :errorMsg="errorMsg"
+            :successMsg="successMsg"
+            @update:showError="updateError"
+            @update:showSuccess="updateSuccess"
+          />
           <CForm class="row g-3 needs-validation" @submit="onSubmit">
             <CCol :md="6">
               <CFormLabel>Nama Lengkap</CFormLabel>
@@ -82,10 +66,11 @@
 <script>
 import axios from 'axios'
 import SubmitButton from '@/components/SubmitButton.vue'
+import Alerts from '@/components/Alerts.vue'
 
 export default {
   name: 'EditProfile',
-  components: { SubmitButton },
+  components: { SubmitButton, Alerts },
   data() {
     return {
       placeholder: {
@@ -101,10 +86,10 @@ export default {
       file: '',
       toggle: false,
       uploadPercentage: 0,
-      errorMgs: '',
-      ShowError: false,
+      errorMsg: '',
+      showError: false,
       successMsg: '',
-      success: false,
+      showSuccess: false,
       isSendingForm: false,
     }
   },
@@ -161,7 +146,7 @@ export default {
           })
           .then((response) => {
             if (response.status === 201) {
-              this.success = true
+              this.showSuccess = true
               this.successMsg = 'Berhasil merubah data.'
               this.isSendingForm = false
               this.toggle = false
@@ -169,9 +154,8 @@ export default {
             }
           })
           .catch((error) => {
-            console.log(error)
-            this.ShowError = true
-            this.errorMgs = error.response.data.message
+            this.showError = true
+            this.errorMsg = error.response.data.message
             this.isSendingForm = false
             this.toggle = false
           })
@@ -181,6 +165,12 @@ export default {
       setTimeout(() => {
         window.location.reload()
       }, 1000)
+    },
+    updateError(value) {
+      this.showError = value
+    },
+    updateSuccess(value) {
+      this.showSuccess = value
     },
   },
 }

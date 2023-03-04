@@ -98,7 +98,7 @@
 
 <script>
 import axios from 'axios'
-import Alerts from '../../../components/Alerts.vue'
+import Alerts from '@/components/Alerts.vue'
 import SubmitButton from '@/components/SubmitButton.vue'
 
 export default {

@@ -4,15 +4,16 @@
       <CHeaderToggler class="ps-1" @click="$store.commit('toggleSidebar')">
         <CIcon icon="cil-menu" size="lg" />
       </CHeaderToggler>
-      <CHeaderBrand class="user-select-none mx-auto"
+      <CHeaderBrand v-if="!isMobile()" class="user-select-none mx-auto"
         >SPK Peminatan Informatika</CHeaderBrand
       >
       <CHeaderNav>
         <CNavItem>
           <CNavLink class="btn"> Kritik dan Saran </CNavLink>
         </CNavItem>
+        <div class="vr"></div>
         <CNavItem>
-          <CNavLink @click="logout()" class="btn"> Logout </CNavLink>
+          <CNavLink @click="logout()" class="btn"> Keluar </CNavLink>
         </CNavItem>
         <AppHeaderDropdownAccnt />
       </CHeaderNav>
@@ -62,6 +63,17 @@ export default {
           this.$store.commit('Logout')
           this.$router.push('/login')
         })
+    },
+    isMobile() {
+      if (
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent,
+        )
+      ) {
+        return true
+      } else {
+        return false
+      }
     },
   },
 }
