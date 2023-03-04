@@ -85,7 +85,12 @@
     </CCardBody>
     <CCardFooter
       ><div class="d-md-flex justify-content-md-start me-6">
-        <CButton color="primary" @click="sendData()">Simpan</CButton>
+        <SubmitButton
+          :isSendingForm="isSendingForm"
+          title="Simpan"
+          color="primary"
+          @click="sendData()"
+        ></SubmitButton>
       </div>
     </CCardFooter>
   </CCard>
@@ -94,10 +99,11 @@
 <script>
 import axios from 'axios'
 import Alerts from '../../../components/Alerts.vue'
+import SubmitButton from '@/components/SubmitButton.vue'
 
 export default {
   name: 'GradeInput',
-  components: { Alerts },
+  components: { Alerts, SubmitButton },
   data() {
     return {
       options: [
@@ -124,6 +130,7 @@ export default {
       showSuccess: false,
       successMsg: '',
       errorMsg: '',
+      isSendingForm: false,
     }
   },
   async beforeMount() {
@@ -195,34 +202,42 @@ export default {
           }
         })
       } catch (error) {
+        this.toTop()
         this.showError = true
         this.errorMsg = error.data.message
       }
     },
     async sendData() {
       try {
+        this.isSendingForm = true
         for (const item of this.softDevCourses) {
-          this.gradesToAdd.push({
-            lettered_grade: item.grade,
-            course_id: item.id,
-            grade_id: item.grade_id,
-          })
+          if (item.grade !== 'Pilih') {
+            this.gradesToAdd.push({
+              lettered_grade: item.grade,
+              course_id: item.id,
+              grade_id: item.grade_id,
+            })
+          }
         }
 
         for (const item of this.dataSciCourses) {
-          this.gradesToAdd.push({
-            lettered_grade: item.grade,
-            course_id: item.id,
-            grade_id: item.grade_id,
-          })
+          if (item.grade !== 'Pilih') {
+            this.gradesToAdd.push({
+              lettered_grade: item.grade,
+              course_id: item.id,
+              grade_id: item.grade_id,
+            })
+          }
         }
 
         for (const item of this.networkingCourses) {
-          this.gradesToAdd.push({
-            lettered_grade: item.grade,
-            course_id: item.id,
-            grade_id: item.grade_id,
-          })
+          if (item.grade !== 'Pilih') {
+            this.gradesToAdd.push({
+              lettered_grade: item.grade,
+              course_id: item.id,
+              grade_id: item.grade_id,
+            })
+          }
         }
 
         this.gradesToAdd = this.gradesToAdd.filter((obj1) => {
@@ -263,9 +278,6 @@ export default {
           )
         })
 
-        console.log(this.gradesToAdd)
-        console.log(this.gradesToPatch)
-
         if (this.gradesToAdd !== undefined) {
           for (const item of this.gradesToAdd) {
             if (item.lettered_grade !== undefined) {
@@ -280,6 +292,8 @@ export default {
                 },
               )
               if (post.status === 201) {
+                this.isSendingForm = false
+                this.toTop()
                 this.showSuccess = true
                 this.successMsg = 'Berhasil meyimpan nilai!'
               }
@@ -288,25 +302,31 @@ export default {
         }
         if (this.gradesToPatch !== undefined) {
           for (const item of this.gradesToPatch) {
-            const patch = await axios.patch(
-              this.$store.state.backendUrl + 'grade/' + item.grade_id,
-              {
-                lettered_grade: item.lettered_grade,
-              },
-              {
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${localStorage.getItem('token')}`,
+            if (item.lettered_grade !== undefined) {
+              const patch = await axios.patch(
+                this.$store.state.backendUrl + 'grade/' + item.grade_id,
+                {
+                  lettered_grade: item.lettered_grade,
                 },
-              },
-            )
-            if (patch.status === 201) {
-              this.showSuccess = true
-              this.successMsg = 'Berhasil meyimpan nilai!'
+                {
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                  },
+                },
+              )
+              if (patch.status === 201) {
+                this.isSendingForm = false
+                this.toTop()
+                this.showSuccess = true
+                this.successMsg = 'Berhasil meyimpan nilai!'
+              }
             }
           }
         }
       } catch (error) {
+        this.isSendingForm = false
+        this.toTop()
         this.showError = true
         this.errorMsg = error.response.data.message
       }
@@ -316,6 +336,20 @@ export default {
     },
     updateSuccess(value) {
       this.showSuccess = value
+    },
+    handleScroll: function () {
+      if (this.scTimer) return
+      this.scTimer = setTimeout(() => {
+        this.scY = window.scrollY
+        clearTimeout(this.scTimer)
+        this.scTimer = 0
+      }, 100)
+    },
+    toTop: function () {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      })
     },
   },
 }
