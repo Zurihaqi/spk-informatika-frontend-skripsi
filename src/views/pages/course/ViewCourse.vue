@@ -24,7 +24,7 @@
         Apakah anda yakin ingin menghapus {{ selectedRow.course_name }}?
       </div>
     </CModalBody>
-    <CModalFooter>
+    <CModalFooter class="justify-content-start">
       <CButton
         color="secondary"
         @click="
@@ -96,7 +96,7 @@
         />
       </div>
     </CModalBody>
-    <CModalFooter>
+    <CModalFooter class="justify-content-start">
       <CButton
         color="secondary"
         @click="
@@ -174,7 +174,7 @@
         />
       </div>
     </CModalBody>
-    <CModalFooter>
+    <CModalFooter class="justify-content-start">
       <CButton
         color="secondary"
         @click="
