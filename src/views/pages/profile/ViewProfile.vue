@@ -244,7 +244,7 @@ export default {
         .then((result) => {
           const userData = result.data.data
           this.username = userData.name
-          this.role = userData.role === 'ADMIN' ? 'Admin' : 'Mahasiswa'
+          this.role = userData.role === 'ADMIN' ? 'Pengelola' : 'Mahasiswa'
           this.profilePic = userData.profile_pic
             ? userData.profile_pic
             : placeholder

@@ -12,30 +12,14 @@
       <CModalTitle>Konfirmasi Hapus Data</CModalTitle>
     </CModalHeader>
     <CModalBody>
-      <CAlert
-        color="danger"
-        :visible="modalError"
-        dismissible
-        @close="
-          () => {
-            modalError = false
-          }
-        "
-      >
-        {{ errorMsg }}
-      </CAlert>
-      <CAlert
-        color="success"
-        :visible="modalSuccess"
-        dismissible
-        @close="
-          () => {
-            modalSuccess = false
-          }
-        "
-      >
-        {{ successMsg }}
-      </CAlert>
+      <Alerts
+        :showError="showError"
+        :showSuccess="showSuccess"
+        :errorMsg="errorMsg"
+        :successMsg="successMsg"
+        @update:showError="updateError"
+        @update:showSuccess="updateSuccess"
+      />
       <div class="mb-3">
         Apakah anda yakin ingin menghapus {{ selectedRow.course_name }}?
       </div>
@@ -52,7 +36,12 @@
       >
         Batal
       </CButton>
-      <CButton color="danger" @click="deleteCourse">Hapus</CButton>
+      <SubmitButton
+        :isSendingForm="isSendingForm"
+        title="Hapus"
+        color="danger"
+        @click="deleteCourse"
+      ></SubmitButton>
     </CModalFooter> </CModal
   ><CModal
     :visible="editModal"
@@ -68,32 +57,14 @@
       <CModalTitle>Ubah Data Mata Kuliah</CModalTitle>
     </CModalHeader>
     <CModalBody>
-      <CAlert
-        color="danger"
-        :visible="modalError"
-        dismissible
-        @close="
-          () => {
-            modalError = false
-            resetInput()
-          }
-        "
-      >
-        {{ errorMsg }}
-      </CAlert>
-      <CAlert
-        color="success"
-        :visible="modalSuccess"
-        dismissible
-        @close="
-          () => {
-            modalSuccess = false
-            resetInput()
-          }
-        "
-      >
-        {{ successMsg }}
-      </CAlert>
+      <Alerts
+        :showError="showError"
+        :showSuccess="showSuccess"
+        :errorMsg="errorMsg"
+        :successMsg="successMsg"
+        @update:showError="updateError"
+        @update:showSuccess="updateSuccess"
+      />
       <div class="mb-3">
         <CFormLabel>Nama Mata Kuliah</CFormLabel>
         <CFormInput
@@ -138,7 +109,12 @@
       >
         Batal
       </CButton>
-      <CButton color="primary" @click="editCourse">Simpan</CButton>
+      <SubmitButton
+        :isSendingForm="isSendingForm"
+        title="Simpan"
+        color="primary"
+        @click="editCourse"
+      ></SubmitButton>
     </CModalFooter>
   </CModal>
   <CModal
@@ -155,32 +131,14 @@
       <CModalTitle>Tambah Mata Kuliah</CModalTitle>
     </CModalHeader>
     <CModalBody>
-      <CAlert
-        color="danger"
-        :visible="modalError"
-        dismissible
-        @close="
-          () => {
-            modalError = false
-            resetInput()
-          }
-        "
-      >
-        {{ errorMsg }}
-      </CAlert>
-      <CAlert
-        color="success"
-        :visible="modalSuccess"
-        dismissible
-        @close="
-          () => {
-            modalSuccess = false
-            resetInput()
-          }
-        "
-      >
-        {{ successMsg }}
-      </CAlert>
+      <Alerts
+        :showError="showError"
+        :showSuccess="showSuccess"
+        :errorMsg="errorMsg"
+        :successMsg="successMsg"
+        @update:showError="updateError"
+        @update:showSuccess="updateSuccess"
+      />
       <div class="mb-3">
         <CFormLabel>Nama Mata Kuliah</CFormLabel>
         <CFormInput
@@ -229,7 +187,12 @@
       >
         Batal
       </CButton>
-      <CButton color="primary" @click="addCourse">Simpan</CButton>
+      <SubmitButton
+        :isSendingForm="isSendingForm"
+        title="Simpan"
+        color="primary"
+        @click="addCourse"
+      ></SubmitButton>
     </CModalFooter>
   </CModal>
   <div class="mb-4">
@@ -304,6 +267,8 @@ import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import 'vue-good-table-next/dist/vue-good-table-next.css'
 import { VueGoodTable } from 'vue-good-table-next'
+import Alerts from '../../../components/Alerts.vue'
+import SubmitButton from '@/components/SubmitButton.vue'
 import axios from 'axios'
 
 export default {
@@ -313,6 +278,8 @@ export default {
   },
   components: {
     VueGoodTable,
+    Alerts,
+    SubmitButton,
   },
   data() {
     return {
@@ -357,11 +324,12 @@ export default {
       deleteModal: false,
       editModal: false,
       addModal: false,
-      modalError: false,
+      showError: false,
       errorMsg: '',
-      modalSuccess: false,
+      showSuccess: false,
       successMsg: '',
       selectedRow: '',
+      isSendingForm: false,
     }
   },
   validations() {
@@ -392,6 +360,7 @@ export default {
   },
   methods: {
     setTouched(theModel) {
+      this.isSendingForm = false
       if (theModel == 'course_name' || theModel == 'all') {
         this.v$.form.course_name.$touch()
       }
@@ -428,6 +397,7 @@ export default {
         })
     },
     deleteCourse() {
+      this.isSendingForm = true
       axios
         .delete(
           this.$store.state.backendUrl + `course/${this.selectedRow.id}`,
@@ -440,21 +410,24 @@ export default {
         )
         .then((result) => {
           if (result.status === 201) {
-            this.modalSuccess = true
+            this.isSendingForm = false
+            this.showSuccess = true
             this.successMsg = 'Berhasil menghapus data!'
             setTimeout(() => {
               this.getCourseData()
               this.deleteModal = false
-              this.modalSuccess = false
+              this.showSuccess = false
             }, 1000)
           }
         })
         .catch((error) => {
-          this.modalError = true
+          this.isSendingForm = false
+          this.showError = true
           this.errorMsg = error.response.data.message
         })
     },
     editCourse() {
+      this.isSendingForm = true
       const obj = this.form
       Object.keys(obj).forEach(
         (k) => !obj[k] && obj[k] !== undefined && delete obj[k],
@@ -472,22 +445,25 @@ export default {
         )
         .then((result) => {
           if (result.status === 201) {
-            this.modalSuccess = true
+            this.isSendingForm = false
+            this.showSuccess = true
             this.successMsg = 'Berhasil merubah data!'
             this.resetInput()
             setTimeout(() => {
               this.getCourseData()
               this.editModal = false
-              this.modalSuccess = false
+              this.showSuccess = false
             }, 1000)
           }
         })
         .catch((error) => {
-          this.modalError = true
+          this.isSendingForm = false
+          this.showError = true
           this.errorMsg = error.response.data.message
         })
     },
     addCourse() {
+      this.isSendingForm = true
       this.setTouched('all')
       if (!this.v$.$invalid) {
         const obj = this.form
@@ -503,18 +479,20 @@ export default {
           })
           .then((result) => {
             if (result.status === 201) {
-              this.modalSuccess = true
+              this.isSendingForm = false
+              this.showSuccess = true
               this.successMsg = 'Berhasil menambahkan data!'
               this.resetInput()
               setTimeout(() => {
                 this.getCourseData()
                 this.addModal = false
-                this.modalSuccess = false
+                this.showSuccess = false
               }, 1000)
             }
           })
           .catch((error) => {
-            this.modalError = true
+            this.isSendingForm = false
+            this.showError = true
             this.errorMsg = error.response.data.message
           })
       }
@@ -532,6 +510,12 @@ export default {
       } else {
         return false
       }
+    },
+    updateError(value) {
+      this.showError = value
+    },
+    updateSuccess(value) {
+      this.showSuccess = value
     },
   },
 }

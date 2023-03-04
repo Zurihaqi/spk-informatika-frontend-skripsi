@@ -1,5 +1,5 @@
 const role = localStorage.getItem('role')
-const shownRole = role === 'ADMIN' ? 'Admin' : 'Mahasiswa'
+const shownRole = role === 'ADMIN' ? 'Pengelola' : 'Mahasiswa'
 
 export default [
   {
