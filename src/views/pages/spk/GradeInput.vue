@@ -116,6 +116,7 @@ export default {
       softDevCourses: [],
       dataSciCourses: [],
       networkingCourses: [],
+      allGrades: [],
       gradesToPatch: [],
       gradesToAdd: [],
       isLoaded: false,
@@ -164,7 +165,8 @@ export default {
               for (const course of this.softDevCourses) {
                 if (grade.course_id === course.id) {
                   course.grade = grade.lettered_grade
-                  this.gradesToPatch.push({
+                  course.grade_id = grade.id
+                  this.allGrades.push({
                     id: grade.id,
                     course_id: grade.course_id,
                     lettered_grade: grade.lettered_grade,
@@ -174,7 +176,8 @@ export default {
               for (const course of this.dataSciCourses) {
                 if (grade.course_id === course.id) {
                   course.grade = grade.lettered_grade
-                  this.gradesToPatch.push({
+                  course.grade_id = grade.id
+                  this.allGrades.push({
                     id: grade.id,
                     course_id: grade.course_id,
                     lettered_grade: grade.lettered_grade,
@@ -184,7 +187,8 @@ export default {
               for (const course of this.networkingCourses) {
                 if (grade.course_id === course.id) {
                   course.grade = grade.lettered_grade
-                  this.gradesToPatch.push({
+                  course.grade_id = grade.id
+                  this.allGrades.push({
                     id: grade.id,
                     course_id: grade.course_id,
                     lettered_grade: grade.lettered_grade,
@@ -202,82 +206,105 @@ export default {
     async sendData() {
       try {
         for (const item of this.softDevCourses) {
-          if (item.grade !== undefined) {
-            this.gradesToAdd.push({
-              lettered_grade: item.grade,
-              course_id: item.id,
-            })
-          }
+          this.gradesToAdd.push({
+            lettered_grade: item.grade,
+            course_id: item.id,
+            grade_id: item.grade_id,
+          })
         }
+
         for (const item of this.dataSciCourses) {
-          if (item.grade !== undefined) {
-            this.gradesToAdd.push({
-              lettered_grade: item.grade,
-              course_id: item.id,
-            })
-          }
+          this.gradesToAdd.push({
+            lettered_grade: item.grade,
+            course_id: item.id,
+            grade_id: item.grade_id,
+          })
         }
+
         for (const item of this.networkingCourses) {
-          if (item.grade !== undefined) {
-            this.gradesToAdd.push({
-              lettered_grade: item.grade,
-              course_id: item.id,
-            })
-          }
+          this.gradesToAdd.push({
+            lettered_grade: item.grade,
+            course_id: item.id,
+            grade_id: item.grade_id,
+          })
         }
-        let cleanAddData = this.gradesToAdd.filter(
-          (elem, index, arr) =>
-            arr.findIndex((e) => e.course_id === elem.course_id) === index,
-        )
 
-        const gradesToPatchkeys = Object.keys(this.gradesToPatch)
-        gradesToPatchkeys.forEach((key) => {
-          if (Object.prototype.hasOwnProperty.call(cleanAddData, key)) {
-            delete cleanAddData[key]
+        this.gradesToAdd = this.gradesToAdd.filter((obj1) => {
+          const isExcluded = this.allGrades.some((obj2) => {
+            return obj1.course_id === obj2.course_id
+          })
+          if (isExcluded) {
+            this.gradesToPatch.push(obj1)
           }
+          return !isExcluded
         })
 
-        cleanAddData = JSON.parse(JSON.stringify(cleanAddData)).filter((el) => {
-          return el !== null
+        this.gradesToPatch = this.gradesToPatch.filter((obj1) => {
+          return !this.allGrades.some((obj2) => {
+            return obj1.lettered_grade === obj2.lettered_grade
+          })
         })
 
-        if (cleanAddData !== undefined) {
-          for (const item of cleanAddData) {
-            const post = await axios.post(
-              this.$store.state.backendUrl + 'grade',
-              item,
-              {
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-              },
+        this.gradesToAdd = this.gradesToAdd.filter((obj, index, self) => {
+          return (
+            index ===
+            self.findIndex(
+              (t) =>
+                t.course_id === obj.course_id &&
+                t.lettered_grade === obj.lettered_grade,
             )
-            if (post) {
-              this.showSuccess = true
-              this.successMsg = 'Berhasil meyimpan nilai!'
+          )
+        })
+
+        this.gradesToPatch = this.gradesToPatch.filter((obj, index, self) => {
+          return (
+            index ===
+            self.findIndex(
+              (t) =>
+                t.course_id === obj.course_id &&
+                t.lettered_grade === obj.lettered_grade,
+            )
+          )
+        })
+
+        if (this.gradesToAdd !== undefined) {
+          for (const item of this.gradesToAdd) {
+            if (item.lettered_grade !== undefined) {
+              const post = await axios.post(
+                this.$store.state.backendUrl + 'grade',
+                item,
+                {
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                  },
+                },
+              )
+              if (post.status === 201) {
+                this.showSuccess = true
+                this.successMsg = 'Berhasil meyimpan nilai!'
+              }
             }
-          }
-        }
-
-        if (this.gradesToPatch !== undefined) {
-          for (const item of this.gradesToPatch) {
-            console.log(item)
-            const patch = await axios.patch(
-              this.$store.state.backendUrl + 'grade/' + item.id,
-              {
-                lettered_grade: item.lettered_grade,
-              },
-              {
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-              },
-            )
-            if (patch) {
-              this.showSuccess = true
-              this.successMsg = 'Berhasil meyimpan nilai!'
+            if (this.gradesToPatch !== undefined) {
+              for (const item of this.gradesToPatch) {
+                const patch = await axios.patch(
+                  this.$store.state.backendUrl + 'grade/' + item.grade_id,
+                  {
+                    lettered_grade: item.lettered_grade,
+                  },
+                  {
+                    headers: {
+                      'Content-Type': 'application/json',
+                      Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                  },
+                )
+                if (patch.status === 201) {
+                  this.showSuccess = true
+                  this.successMsg = 'Berhasil meyimpan nilai!'
+                }
+                return false
+              }
             }
           }
         }
