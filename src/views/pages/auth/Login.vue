@@ -37,11 +37,6 @@
                     <CCol :xs="6">
                       <SubmitButton title="Masuk" :isSendingForm="isSendingForm" />
                     </CCol>
-                    <CCol :xs="6" class="text-right">
-                      <CButton color="link" class="px-0">
-                        Lupa kata sandi
-                      </CButton>
-                    </CCol>
                   </CRow>
                 </CForm>
               </CCardBody>
@@ -129,6 +124,7 @@ export default {
           .then((response) => {
             const decoded = jwt_decode(response.data.token)
             localStorage.setItem('role', decoded.role)
+            localStorage.setItem('username', decoded.name)
             
             this.$store.commit('saveLogin',
               {

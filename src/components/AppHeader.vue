@@ -4,10 +4,11 @@
     @close="
       () => {
         showModal = false
+        form = {}
       }
     "
     ><CModalHeader>
-      <CModalTitle> Kritik dan Saran </CModalTitle>
+      <CModalTitle> Laporkan Masalah </CModalTitle>
     </CModalHeader>
     <CModalBody>
       <Alerts
@@ -20,13 +21,21 @@
       />
       <CForm>
         <CFormInput
+          placeholder="Judul"
           label="Judul"
-          class="mb-3"
           v-model.trim="form.title"
+          @input="setTouched('title')"
+          :invalid="v$.form.title.$error"
+          feedback="Masukan judul pesan."
         ></CFormInput>
+        <div class="mb-3"></div>
         <CFormTextarea
+          placeholder="Rincian masalah"
           label="Pesan"
           v-model.trim="form.message"
+          @input="setTouched('message')"
+          :invalid="v$.form.message.$error"
+          feedback="Masukan pesan."
         ></CFormTextarea>
       </CForm>
     </CModalBody>
@@ -54,7 +63,7 @@
               }
             "
           >
-            Kritik dan Saran
+            Laporkan Masalah
           </CNavLink>
         </CNavItem>
         <div class="vr"></div>
@@ -76,6 +85,8 @@ import AppBreadcrumb from './AppBreadcrumb'
 import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt'
 import Alerts from '@/components/Alerts.vue'
 import axios from 'axios'
+import useVuelidate from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
 
 export default {
   name: 'AppHeader',
@@ -83,6 +94,9 @@ export default {
     AppBreadcrumb,
     AppHeaderDropdownAccnt,
     Alerts,
+  },
+  setup() {
+    return { v$: useVuelidate() }
   },
   data() {
     return {
@@ -97,27 +111,49 @@ export default {
       },
     }
   },
+  validations() {
+    return {
+      form: {
+        title: {
+          required,
+        },
+        message: {
+          required,
+        },
+      },
+    }
+  },
   methods: {
+    setTouched(theModel) {
+      if (theModel == 'title' || theModel == 'all') {
+        this.v$.form.title.$touch()
+      }
+      if (theModel == 'message' || theModel == 'all') {
+        this.v$.form.message.$touch()
+      }
+    },
     sendMessage() {
-      axios
-        .post(this.$store.state.backendUrl + 'user/message', this.form, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((result) => {
-          if (result) {
-            this.showSuccess = true
-            this.successMsg = 'Terima kasih telah memberikan masukan!'
-            this.form = {}
-          }
-        })
-        .catch((error) => {
-          this.showError = true
-          this.errorMsg = error.response.data.message
-          this.form = {}
-        })
+      this.setTouched('all')
+      if (!this.v$.$invalid) {
+        axios
+          .post(this.$store.state.backendUrl + 'user/message', this.form, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+              'Content-Type': 'application/json',
+            },
+          })
+          .then((result) => {
+            if (result) {
+              this.showSuccess = true
+              this.successMsg =
+                'Laporan diterima! Terima kasih atas laporannya.'
+            }
+          })
+          .catch((error) => {
+            this.showError = true
+            this.errorMsg = error.response.data.message
+          })
+      }
     },
     logout() {
       axios

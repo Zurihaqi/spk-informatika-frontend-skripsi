@@ -12,18 +12,14 @@
       <CModalTitle>Konfirmasi Hapus Akun</CModalTitle>
     </CModalHeader>
     <CModalBody>
-      <CAlert
-        color="danger"
-        :visible="modalError"
-        dismissible
-        @close="
-          () => {
-            modalError = false
-          }
-        "
-      >
-        {{ errorMsg }}
-      </CAlert>
+      <Alerts
+        :showError="showError"
+        :showSuccess="showSuccess"
+        :errorMsg="errorMsg"
+        :successMsg="successMsg"
+        @update:showError="updateError"
+        @update:showSuccess="updateSuccess"
+      />
       <div class="mb-3">Masukan kata sandi untuk menghapus akun.</div>
       <CFormInput
         type="password"
@@ -71,14 +67,6 @@
     <div class="col-md-8">
       <div class="card mb-3">
         <div class="card-body">
-          <Alerts
-            :showError="showError"
-            :showSuccess="showSuccess"
-            :errorMsg="errorMsg"
-            :successMsg="successMsg"
-            @update:showError="updateError"
-            @update:showSuccess="updateSuccess"
-          />
           <div class="row">
             <div class="col-sm-3">
               <h6 class="mb-0">Nama</h6>
@@ -198,9 +186,8 @@ export default {
           })
           .then((result) => {
             if (result.status === 201) {
-              this.visible = false
               this.successMsg = 'Berhasil menghapus akun.'
-              this.success = true
+              this.showSuccess = true
               setTimeout(() => {
                 this.$store.commit('Logout')
                 this.$router.push('/login')
@@ -208,10 +195,6 @@ export default {
             }
           })
           .catch((error) => {
-            if (!this.visible) {
-              this.showError = true
-              this.errorMsg = error.response.data.message
-            }
             this.showError = true
             this.errorMsg = error.response.data.message
           })
@@ -242,7 +225,6 @@ export default {
           return result
         })
         .catch((error) => {
-          console.log(error)
           this.showError = true
           this.errorMsg = error.response.data.message
         })

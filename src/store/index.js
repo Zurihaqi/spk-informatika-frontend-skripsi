@@ -34,7 +34,6 @@ export default createStore({
 
     Logout(state) {
       state.token = ''
-
       localStorage.removeItem('token')
     },
   },

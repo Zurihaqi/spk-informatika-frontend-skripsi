@@ -24,7 +24,7 @@ export default [
   },
   {
     component: 'CNavGroup',
-    name: 'SPK',
+    name: 'SPK Peminatan',
     to: '/',
     icon: 'cil-education',
     items: [

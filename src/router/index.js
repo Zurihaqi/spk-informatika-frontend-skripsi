@@ -62,7 +62,7 @@ const routes = [
     path: '/spk',
     name: 'SPK',
     component: DefaultLayout,
-    redirect: '/spk/rule',
+    redirect: '/spk/calculate',
     children: [
       {
         path: '/spk/grade',

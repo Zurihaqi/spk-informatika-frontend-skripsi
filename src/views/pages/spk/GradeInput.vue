@@ -1,6 +1,6 @@
 <template>
   <CCard class="mb-3">
-    <CCardHeader> Input Nilai Mata Kuliah </CCardHeader>
+    <CCardHeader> <h6>Input Nilai Mata Kuliah</h6> </CCardHeader>
     <CCardBody
       disabled
       v-if="!isLoaded"
@@ -82,6 +82,10 @@
           </CCol>
         </CRow>
       </CForm>
+      <hr />
+      <div class="user-select-none">
+        Catatan: Masukan nilai "E" jika nilai kosong atau belum ada nilai.
+      </div>
     </CCardBody>
     <CCardFooter
       ><div class="d-md-flex justify-content-md-start me-6">
@@ -109,13 +113,13 @@ export default {
       options: [
         { label: 'Pilih', value: undefined },
         { label: 'A', value: 'A' },
+        { label: 'A-', value: 'A-' },
         { label: 'B+', value: 'B+' },
         { label: 'B', value: 'B' },
         { label: 'B-', value: 'B-' },
         { label: 'C+', value: 'C+' },
         { label: 'C', value: 'C' },
         { label: 'C-', value: 'C-' },
-        { label: 'C', value: 'C' },
         { label: 'D', value: 'D' },
         { label: 'E', value: 'E' },
       ],
@@ -296,6 +300,7 @@ export default {
                 this.toTop()
                 this.showSuccess = true
                 this.successMsg = 'Berhasil meyimpan nilai!'
+                this.reloadPage()
               }
             }
           }
@@ -320,6 +325,7 @@ export default {
                 this.toTop()
                 this.showSuccess = true
                 this.successMsg = 'Berhasil meyimpan nilai!'
+                this.reloadPage()
               }
             }
           }
@@ -329,6 +335,7 @@ export default {
         this.toTop()
         this.showError = true
         this.errorMsg = error.response.data.message
+        this.reloadPage()
       }
     },
     updateError(value) {
@@ -350,6 +357,11 @@ export default {
         top: 0,
         behavior: 'smooth',
       })
+    },
+    reloadPage() {
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000)
     },
   },
 }
