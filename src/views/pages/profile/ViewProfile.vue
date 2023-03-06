@@ -196,9 +196,9 @@ export default {
       }
     },
     deleteProfile() {
-      this.isSendingForm = true
       this.setTouched('all')
       if (!this.v$.$invalid) {
+        this.isSendingForm = true
         axios
           .post(this.$store.state.backendUrl + 'user/delete', this.form, {
             headers: {

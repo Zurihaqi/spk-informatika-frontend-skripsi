@@ -18,6 +18,38 @@
     </CToast>
   </CToaster>
   <CModal
+    :visible="confirmLogout"
+    @close="
+      () => {
+        confirmLogout = false
+      }
+    "
+  >
+    <CModalHeader>Konfirmasi Keluar</CModalHeader>
+    <CModalBody>Apakah anda yakin ingin keluar?</CModalBody
+    ><CModalFooter>
+      <CButton
+        color="secondary"
+        @click="
+          () => {
+            confirmLogout = false
+          }
+        "
+        >Batal</CButton
+      ><CButton color="primary" @click="logout()">Keluar</CButton>
+    </CModalFooter></CModal
+  >
+  <CModal :visible="showSuccess" alignment="center">
+    <CModalBody class="bg-success text-white">
+      <h5>{{ successMsg }}</h5>
+    </CModalBody>
+  </CModal>
+  <CModal :visible="showError" alignment="center">
+    <CModalBody class="bg-danger text-dark">
+      <h5>{{ errorMsg }}</h5>
+    </CModalBody>
+  </CModal>
+  <CModal
     :visible="showModal"
     @close="
       () => {
@@ -29,14 +61,6 @@
       <CModalTitle> Laporkan Masalah </CModalTitle>
     </CModalHeader>
     <CModalBody>
-      <Alerts
-        :showError="showError"
-        :showSuccess="showSuccess"
-        :errorMsg="errorMsg"
-        :successMsg="successMsg"
-        @update:showError="updateError"
-        @update:showSuccess="updateSuccess"
-      />
       <CForm>
         <CFormInput
           placeholder="Judul"
@@ -88,7 +112,16 @@
         </CNavItem>
         <div class="vr"></div>
         <CNavItem>
-          <CNavLink @click="logout()" class="btn"> Keluar </CNavLink>
+          <CNavLink
+            @click="
+              () => {
+                confirmLogout = true
+              }
+            "
+            class="btn"
+          >
+            Keluar
+          </CNavLink>
         </CNavItem>
         <AppHeaderDropdownAccnt />
       </CHeaderNav>
@@ -103,7 +136,6 @@
 <script>
 import AppBreadcrumb from './AppBreadcrumb'
 import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt'
-import Alerts from '@/components/Alerts.vue'
 import SubmitButton from '@/components/SubmitButton.vue'
 import axios from 'axios'
 import useVuelidate from '@vuelidate/core'
@@ -114,7 +146,6 @@ export default {
   components: {
     AppBreadcrumb,
     AppHeaderDropdownAccnt,
-    Alerts,
     SubmitButton,
   },
   setup() {
@@ -133,6 +164,8 @@ export default {
       },
       isSendingForm: false,
       errorToast: false,
+      successSent: false,
+      confirmLogout: false,
       toasts: {},
     }
   },
@@ -178,9 +211,9 @@ export default {
       }
     },
     sendMessage() {
-      this.isSendingForm = true
       this.setTouched('all')
       if (!this.v$.$invalid) {
+        this.isSendingForm = true
         axios
           .post(this.$store.state.backendUrl + 'user/message', this.form, {
             headers: {
@@ -193,7 +226,9 @@ export default {
               this.isSendingForm = false
               this.showSuccess = true
               this.successMsg =
-                'Laporan diterima! Terima kasih atas laporannya.'
+                'Laporan terkirim! Terima kasih atas masukannya!'
+              this.successSent = true
+              this.showModal = false
             }
           })
           .catch((error) => {

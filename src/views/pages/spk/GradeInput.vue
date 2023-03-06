@@ -33,6 +33,7 @@
               </div>
               <div class="col-md-3">
                 <CFormSelect
+                  :disabled="locked"
                   :options="options"
                   class="mb-3"
                   v-model="course.grade"
@@ -53,6 +54,7 @@
               </div>
               <div class="col-md-3">
                 <CFormSelect
+                  :disabled="locked"
                   :options="options"
                   class="mb-3"
                   v-model="course.grade"
@@ -73,6 +75,7 @@
               </div>
               <div class="col-md-3">
                 <CFormSelect
+                  :disabled="locked"
                   :options="options"
                   class="mb-3"
                   v-model="course.grade"
@@ -87,14 +90,24 @@
         Catatan: Masukan nilai "E" jika nilai kosong atau belum ada nilai.
       </div>
     </CCardBody>
-    <CCardFooter
+    <CCardFooter v-if="isLoaded"
       ><div class="d-md-flex justify-content-md-start me-6">
         <SubmitButton
+          class="me-3"
           :isSendingForm="isSendingForm"
           title="Simpan"
           color="primary"
           @click="sendData()"
         ></SubmitButton>
+        <CButton
+          color="warning"
+          @click="
+            () => {
+              locked = false
+            }
+          "
+          >Ubah</CButton
+        >
       </div>
     </CCardFooter>
   </CCard>
@@ -134,6 +147,7 @@ export default {
       showSuccess: false,
       successMsg: '',
       errorMsg: '',
+      locked: true,
       isSendingForm: false,
     }
   },
@@ -213,6 +227,7 @@ export default {
     },
     async sendData() {
       try {
+        this.locked = true
         this.isSendingForm = true
         for (const item of this.softDevCourses) {
           if (item.grade !== 'Pilih') {

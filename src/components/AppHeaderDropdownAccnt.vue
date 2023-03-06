@@ -10,6 +10,28 @@
       </CToastBody>
     </CToast>
   </CToaster>
+  <CModal
+    :visible="confirmLogout"
+    @close="
+      () => {
+        confirmLogout = false
+      }
+    "
+  >
+    <CModalHeader>Konfirmasi Keluar</CModalHeader>
+    <CModalBody>Apakah anda yakin ingin keluar?</CModalBody
+    ><CModalFooter>
+      <CButton
+        color="secondary"
+        @click="
+          () => {
+            confirmLogout = false
+          }
+        "
+        >Batal</CButton
+      ><CButton color="primary" @click="logout()">Keluar</CButton>
+    </CModalFooter></CModal
+  >
   <CDropdown variant="nav-item">
     <CDropdownToggle placement="bottom-end" class="py-0" :caret="false">
       <CAvatar :src="avatar" size="md" />
@@ -26,7 +48,14 @@
         Ubah Biodata
       </CDropdownItem>
       <CDropdownDivider />
-      <CDropdownItem @click="logout()" class="btn">
+      <CDropdownItem
+        @click="
+          () => {
+            confirmLogout = true
+          }
+        "
+        class="btn"
+      >
         <CIcon icon="cil-lock-locked" />
         Keluar
       </CDropdownItem>
@@ -43,6 +72,7 @@ export default {
       avatar: localStorage.getItem('profile_pic'),
       errorMgs: '',
       ShowError: false,
+      confirmLogout: false,
     }
   },
   methods: {
