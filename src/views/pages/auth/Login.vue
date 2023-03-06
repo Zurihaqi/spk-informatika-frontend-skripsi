@@ -68,6 +68,7 @@ import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import SubmitButton from '@/components/SubmitButton.vue'
 import jwt_decode from "jwt-decode";
+import placeholder from '@/assets/images/avatars/placeholder.png'
 
 export default {
   name: 'Login',
@@ -125,7 +126,7 @@ export default {
             const decoded = jwt_decode(response.data.token)
             decoded.role === 'ADMIN' ? localStorage.setItem('role', 'Pengelola') : localStorage.setItem('role', 'Mahasiswa')
             localStorage.setItem('username', decoded.name)
-            localStorage.setItem('profile_pic', decoded.profile_pic)
+            decoded.profile_pic ? localStorage.setItem('profile_pic', decoded.profile_pic) : localStorage.setItem('profile_pic', placeholder)
             localStorage.setItem('email', decoded.email)
             decoded.student_id ? localStorage.setItem('student_id', decoded.student_id) : localStorage.setItem('student_id', '')
             

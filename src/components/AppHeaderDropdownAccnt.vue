@@ -35,16 +35,12 @@
 </template>
 
 <script>
-import placeholder from '@/assets/images/avatars/placeholder.png'
-
 export default {
   name: 'AppHeaderDropdownAccnt',
   data() {
     return {
       toasts: [],
-      avatar: localStorage.getItem('profile_pic')
-        ? localStorage.getItem('profile_pic')
-        : placeholder,
+      avatar: localStorage.getItem('profile_pic'),
       errorMgs: '',
       ShowError: false,
     }

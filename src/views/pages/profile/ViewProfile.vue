@@ -139,7 +139,6 @@
 import axios from 'axios'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
-import placeholder from '@/assets/images/avatars/placeholder.png'
 import Alerts from '@/components/Alerts.vue'
 
 export default {
@@ -155,9 +154,7 @@ export default {
       form: {
         password: '',
       },
-      profilePic: localStorage.getItem('profile_pic')
-        ? localStorage.getItem('profile_pic')
-        : placeholder,
+      profilePic: localStorage.getItem('profile_pic'),
       role: localStorage.getItem('role'),
       studentId: localStorage.getItem('student_id'),
       email: localStorage.getItem('email'),
