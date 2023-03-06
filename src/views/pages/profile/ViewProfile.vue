@@ -41,7 +41,12 @@
       >
         Batal
       </CButton>
-      <CButton color="danger" @click="deleteProfile">Hapus</CButton>
+      <SubmitButton
+        color="danger"
+        title="Hapus"
+        :isSendingForm="isSendingForm"
+        @click="deleteProfile"
+      />
     </CModalFooter>
   </CModal>
   <div class="row gutters-sm">
@@ -140,11 +145,13 @@ import axios from 'axios'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import Alerts from '@/components/Alerts.vue'
+import SubmitButton from '@/components/SubmitButton.vue'
 
 export default {
   name: 'ViewProfile',
   components: {
     Alerts,
+    SubmitButton,
   },
   setup() {
     return { v$: useVuelidate() }
@@ -167,6 +174,7 @@ export default {
       showSuccess: false,
       visible: false,
       isLoaded: false,
+      isSendingForm: false,
     }
   },
   beforeMount() {
@@ -188,6 +196,7 @@ export default {
       }
     },
     deleteProfile() {
+      this.isSendingForm = true
       this.setTouched('all')
       if (!this.v$.$invalid) {
         axios
@@ -199,6 +208,7 @@ export default {
           })
           .then((result) => {
             if (result.status === 201) {
+              this.isSendingForm = false
               this.successMsg = 'Berhasil menghapus akun.'
               this.showSuccess = true
               setTimeout(() => {
