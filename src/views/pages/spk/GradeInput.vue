@@ -250,12 +250,6 @@ export default {
           })
           if (isExcluded) {
             this.gradesToPatch.push(obj1)
-            // console.log(this.gradesToPatch)
-            // this.gradesToPatch = this.gradesToPatch.filter((obj1) => {
-            //   return !this.allGrades.some((obj2) => {
-            //     return obj1.lettered_grade === obj2.lettered_grade
-            //   })
-            // })
           }
           return !isExcluded
         })
@@ -283,52 +277,48 @@ export default {
         })
 
         if (this.gradesToAdd !== undefined) {
-          for (const item of this.gradesToAdd) {
-            if (item.lettered_grade !== undefined) {
-              const post = await axios.post(
-                this.$store.state.backendUrl + 'grade',
-                item,
-                {
+          await Promise.all(
+            this.gradesToAdd.map(async (item) => {
+              if (item.lettered_grade !== undefined) {
+                await axios.post(this.$store.state.backendUrl + 'grade', item, {
                   headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                   },
-                },
-              )
-              if (post.status === 201) {
-                this.isSendingForm = false
-                this.toTop()
-                this.showSuccess = true
-                this.successMsg = 'Berhasil meyimpan nilai!'
-                this.reloadPage()
+                })
               }
-            }
-          }
+            }),
+          )
+          this.isSendingForm = false
+          this.showSuccess = true
+          this.successMsg = 'Berhasil meyimpan nilai!'
+          this.toTop()
+          this.reloadPage()
         }
         if (this.gradesToPatch !== undefined) {
-          for (const item of this.gradesToPatch) {
-            if (item.lettered_grade !== undefined) {
-              const patch = await axios.patch(
-                this.$store.state.backendUrl + 'grade/' + item.grade_id,
-                {
-                  lettered_grade: item.lettered_grade,
-                },
-                {
-                  headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+          await Promise.all(
+            this.gradesToPatch.map(async (item) => {
+              if (item.lettered_grade !== undefined) {
+                await axios.patch(
+                  this.$store.state.backendUrl + 'grade/' + item.grade_id,
+                  {
+                    lettered_grade: item.lettered_grade,
                   },
-                },
-              )
-              if (patch.status === 201) {
-                this.isSendingForm = false
-                this.toTop()
-                this.showSuccess = true
-                this.successMsg = 'Berhasil meyimpan nilai!'
-                this.reloadPage()
+                  {
+                    headers: {
+                      'Content-Type': 'application/json',
+                      Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                  },
+                )
               }
-            }
-          }
+            }),
+          )
+          this.isSendingForm = false
+          this.showSuccess = true
+          this.successMsg = 'Berhasil meyimpan nilai!'
+          this.toTop()
+          this.reloadPage()
         }
       } catch (error) {
         this.isSendingForm = false

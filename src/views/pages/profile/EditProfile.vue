@@ -74,9 +74,9 @@ export default {
   data() {
     return {
       placeholder: {
-        username: '',
-        studentId: '',
-        email: '',
+        username: localStorage.getItem('username'),
+        studentId: localStorage.getItem('student_id'),
+        email: localStorage.getItem('email'),
       },
       form: {
         name: '',
@@ -93,32 +93,7 @@ export default {
       isSendingForm: false,
     }
   },
-  beforeMount() {
-    this.getUserData()
-  },
   methods: {
-    getUserData() {
-      axios
-        .get(this.$store.state.backendUrl + 'user', {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        })
-        .then((result) => {
-          const userData = result.data.data
-          this.placeholder.username = userData.name
-          this.placeholder.studentId = userData.student_id
-          this.placeholder.email = userData.email
-          return result
-        })
-        .catch((error) => {
-          this.toasts.push({
-            title: error.response.data.status,
-            content: error.response.data.message,
-          })
-        })
-    },
     handleFileUpload(event) {
       this.file = event.target.files[0]
     },
@@ -146,6 +121,14 @@ export default {
           })
           .then((response) => {
             if (response.status === 201) {
+              const result = response.data.data
+              localStorage.setItem('profile_pic', result.profile_pic)
+              localStorage.setItem('username', result.name)
+              localStorage.setItem('email', result.email)
+              result.student_id
+                ? localStorage.setItem('student_id', result.student_id)
+                : localStorage.setItem('student_id', '')
+
               this.showSuccess = true
               this.successMsg = 'Berhasil merubah data.'
               this.isSendingForm = false

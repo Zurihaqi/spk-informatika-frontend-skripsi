@@ -66,7 +66,20 @@
     </div>
     <div class="col-md-8">
       <div class="card mb-3">
-        <div class="card-body">
+        <CCardBody
+          disabled
+          v-if="!isLoaded"
+          class="justify-content-center text-center"
+        >
+          <CSpinner
+            component="span"
+            size="sm"
+            variant="grow"
+            aria-hidden="true"
+          />
+          Loading...
+        </CCardBody>
+        <div class="card-body" v-if="isLoaded">
           <div class="row">
             <div class="col-sm-3">
               <h6 class="mb-0">Nama</h6>
@@ -142,11 +155,13 @@ export default {
       form: {
         password: '',
       },
-      profilePic: '',
-      role: '',
-      studentId: '',
-      email: '',
-      username: '',
+      profilePic: localStorage.getItem('profile_pic')
+        ? localStorage.getItem('profile_pic')
+        : placeholder,
+      role: localStorage.getItem('role'),
+      studentId: localStorage.getItem('student_id'),
+      email: localStorage.getItem('email'),
+      username: localStorage.getItem('username'),
       updatedAt: '',
       createdAt: '',
       errorMsg: '',
@@ -154,6 +169,7 @@ export default {
       successMsg: '',
       showSuccess: false,
       visible: false,
+      isLoaded: false,
     }
   },
   beforeMount() {
@@ -213,16 +229,9 @@ export default {
         })
         .then((result) => {
           const userData = result.data.data
-          this.username = userData.name
-          this.role = userData.role === 'ADMIN' ? 'Pengelola' : 'Mahasiswa'
-          this.profilePic = userData.profile_pic
-            ? userData.profile_pic
-            : placeholder
-          this.studentId = userData.student_id
-          this.email = userData.email
           this.updatedAt = new Date(userData.updatedAt).toLocaleString('en-GB')
           this.createdAt = new Date(userData.createdAt).toLocaleString('en-GB')
-          return result
+          this.isLoaded = true
         })
         .catch((error) => {
           this.showError = true

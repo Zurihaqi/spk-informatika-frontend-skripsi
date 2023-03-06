@@ -3,7 +3,15 @@
     <CCardHeader>
       <h6 class="text-center">Software Development</h6>
     </CCardHeader>
-    <CCardBody>
+    <CCardBody
+      disabled
+      v-if="!isLoaded"
+      class="justify-content-center text-center"
+    >
+      <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
+      Loading...
+    </CCardBody>
+    <CCardBody v-if="isLoaded">
       <vue-good-table
         :columns="columns1"
         :rows="rows1"
@@ -16,7 +24,15 @@
     <CCardHeader>
       <h6 class="text-center">Data Science</h6>
     </CCardHeader>
-    <CCardBody>
+    <CCardBody
+      disabled
+      v-if="!isLoaded"
+      class="justify-content-center text-center"
+    >
+      <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
+      Loading...
+    </CCardBody>
+    <CCardBody v-if="isLoaded">
       <vue-good-table
         :columns="columns2"
         :rows="rows2"
@@ -29,7 +45,15 @@
     <CCardHeader>
       <h6 class="text-center">Infrastruktur dan Keamanan Jaringan</h6>
     </CCardHeader>
-    <CCardBody>
+    <CCardBody
+      disabled
+      v-if="!isLoaded"
+      class="justify-content-center text-center"
+    >
+      <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
+      Loading...
+    </CCardBody>
+    <CCardBody v-if="isLoaded">
       <vue-good-table
         :columns="columns3"
         :rows="rows3"
@@ -88,6 +112,7 @@ export default {
       rows1: [],
       rows2: [],
       rows3: [],
+      isLoaded: false,
     }
   },
   beforeMount() {
@@ -124,7 +149,7 @@ export default {
               })
             }
           })
-          return result
+          this.isLoaded = true
         })
         .catch((error) => {
           console.log(error)

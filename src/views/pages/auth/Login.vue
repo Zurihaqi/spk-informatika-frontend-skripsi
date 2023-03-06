@@ -123,8 +123,11 @@ export default {
           })
           .then((response) => {
             const decoded = jwt_decode(response.data.token)
-            localStorage.setItem('role', decoded.role)
+            decoded.role === 'ADMIN' ? localStorage.setItem('role', 'Pengelola') : localStorage.setItem('role', 'Mahasiswa')
             localStorage.setItem('username', decoded.name)
+            localStorage.setItem('profile_pic', decoded.profile_pic)
+            localStorage.setItem('email', decoded.email)
+            decoded.student_id ? localStorage.setItem('student_id', decoded.student_id) : localStorage.setItem('student_id', '')
             
             this.$store.commit('saveLogin',
               {

@@ -1,5 +1,4 @@
 const role = localStorage.getItem('role')
-const shownRole = role === 'ADMIN' ? 'Pengelola' : 'Mahasiswa'
 
 export default [
   {
@@ -8,9 +7,7 @@ export default [
   {
     component: 'CNavItem',
     name: (
-      <p class="mt-2 text-center user-select-none h6">
-        Masuk sebagai {shownRole}
-      </p>
+      <p class="mt-2 text-center user-select-none h6">Masuk sebagai {role}</p>
     ),
   },
   {
@@ -34,9 +31,9 @@ export default [
         to: '/spk/grade',
       },
       {
-        component: 'CNavItem',
-        name: 'Daftar Rule',
-        to: '/spk/rule',
+        component: role === 'Pengelola' ? 'CNavItem' : '',
+        name: role === 'Pengelola' ? 'Daftar Rule' : '',
+        to: role === 'Pengelola' ? '/spk/rule' : '',
       },
       {
         component: 'CNavItem',

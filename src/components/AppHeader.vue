@@ -40,10 +40,12 @@
       </CForm>
     </CModalBody>
     <CModalFooter class="justify-content-start"
-      ><CButton color="primary" @click="sendMessage"
-        >Kirim</CButton
-      ></CModalFooter
-    >
+      ><SubmitButton
+        title="Kirim"
+        :isSendingForm="isSendingForm"
+        @click="sendMessage"
+      />
+    </CModalFooter>
   </CModal>
   <CHeader position="sticky" class="mb-4">
     <CContainer fluid>
@@ -84,6 +86,7 @@
 import AppBreadcrumb from './AppBreadcrumb'
 import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt'
 import Alerts from '@/components/Alerts.vue'
+import SubmitButton from '@/components/SubmitButton.vue'
 import axios from 'axios'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
@@ -94,6 +97,7 @@ export default {
     AppBreadcrumb,
     AppHeaderDropdownAccnt,
     Alerts,
+    SubmitButton,
   },
   setup() {
     return { v$: useVuelidate() }
@@ -109,6 +113,7 @@ export default {
         title: '',
         message: '',
       },
+      isSendingForm: false,
     }
   },
   validations() {
@@ -133,6 +138,7 @@ export default {
       }
     },
     sendMessage() {
+      this.isSendingForm = true
       this.setTouched('all')
       if (!this.v$.$invalid) {
         axios
@@ -143,44 +149,23 @@ export default {
             },
           })
           .then((result) => {
-            if (result) {
+            if (result.status === 201) {
+              this.isSendingForm = false
               this.showSuccess = true
               this.successMsg =
                 'Laporan diterima! Terima kasih atas laporannya.'
             }
           })
           .catch((error) => {
+            this.isSendingForm = false
             this.showError = true
             this.errorMsg = error.response.data.message
           })
       }
     },
     logout() {
-      axios
-        .post(
-          this.$store.state.backendUrl + 'logout',
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-              'Content-Type': 'application/json',
-            },
-          },
-        )
-        .then((result) => {
-          if (result) {
-            this.$store.commit('Logout')
-            this.$router.push('/login')
-          }
-        })
-        .catch((error) => {
-          this.toasts.push({
-            title: error.response.data.status,
-            content: error.response.data.message,
-          })
-          this.$store.commit('Logout')
-          this.$router.push('/login')
-        })
+      this.$store.commit('Logout')
+      this.$router.push('/login')
     },
     isMobile() {
       if (

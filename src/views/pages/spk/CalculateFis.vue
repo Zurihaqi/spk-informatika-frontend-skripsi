@@ -122,20 +122,20 @@ export default {
                 : maxes[0] === 2 && !maxes[1]
                 ? 'Infrastruktur dan Keamanan Jaringan'
                 : maxes[0] === 0 && maxes[1] === 1
-                ? 'Software Development & Data Science'
+                ? 'Software Development atau Data Science'
                 : maxes[0] === 1 && maxes[1] === 2
-                ? 'Data Science & Infrastruktur dan Keamanan Jaringan'
+                ? 'Data Science atau Infrastruktur dan Keamanan Jaringan'
                 : maxes[0] === 0 && maxes[1] === 2
-                ? 'Software Development & Infrastruktur dan Keamanan Jaringan'
+                ? 'Software Development atau Infrastruktur dan Keamanan Jaringan'
                 : ''
             if (maxes.length === 3) {
               this.conclusion = `Berdasarkan hasil perhitungan, ketiga peminatan memiliki persentase yang sama. Oleh karena itu, sistem pendukung keputusan tidak dapat memberikan rekomendasi khusus.`
             }
             if (maxes.length === 2) {
-              this.conclusion = `Berdasarkan hasil perhitungan, terdapat 2 peminatan dengan nilai persentase tertinggi yaitu ${this.recommended.spec}. Oleh karena itu, sistem pendukung keputusan menyarankan untuk memilih salah satu di antaranya.`
+              this.conclusion = `Peminatan yang disarankan: ${this.recommended.spec}.`
             }
             if (maxes.length === 1) {
-              this.conclusion = `Berdasarkan hasil perhitungan, rekomendasi peminatan dengan persentase tertinggi adalah ${this.recommended.spec}.`
+              this.conclusion = `Peminatan yang disarankan: ${this.recommended.spec}.`
             }
             this.isSendingForm = false
             this.showResult = true

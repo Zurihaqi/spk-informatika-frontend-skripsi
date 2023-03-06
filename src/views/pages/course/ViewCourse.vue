@@ -196,7 +196,16 @@
     </CModalFooter>
   </CModal>
   <div class="mb-4">
+    <CCardBody
+      disabled
+      v-if="!isLoaded"
+      class="justify-content-center text-center"
+    >
+      <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
+      Loading...
+    </CCardBody>
     <vue-good-table
+      v-if="isLoaded"
       :columns="columns"
       :rows="rows"
       :search-options="{
@@ -334,6 +343,7 @@ export default {
       successMsg: '',
       selectedRow: '',
       isSendingForm: false,
+      isLoaded: false,
     }
   },
   validations() {
@@ -357,7 +367,7 @@ export default {
   beforeMount() {
     this.getCourseData()
     const role = localStorage.getItem('role')
-    if (role === 'ADMIN') {
+    if (role === 'Pengelola') {
       this.columns[4].hidden = false
       this.admin = true
     }
@@ -394,7 +404,7 @@ export default {
         })
         .then((result) => {
           this.rows = result.data.data
-          return result
+          this.isLoaded = true
         })
         .catch((error) => {
           console.log(error)

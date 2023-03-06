@@ -35,7 +35,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import placeholder from '@/assets/images/avatars/placeholder.png'
 
 export default {
@@ -43,37 +42,14 @@ export default {
   data() {
     return {
       toasts: [],
-      avatar: placeholder,
+      avatar: localStorage.getItem('profile_pic')
+        ? localStorage.getItem('profile_pic')
+        : placeholder,
       errorMgs: '',
       ShowError: false,
     }
   },
-  beforeMount() {
-    this.getAva()
-  },
   methods: {
-    getAva() {
-      axios
-        .get(this.$store.state.backendUrl + 'user', {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        })
-        .then((result) => {
-          if (result.data.data.profile_pic) {
-            this.avatar = result.data.data.profile_pic
-          }
-        })
-        .catch((error) => {
-          this.toasts.push({
-            title: error.response.data.status,
-            content: error.response.data.message,
-          })
-          this.$store.commit('Logout')
-          this.$router.push('/login')
-        })
-    },
     viewProfile() {
       this.$router.push('/profile/view')
     },
@@ -81,31 +57,8 @@ export default {
       this.$router.push('/profile/edit')
     },
     logout() {
-      axios
-        .post(
-          this.$store.state.backendUrl + 'logout',
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-              'Content-Type': 'application/json',
-            },
-          },
-        )
-        .then((result) => {
-          if (result) {
-            this.$store.commit('Logout')
-            this.$router.push('/login')
-          }
-        })
-        .catch((error) => {
-          this.toasts.push({
-            title: error.response.data.status,
-            content: error.response.data.message,
-          })
-          this.$store.commit('Logout')
-          this.$router.push('/login')
-        })
+      this.$store.commit('Logout')
+      this.$router.push('/login')
     },
   },
 }
