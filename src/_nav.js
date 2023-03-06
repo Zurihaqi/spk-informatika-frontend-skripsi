@@ -15,7 +15,7 @@ export default [
   },
   {
     component: 'CNavItem',
-    name: 'Petunjuk Penggunaan',
+    name: 'Instruksi Penggunaan',
     to: '/',
     icon: 'cil-info',
   },

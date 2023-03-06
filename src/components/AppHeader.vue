@@ -1,4 +1,22 @@
 <template>
+  <CToaster placement="top-end">
+    <CToast
+      v-if="errorToast"
+      @close="
+        () => {
+          this.$store.commit('Logout')
+          this.$router.push('/login')
+        }
+      "
+    >
+      <CToastHeader closeButton>
+        <span class="me-auto fw-bold">{{ toasts.title }}</span>
+      </CToastHeader>
+      <CToastBody>
+        {{ toasts.content }}
+      </CToastBody>
+    </CToast>
+  </CToaster>
   <CModal
     :visible="showModal"
     @close="
@@ -114,6 +132,8 @@ export default {
         message: '',
       },
       isSendingForm: false,
+      errorToast: false,
+      toasts: {},
     }
   },
   validations() {
@@ -128,7 +148,27 @@ export default {
       },
     }
   },
+  beforeMount() {
+    this.checkConnection()
+  },
   methods: {
+    checkConnection() {
+      axios
+        .get(this.$store.state.backendUrl + 'user', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
+          },
+        })
+        .then()
+        .catch((error) => {
+          if (error) {
+            this.errorToast = true
+            this.toasts.title = 'Sesi anda habis.'
+            this.toasts.content = 'Lakukan login ulang.'
+          }
+        })
+    },
     setTouched(theModel) {
       if (theModel == 'title' || theModel == 'all') {
         this.v$.form.title.$touch()

@@ -277,7 +277,7 @@ export default {
         })
 
         if (this.gradesToAdd !== undefined) {
-          await Promise.all(
+          const add = await Promise.all(
             this.gradesToAdd.map(async (item) => {
               if (item.lettered_grade !== undefined) {
                 await axios.post(this.$store.state.backendUrl + 'grade', item, {
@@ -289,14 +289,16 @@ export default {
               }
             }),
           )
-          this.isSendingForm = false
-          this.showSuccess = true
-          this.successMsg = 'Berhasil meyimpan nilai!'
-          this.toTop()
-          this.reloadPage()
+          if (add) {
+            this.isSendingForm = false
+            this.showSuccess = true
+            this.successMsg = 'Berhasil meyimpan nilai!'
+            this.toTop()
+            this.reloadPage()
+          }
         }
         if (this.gradesToPatch !== undefined) {
-          await Promise.all(
+          const patch = await Promise.all(
             this.gradesToPatch.map(async (item) => {
               if (item.lettered_grade !== undefined) {
                 await axios.patch(
@@ -314,11 +316,13 @@ export default {
               }
             }),
           )
-          this.isSendingForm = false
-          this.showSuccess = true
-          this.successMsg = 'Berhasil meyimpan nilai!'
-          this.toTop()
-          this.reloadPage()
+          if (patch) {
+            this.isSendingForm = false
+            this.showSuccess = true
+            this.successMsg = 'Berhasil meyimpan nilai!'
+            this.toTop()
+            this.reloadPage()
+          }
         }
       } catch (error) {
         this.isSendingForm = false

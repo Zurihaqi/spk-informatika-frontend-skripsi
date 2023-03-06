@@ -12,7 +12,7 @@ const routes = [
     children: [
       {
         path: '/',
-        name: 'Petunjuk Penggunaan',
+        name: 'Instruksi Penggunaan',
         component: () => import('@/views/Dashboard.vue'),
       },
     ],
