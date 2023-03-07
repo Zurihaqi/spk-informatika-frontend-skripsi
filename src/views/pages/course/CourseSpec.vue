@@ -12,6 +12,14 @@
       Loading...
     </CCardBody>
     <CCardBody v-if="isLoaded">
+      <Alerts
+        :showError="showError"
+        :showSuccess="showSuccess"
+        :errorMsg="errorMsg"
+        :successMsg="successMsg"
+        @update:showError="updateError"
+        @update:showSuccess="updateSuccess"
+      />
       <vue-good-table
         :columns="columns1"
         :rows="rows1"
@@ -33,6 +41,14 @@
       Loading...
     </CCardBody>
     <CCardBody v-if="isLoaded">
+      <Alerts
+        :showError="showError"
+        :showSuccess="showSuccess"
+        :errorMsg="errorMsg"
+        :successMsg="successMsg"
+        @update:showError="updateError"
+        @update:showSuccess="updateSuccess"
+      />
       <vue-good-table
         :columns="columns2"
         :rows="rows2"
@@ -54,6 +70,14 @@
       Loading...
     </CCardBody>
     <CCardBody v-if="isLoaded">
+      <Alerts
+        :showError="showError"
+        :showSuccess="showSuccess"
+        :errorMsg="errorMsg"
+        :successMsg="successMsg"
+        @update:showError="updateError"
+        @update:showSuccess="updateSuccess"
+      />
       <vue-good-table
         :columns="columns3"
         :rows="rows3"
@@ -68,11 +92,13 @@
 import 'vue-good-table-next/dist/vue-good-table-next.css'
 import { VueGoodTable } from 'vue-good-table-next'
 import axios from 'axios'
+import Alerts from '@/components/Alerts.vue'
 
 export default {
   name: 'CourseSpec',
   components: {
     VueGoodTable,
+    Alerts,
   },
   data() {
     return {
@@ -84,7 +110,7 @@ export default {
         {
           label: 'Kode Mata Kuliah',
           field: 'course_code',
-          width: '100px',
+          width: '200px',
         },
       ],
       columns2: [
@@ -95,7 +121,7 @@ export default {
         {
           label: 'Kode Mata Kuliah',
           field: 'course_code',
-          width: '100px',
+          width: '200px',
         },
       ],
       columns3: [
@@ -106,13 +132,17 @@ export default {
         {
           label: 'Kode Mata Kuliah',
           field: 'course_code',
-          width: '100px',
+          width: '200px',
         },
       ],
       rows1: [],
       rows2: [],
       rows3: [],
       isLoaded: false,
+      showSuccess: false,
+      successMsg: '',
+      showError: false,
+      errorMsg: '',
     }
   },
   beforeMount() {
@@ -152,8 +182,15 @@ export default {
           this.isLoaded = true
         })
         .catch((error) => {
-          console.log(error)
+          this.showError = true
+          this.errorMsg = error.response.data.message
         })
+    },
+    updateError(value) {
+      this.showError = value
+    },
+    updateSuccess(value) {
+      this.showSuccess = value
     },
   },
 }
