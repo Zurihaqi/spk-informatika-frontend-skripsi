@@ -84,7 +84,7 @@ export default {
         {
           label: 'Kode Mata Kuliah',
           field: 'course_code',
-          width: '200px',
+          width: '100px',
         },
       ],
       columns2: [
@@ -95,7 +95,7 @@ export default {
         {
           label: 'Kode Mata Kuliah',
           field: 'course_code',
-          width: '200px',
+          width: '100px',
         },
       ],
       columns3: [
@@ -106,7 +106,7 @@ export default {
         {
           label: 'Kode Mata Kuliah',
           field: 'course_code',
-          width: '200px',
+          width: '100px',
         },
       ],
       rows1: [],
