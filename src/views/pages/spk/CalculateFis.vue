@@ -23,11 +23,11 @@
           <CCol class="text-start"
             ><p>
               Data Science:
-              {{ calculationResult.datasets[0].data[1] }}%<br />Software
-              Development:
-              {{ calculationResult.datasets[0].data[0] }}%<br />Infrastruktur
-              dan Keamanan Jaringan:
-              {{ calculationResult.datasets[0].data[2] }}%
+              <b>{{ calculationResult.datasets[0].data[1] }}%</b
+              ><br /><br />Software Development:
+              <b>{{ calculationResult.datasets[0].data[0] }}%</b
+              ><br /><br />Infrastruktur dan Keamanan Jaringan:
+              <b>{{ calculationResult.datasets[0].data[2] }}%</b>
             </p>
           </CCol>
           <CCol>
