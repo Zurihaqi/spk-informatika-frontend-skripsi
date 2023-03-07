@@ -187,7 +187,7 @@ export default {
   methods: {
     checkConnection() {
       axios
-        .get(this.$store.state.backendUrl + 'user', {
+        .get(this.$store.state.backendUrl + 'check-connection', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json',
