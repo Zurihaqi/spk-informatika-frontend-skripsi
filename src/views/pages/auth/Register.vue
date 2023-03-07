@@ -43,7 +43,6 @@
                     @input="setTouched('name')"
                     type="text"
                     placeholder="Nama lengkap"
-                    autocomplete="username"
                     feedback="Masukan nama lengkap."
                     :invalid="v$.form.name.$error"
                   />
@@ -58,6 +57,17 @@
                     autocomplete="email"
                     feedback="Masukan email yang valid."
                     :invalid="v$.form.email.$error"
+                  />
+                </CInputGroup>
+                <CInputGroup class="mb-3">
+                  <CInputGroupText>ID</CInputGroupText>
+                  <CFormInput
+                    v-model.trim="form.student_id"
+                    @input="setTouched('student_id')"
+                    type="text"
+                    placeholder="Nomor Pokok Mahasiswa"
+                    feedback="Masukan nomor pokok mahasiswa yang valid."
+                    :invalid="v$.form.student_id.$error"
                   />
                 </CInputGroup>
                 <CInputGroup class="mb-3">
@@ -117,6 +127,7 @@ export default {
       form: {
         name: '',
         email: '',
+        student_id: '',
         password: '',
         confirmPassword: '',
       },
@@ -133,6 +144,9 @@ export default {
         email: {
           required,
           email,
+        },
+        student_id: {
+          required,
         },
         password: {
           required,
@@ -151,6 +165,9 @@ export default {
   methods: {
     setTouched(theModel) {
       if (theModel == 'email' || theModel == 'all') {
+        this.v$.form.email.$touch()
+      }
+      if (theModel == 'student_id' || theModel == 'all') {
         this.v$.form.email.$touch()
       }
       if (theModel == 'password' || theModel == 'all') {
@@ -183,7 +200,6 @@ export default {
             }
           })
           .catch((error) => {
-            console.log(error)
             this.ShowError = true
             this.errorMgs = error.response.data.message
             this.isSendingForm = false
