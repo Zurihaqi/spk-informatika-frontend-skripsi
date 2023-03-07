@@ -31,9 +31,9 @@ export default [
         to: '/spk/grade',
       },
       {
-        component: role === 'Pengelola' ? 'CNavItem' : '',
+        component: role === 'Pengelola' ? 'CNavItem' : 'invisible',
         name: role === 'Pengelola' ? 'Daftar Rule' : '',
-        to: role === 'Pengelola' ? '/spk/rule' : '',
+        to: role === 'Pengelola' ? '/spk/rule' : '/spk/rule',
       },
       {
         component: 'CNavItem',
