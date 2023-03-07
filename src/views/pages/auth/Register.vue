@@ -168,7 +168,7 @@ export default {
         this.v$.form.email.$touch()
       }
       if (theModel == 'student_id' || theModel == 'all') {
-        this.v$.form.email.$touch()
+        this.v$.form.student_id.$touch()
       }
       if (theModel == 'password' || theModel == 'all') {
         this.v$.form.password.$touch()
