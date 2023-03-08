@@ -140,8 +140,11 @@ export default {
             }
           })
           .catch((error) => {
-            console.log(error)
             this.showError = true
+            if (error.message && error.message.includes('413')) {
+              this.errorMsg =
+                'Ukuran gambar terlalu besar. Ukuran maksimal adalah 5MB.'
+            }
             this.errorMsg =
               error.response !== undefined ? error.response.data.message : error
             this.isSendingForm = false
