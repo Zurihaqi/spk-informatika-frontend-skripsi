@@ -1,4 +1,7 @@
-const role = JSON.parse(localStorage.getItem('userdata')).role
+let role = ''
+if (localStorage.getItem('userdata')) {
+  role = JSON.parse(localStorage.getItem('userdata')).role
+}
 
 export default [
   {

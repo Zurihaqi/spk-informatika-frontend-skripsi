@@ -5,6 +5,7 @@ export default createStore({
   state: {
     sidebarVisible: '',
     sidebarUnfoldable: false,
+    token: '',
     backendUrl: process.env.VUE_APP_BACKEND_URL,
   },
   mutations: {
@@ -16,6 +17,15 @@ export default createStore({
     },
     updateSidebarVisible(state, payload) {
       state.sidebarVisible = payload.value
+    },
+    initialiseStore(state) {
+      if (window.$cookies.get('token')) {
+        state.token = window.$cookies.get('token')
+      }
+      if (state.token === '') {
+        return false
+      }
+      return true
     },
     saveLogin(state, LoginData) {
       const userdata = {
