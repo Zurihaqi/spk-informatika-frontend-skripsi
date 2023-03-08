@@ -366,7 +366,7 @@ export default {
   },
   beforeMount() {
     this.getCourseData()
-    const role = localStorage.getItem('role')
+    const role = this.$cookies.get('role')
     if (role === 'Pengelola') {
       this.columns[4].hidden = false
       this.admin = true
