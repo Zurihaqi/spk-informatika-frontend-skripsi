@@ -138,7 +138,7 @@ export default {
             {
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
+                Authorization: `Bearer ${this.$cookies.get('token')}`,
               },
             },
           )
@@ -156,7 +156,8 @@ export default {
           })
           .catch((error) => {
             this.showError = true
-            this.errorMsg = error.response.data.message
+            this.errorMsg =
+              error.response !== undefined ? error.response.data.message : error
             this.isSendingForm = false
           })
       }

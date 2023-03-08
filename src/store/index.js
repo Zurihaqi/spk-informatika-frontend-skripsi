@@ -1,10 +1,10 @@
 import { createStore } from 'vuex'
+import placeholder from '@/assets/images/avatars/placeholder.png'
 
 export default createStore({
   state: {
     sidebarVisible: '',
     sidebarUnfoldable: false,
-    token: '',
     backendUrl: process.env.VUE_APP_BACKEND_URL,
   },
   mutations: {
@@ -17,24 +17,27 @@ export default createStore({
     updateSidebarVisible(state, payload) {
       state.sidebarVisible = payload.value
     },
-    initialiseStore(state) {
-      if (localStorage.getItem('token')) {
-        state.token = localStorage.getItem('token')
-      }
-      if (state.token == '') {
-        return false
-      }
-      return true
-    },
     saveLogin(state, LoginData) {
-      state.token = LoginData.token
+      LoginData.userData.role === 'ADMIN'
+        ? window.$cookies.set('role', 'Pengelola', '1h')
+        : window.$cookies.set('role', 'Mahasiswa', '1h')
+      window.$cookies.set('username', LoginData.userData.name, '1h')
+      LoginData.userData.profile_pic
+        ? window.$cookies.set(
+            'profile_pic',
+            LoginData.userData.profile_pic,
+            '1h',
+          )
+        : window.$cookies.set('profile_pic', placeholder, '1h')
+      window.$cookies.set('email', LoginData.userData.email, '1h')
+      LoginData.userData.student_id
+        ? window.$cookies.set('student_id', LoginData.userData.student_id, '1h')
+        : window.$cookies.set('student_id', '', '1h')
 
-      localStorage.setItem('token', LoginData.token)
+      window.$cookies.set('token', LoginData.token, '1h')
     },
-
-    Logout(state) {
-      state.token = ''
-      localStorage.removeItem('token')
+    Logout() {
+      window.$cookies.remove('token')
     },
   },
   actions: {},

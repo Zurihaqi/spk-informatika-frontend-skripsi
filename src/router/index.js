@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import store from '@/store'
 
 import DefaultLayout from '@/layouts/DefaultLayout'
 
@@ -111,13 +110,12 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
   scrollBehavior() {
-    // always scroll to top
     return { top: 0 }
   },
 })
 
 router.beforeEach((to, from, next) => {
-  let token = store.state.token
+  let token = window.$cookies.get('token')
   if (!to.meta.public) {
     if (token) next()
     else next('/login')

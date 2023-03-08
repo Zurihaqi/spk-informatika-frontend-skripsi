@@ -1,15 +1,5 @@
 <!-- eslint-disable vue/valid-v-for -->
 <template>
-  <CToaster placement="top-end">
-    <CToast v-for="toast in toasts">
-      <CToastHeader closeButton>
-        <span class="me-auto fw-bold">{{ toast.title }}</span>
-      </CToastHeader>
-      <CToastBody>
-        {{ toast.content }}
-      </CToastBody>
-    </CToast>
-  </CToaster>
   <CModal
     :visible="confirmLogout"
     @close="
@@ -68,10 +58,7 @@ export default {
   name: 'AppHeaderDropdownAccnt',
   data() {
     return {
-      toasts: [],
-      avatar: localStorage.getItem('profile_pic'),
-      errorMgs: '',
-      ShowError: false,
+      avatar: this.$cookies.get('profile_pic'),
       confirmLogout: false,
     }
   },

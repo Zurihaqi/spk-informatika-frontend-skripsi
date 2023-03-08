@@ -74,9 +74,9 @@ export default {
   data() {
     return {
       placeholder: {
-        username: localStorage.getItem('username'),
-        studentId: localStorage.getItem('student_id'),
-        email: localStorage.getItem('email'),
+        username: this.$cookies.get('username'),
+        studentId: this.$cookies.get('student_id'),
+        email: this.$cookies.get('email'),
       },
       form: {
         name: '',
@@ -110,25 +110,28 @@ export default {
           .patch(this.$store.state.backendUrl + 'user', obj, {
             headers: {
               'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
+              Authorization: `Bearer ${this.$cookies.get('token')}`,
             },
             onUploadProgress: function (progressEvent) {
-              this.uploadPercentage = parseInt(
-                Math.round((progressEvent.loaded / progressEvent.total) * 100),
-              )
-              this.toggle = true
+              if (obj.profile_pic) {
+                this.toggle = true
+                this.uploadPercentage = parseInt(
+                  Math.round(
+                    (progressEvent.loaded / progressEvent.total) * 100,
+                  ),
+                )
+              }
             }.bind(this),
           })
           .then((response) => {
             if (response.status === 201) {
               const result = response.data.data
-              localStorage.setItem('profile_pic', result.profile_pic)
-              localStorage.setItem('username', result.name)
-              localStorage.setItem('email', result.email)
+              this.$cookies.set('profile_pic', result.profile_pic)
+              this.$cookies.set('username', result.name)
+              this.$cookies.set('email', result.email)
               result.student_id
-                ? localStorage.setItem('student_id', result.student_id)
-                : localStorage.setItem('student_id', '')
-
+                ? this.$cookies.set('student_id', result.student_id)
+                : this.$cookies.set('student_id', '')
               this.showSuccess = true
               this.successMsg = 'Berhasil merubah data.'
               this.isSendingForm = false
@@ -137,8 +140,10 @@ export default {
             }
           })
           .catch((error) => {
+            console.log(error)
             this.showError = true
-            this.errorMsg = error.response.data.message
+            this.errorMsg =
+              error.response !== undefined ? error.response.data.message : error
             this.isSendingForm = false
             this.toggle = false
           })
@@ -146,7 +151,7 @@ export default {
     },
     reloadPage() {
       setTimeout(() => {
-        window.location.reload()
+        this.$router.go()
       }, 1000)
     },
     updateError(value) {

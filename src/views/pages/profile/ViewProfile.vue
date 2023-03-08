@@ -82,7 +82,7 @@
             variant="grow"
             aria-hidden="true"
           />
-          Loading...
+          Memuat...
         </CCardBody>
         <div class="card-body" v-if="isLoaded">
           <div class="row">
@@ -161,11 +161,11 @@ export default {
       form: {
         password: '',
       },
-      profilePic: localStorage.getItem('profile_pic'),
-      role: localStorage.getItem('role'),
-      studentId: localStorage.getItem('student_id'),
-      email: localStorage.getItem('email'),
-      username: localStorage.getItem('username'),
+      profilePic: this.$cookies.get('profile_pic'),
+      role: this.$cookies.get('role'),
+      studentId: this.$cookies.get('student_id'),
+      email: this.$cookies.get('email'),
+      username: this.$cookies.get('username'),
       updatedAt: '',
       createdAt: '',
       errorMsg: '',
@@ -203,7 +203,7 @@ export default {
           .post(this.$store.state.backendUrl + 'user/delete', this.form, {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
+              Authorization: `Bearer ${this.$cookies.get('token')}`,
             },
           })
           .then((result) => {
@@ -219,7 +219,8 @@ export default {
           })
           .catch((error) => {
             this.showError = true
-            this.errorMsg = error.response.data.message
+            this.errorMsg =
+              error.response !== undefined ? error.response.data.message : error
           })
       }
     },
@@ -231,7 +232,7 @@ export default {
         .get(this.$store.state.backendUrl + 'user', {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${this.$cookies.get('token')}`,
           },
         })
         .then((result) => {
@@ -242,7 +243,8 @@ export default {
         })
         .catch((error) => {
           this.showError = true
-          this.errorMsg = error.response.data.message
+          this.errorMsg =
+            error.response !== undefined ? error.response.data.message : error
         })
     },
     updateError(value) {

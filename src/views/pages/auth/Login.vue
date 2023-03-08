@@ -67,8 +67,7 @@ import axios from 'axios'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import SubmitButton from '@/components/SubmitButton.vue'
-import jwt_decode from "jwt-decode";
-import placeholder from '@/assets/images/avatars/placeholder.png'
+import jwt_decode from 'jwt-decode'
 
 export default {
   name: 'Login',
@@ -83,8 +82,8 @@ export default {
         password: '',
       },
       passwordFieldType: 'password',
-      errorMgs: '', // to show error message
-      ShowError: false, // flag to toggle errorMgs
+      errorMgs: '',
+      ShowError: false,
       isSendingForm: false,
     }
   },
@@ -123,25 +122,18 @@ export default {
             headers: { "Content-Type": "application/json", }
           })
           .then((response) => {
-            const decoded = jwt_decode(response.data.token)
-            decoded.role === 'ADMIN' ? localStorage.setItem('role', 'Pengelola') : localStorage.setItem('role', 'Mahasiswa')
-            localStorage.setItem('username', decoded.name)
-            decoded.profile_pic ? localStorage.setItem('profile_pic', decoded.profile_pic) : localStorage.setItem('profile_pic', placeholder)
-            localStorage.setItem('email', decoded.email)
-            decoded.student_id ? localStorage.setItem('student_id', decoded.student_id) : localStorage.setItem('student_id', '')
-            
+            const decoded = jwt_decode(JSON.stringify(response.data.token))
             this.$store.commit('saveLogin',
               {
                 "token": response.data.token,
+                "userData": decoded
               });
-            this.$router.push('/').then(() => { this.$router.go() })
-            this.isSendingForm = false;
-
+              this.$router.push('/').then(() => { this.$router.go() })
+              this.isSendingForm = false;
           })
           .catch((error) => {
-            // login failed
             this.ShowError = true;
-            this.errorMgs = error.response.data.message;
+            this.errorMgs = error.response !== undefined ? error.response.data.message : error
             this.isSendingForm = false;
           });
         }

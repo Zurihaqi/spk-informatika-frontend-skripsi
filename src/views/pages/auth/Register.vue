@@ -201,7 +201,8 @@ export default {
           })
           .catch((error) => {
             this.ShowError = true
-            this.errorMgs = error.response.data.message
+            this.errorMgs =
+              error.response !== undefined ? error.response.data.message : error
             this.isSendingForm = false
           })
       }

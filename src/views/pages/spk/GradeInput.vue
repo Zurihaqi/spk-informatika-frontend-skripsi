@@ -7,7 +7,7 @@
       class="justify-content-center text-center"
     >
       <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
-      Loading...
+      Memuat...
     </CCardBody>
     <CCardBody v-if="isLoaded">
       <Alerts
@@ -167,7 +167,7 @@ export default {
             axios.get(endpoint, {
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
+                Authorization: `Bearer ${this.$cookies.get('token')}`,
               },
             }),
           ),
@@ -301,7 +301,7 @@ export default {
                 await axios.post(this.$store.state.backendUrl + 'grade', item, {
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    Authorization: `Bearer ${this.$cookies.get('token')}`,
                   },
                 })
               }
@@ -320,7 +320,7 @@ export default {
                   {
                     headers: {
                       'Content-Type': 'application/json',
-                      Authorization: `Bearer ${localStorage.getItem('token')}`,
+                      Authorization: `Bearer ${this.$cookies.get('token')}`,
                     },
                   },
                 )
@@ -365,7 +365,7 @@ export default {
     },
     reloadPage() {
       setTimeout(() => {
-        window.location.reload()
+        this.$router.go()
       }, 1000)
     },
   },

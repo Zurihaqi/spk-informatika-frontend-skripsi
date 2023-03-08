@@ -9,7 +9,7 @@
       class="justify-content-center text-center"
     >
       <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
-      Loading...
+      Memuat...
     </CCardBody>
     <CCardBody v-if="isLoaded">
       <Alerts
@@ -38,7 +38,7 @@
       class="justify-content-center text-center"
     >
       <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
-      Loading...
+      Memuat...
     </CCardBody>
     <CCardBody v-if="isLoaded">
       <Alerts
@@ -67,7 +67,7 @@
       class="justify-content-center text-center"
     >
       <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
-      Loading...
+      Memuat...
     </CCardBody>
     <CCardBody v-if="isLoaded">
       <Alerts
@@ -154,7 +154,7 @@ export default {
         .get(this.$store.state.backendUrl + 'course', {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${this.$cookies.get('token')}`,
           },
         })
         .then((result) => {
@@ -183,7 +183,8 @@ export default {
         })
         .catch((error) => {
           this.showError = true
-          this.errorMsg = error.response.data.message
+          this.errorMsg =
+            error.response !== undefined ? error.response.data.message : error
         })
     },
     updateError(value) {

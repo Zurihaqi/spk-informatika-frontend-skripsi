@@ -202,7 +202,7 @@
       class="justify-content-center text-center"
     >
       <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
-      Loading...
+      Memuat...
     </CCardBody>
     <vue-good-table
       v-if="isLoaded"
@@ -399,7 +399,7 @@ export default {
         .get(this.$store.state.backendUrl + 'course', {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${this.$cookies.get('token')}`,
           },
         })
         .then((result) => {
@@ -407,7 +407,10 @@ export default {
           this.isLoaded = true
         })
         .catch((error) => {
-          console.log(error)
+          this.isSendingForm = false
+          this.showError = true
+          this.errorMsg =
+            error.response !== undefined ? error.response.data.message : error
         })
     },
     deleteCourse() {
@@ -418,7 +421,7 @@ export default {
           {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
+              Authorization: `Bearer ${this.$cookies.get('token')}`,
             },
           },
         )
@@ -437,7 +440,8 @@ export default {
         .catch((error) => {
           this.isSendingForm = false
           this.showError = true
-          this.errorMsg = error.response.data.message
+          this.errorMsg =
+            error.response !== undefined ? error.response.data.message : error
         })
     },
     editCourse() {
@@ -453,7 +457,7 @@ export default {
           {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
+              Authorization: `Bearer ${this.$cookies.get('token')}`,
             },
           },
         )
@@ -473,7 +477,8 @@ export default {
         .catch((error) => {
           this.isSendingForm = false
           this.showError = true
-          this.errorMsg = error.response.data.message
+          this.errorMsg =
+            error.response !== undefined ? error.response.data.message : error
         })
     },
     addCourse() {
@@ -488,7 +493,7 @@ export default {
           .post(this.$store.state.backendUrl + `course`, obj, {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
+              Authorization: `Bearer ${this.$cookies.get('token')}`,
             },
           })
           .then((result) => {
@@ -507,7 +512,8 @@ export default {
           .catch((error) => {
             this.isSendingForm = false
             this.showError = true
-            this.errorMsg = error.response.data.message
+            this.errorMsg =
+              error.response !== undefined ? error.response.data.message : error
           })
       }
     },

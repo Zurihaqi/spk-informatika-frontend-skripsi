@@ -189,7 +189,7 @@ export default {
       axios
         .get(this.$store.state.backendUrl + 'check-connection', {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${this.$cookies.get('token')}`,
             'Content-Type': 'application/json',
           },
         })
@@ -217,7 +217,7 @@ export default {
         axios
           .post(this.$store.state.backendUrl + 'user/message', this.form, {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
+              Authorization: `Bearer ${this.$cookies.get('token')}`,
               'Content-Type': 'application/json',
             },
           })
@@ -234,7 +234,8 @@ export default {
           .catch((error) => {
             this.isSendingForm = false
             this.showError = true
-            this.errorMsg = error.response.data.message
+            this.errorMsg =
+              error.response !== undefined ? error.response.data.message : error
           })
       }
     },
