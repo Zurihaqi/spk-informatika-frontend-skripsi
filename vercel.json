@@ -1,7 +1,0 @@
-{
-  "headers": [
-    {
-      "source": "spk-skripsi.vercel.app/(.*)"
-    }
-  ]
-}
