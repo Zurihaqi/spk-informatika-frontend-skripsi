@@ -324,7 +324,7 @@ export default {
         {
           label: 'Aksi',
           field: 'action',
-          hidden: true,
+          hidden: !this.admin,
         },
         {
           label: 'Id',
@@ -333,6 +333,7 @@ export default {
         },
       ],
       rows: [],
+      role: JSON.parse(localStorage.getItem('userdata')).role,
       admin: false,
       deleteModal: false,
       editModal: false,
@@ -366,9 +367,7 @@ export default {
   },
   beforeMount() {
     this.getCourseData()
-    const role = this.$cookies.get('role')
-    if (role === 'Pengelola') {
-      this.columns[4].hidden = false
+    if (this.role === 'Pengelola') {
       this.admin = true
     }
   },

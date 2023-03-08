@@ -58,7 +58,7 @@ export default {
   name: 'AppHeaderDropdownAccnt',
   data() {
     return {
-      avatar: this.$cookies.get('profile_pic'),
+      avatar: JSON.parse(localStorage.getItem('userdata')).profile_pic,
       confirmLogout: false,
     }
   },

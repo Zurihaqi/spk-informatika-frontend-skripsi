@@ -18,26 +18,27 @@ export default createStore({
       state.sidebarVisible = payload.value
     },
     saveLogin(state, LoginData) {
-      LoginData.userData.role === 'ADMIN'
-        ? window.$cookies.set('role', 'Pengelola', '1h')
-        : window.$cookies.set('role', 'Mahasiswa', '1h')
-      window.$cookies.set('username', LoginData.userData.name, '1h')
-      LoginData.userData.profile_pic
-        ? window.$cookies.set(
-            'profile_pic',
-            LoginData.userData.profile_pic,
-            '1h',
-          )
-        : window.$cookies.set('profile_pic', placeholder, '1h')
-      window.$cookies.set('email', LoginData.userData.email, '1h')
-      LoginData.userData.student_id
-        ? window.$cookies.set('student_id', LoginData.userData.student_id, '1h')
-        : window.$cookies.set('student_id', '', '1h')
-
+      const userdata = {
+        name: `${LoginData.userData.name}`,
+        email: `${LoginData.userData.email}`,
+        role: `${
+          LoginData.userData.role === 'ADMIN' ? 'Pengelola' : 'Mahasiswa'
+        }`,
+        student_id: `${
+          LoginData.userData.student_id ? LoginData.userData.student_id : ''
+        }`,
+        profile_pic: `${
+          LoginData.userData.profile_pic
+            ? LoginData.userData.profile_pic
+            : placeholder
+        }`,
+      }
+      localStorage.setItem('userdata', JSON.stringify(userdata))
       window.$cookies.set('token', LoginData.token, '1h')
     },
     Logout() {
       window.$cookies.remove('token')
+      localStorage.removeItem('userdata')
     },
   },
   actions: {},

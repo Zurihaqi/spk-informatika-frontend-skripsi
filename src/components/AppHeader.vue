@@ -183,6 +183,7 @@ export default {
   },
   beforeMount() {
     this.checkConnection()
+    // console.log(JSON.parse(localStorage.getItem('userdata')))
   },
   methods: {
     checkConnection() {

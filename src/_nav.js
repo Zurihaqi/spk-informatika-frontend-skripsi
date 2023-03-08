@@ -1,4 +1,4 @@
-const role = window.$cookies.get('role')
+const role = JSON.parse(localStorage.getItem('userdata')).role
 
 export default [
   {

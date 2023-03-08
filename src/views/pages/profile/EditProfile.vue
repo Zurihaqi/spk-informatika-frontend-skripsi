@@ -74,9 +74,9 @@ export default {
   data() {
     return {
       placeholder: {
-        username: this.$cookies.get('username'),
-        studentId: this.$cookies.get('student_id'),
-        email: this.$cookies.get('email'),
+        username: JSON.parse(localStorage.getItem('userdata')).name,
+        studentId: JSON.parse(localStorage.getItem('userdata')).student_id,
+        email: JSON.parse(localStorage.getItem('userdata')).email,
       },
       form: {
         name: '',
@@ -126,12 +126,8 @@ export default {
           .then((response) => {
             if (response.status === 201) {
               const result = response.data.data
-              this.$cookies.set('profile_pic', result.profile_pic)
-              this.$cookies.set('username', result.name)
-              this.$cookies.set('email', result.email)
-              result.student_id
-                ? this.$cookies.set('student_id', result.student_id)
-                : this.$cookies.set('student_id', '')
+              result.student_id ? result.student_id : ''
+              localStorage.setItem('userdata', JSON.stringify(result))
               this.showSuccess = true
               this.successMsg = 'Berhasil merubah data.'
               this.isSendingForm = false
@@ -144,11 +140,16 @@ export default {
             if (error.response.status === 413) {
               this.errorMsg =
                 'Ukuran gambar terlalu besar. Ukuran maksimal adalah 5MB.'
+              this.isSendingForm = false
+              this.toggle = false
+            } else {
+              this.errorMsg =
+                error.response !== undefined
+                  ? error.response.data.message
+                  : error
+              this.isSendingForm = false
+              this.toggle = false
             }
-            this.errorMsg =
-              error.response !== undefined ? error.response.data.message : error
-            this.isSendingForm = false
-            this.toggle = false
           })
       }
     },
