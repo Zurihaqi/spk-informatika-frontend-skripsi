@@ -141,7 +141,7 @@ export default {
           })
           .catch((error) => {
             this.showError = true
-            if (error.message && error.message.includes('413')) {
+            if (error.response.status === 413) {
               this.errorMsg =
                 'Ukuran gambar terlalu besar. Ukuran maksimal adalah 5MB.'
             }
