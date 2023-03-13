@@ -17,6 +17,28 @@
       </CToastBody>
     </CToast>
   </CToaster>
+  <CModal
+    :visible="confirmLogout"
+    @close="
+      () => {
+        confirmLogout = false
+      }
+    "
+  >
+    <CModalHeader>Konfirmasi Keluar</CModalHeader>
+    <CModalBody>Apakah anda yakin ingin keluar?</CModalBody
+    ><CModalFooter>
+      <CButton
+        color="secondary"
+        @click="
+          () => {
+            confirmLogout = false
+          }
+        "
+        >Batal</CButton
+      ><CButton color="primary" @click="logout()">Keluar</CButton>
+    </CModalFooter></CModal
+  >
   <CModal :visible="showSuccess" alignment="center">
     <CModalBody class="bg-success text-white">
       <h5>{{ successMsg }}</h5>

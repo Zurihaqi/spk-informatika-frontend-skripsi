@@ -33,8 +33,7 @@ export default [
         component:
           role === 'Pengelola' || role === 'Admin' ? 'CNavItem' : 'invisible',
         name: role === 'Pengelola' || role === 'Admin' ? 'Data Rule' : '',
-        to:
-          role === 'Pengelola' || role === 'Admin' ? '/spk/rule' : '/spk/rule',
+        to: '/spk/rule',
       },
       {
         component: 'CNavItem',
@@ -88,21 +87,24 @@ export default [
     ],
   },
   {
-    component: 'CNavGroup',
-    name: 'Pengelola',
-    to: '/',
-    icon: 'cil-user',
-    items: [
-      {
-        component: 'CNavItem',
-        name: 'Daftarkan Pengelola',
-        to: '/admin/register',
-      },
-      {
-        component: 'CNavItem',
-        name: 'Data Pengelola',
-        to: '/admin/view',
-      },
-    ],
+    component: role === 'Admin' ? 'CNavGroup' : 'invisible',
+    name: role === 'Admin' ? 'Admin' : '',
+    to: '/admin/view',
+    icon: role === 'Admin' ? 'cil-warning' : '',
+    items:
+      role === 'Admin'
+        ? [
+            {
+              component: 'CNavItem',
+              name: 'Daftarkan Pengelola',
+              to: '/admin/register',
+            },
+            {
+              component: 'CNavItem',
+              name: 'Data Pengguna',
+              to: '/admin/view',
+            },
+          ]
+        : '',
   },
 ]
