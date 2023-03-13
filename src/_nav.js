@@ -1,8 +1,4 @@
-let role = ''
-if (localStorage.getItem('userdata')) {
-  role = JSON.parse(localStorage.getItem('userdata')).role
-}
-
+const role = localStorage.getItem('role')
 export default [
   {
     component: 'hr',
@@ -34,9 +30,11 @@ export default [
         to: '/spk/grade',
       },
       {
-        component: role === 'Pengelola' ? 'CNavItem' : 'invisible',
-        name: role === 'Pengelola' ? 'Daftar Rule' : '',
-        to: role === 'Pengelola' ? '/spk/rule' : '/spk/rule',
+        component:
+          role === 'Pengelola' || role === 'Admin' ? 'CNavItem' : 'invisible',
+        name: role === 'Pengelola' || role === 'Admin' ? 'Data Rule' : '',
+        to:
+          role === 'Pengelola' || role === 'Admin' ? '/spk/rule' : '/spk/rule',
       },
       {
         component: 'CNavItem',
@@ -58,7 +56,7 @@ export default [
       },
       {
         component: 'CNavItem',
-        name: 'Relasi Peminatan',
+        name: 'Data Relasi Peminatan',
         to: '/course/spec',
       },
     ],
@@ -86,6 +84,24 @@ export default [
         component: 'CNavItem',
         name: 'Ubah Kata Sandi',
         to: '/profile/password',
+      },
+    ],
+  },
+  {
+    component: 'CNavGroup',
+    name: 'Pengelola',
+    to: '/',
+    icon: 'cil-user',
+    items: [
+      {
+        component: 'CNavItem',
+        name: 'Daftarkan Pengelola',
+        to: '/admin/register',
+      },
+      {
+        component: 'CNavItem',
+        name: 'Data Pengelola',
+        to: '/admin/view',
       },
     ],
   },

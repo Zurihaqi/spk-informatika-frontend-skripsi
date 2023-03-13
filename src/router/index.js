@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
 import DefaultLayout from '@/layouts/DefaultLayout'
 
 const routes = [
@@ -71,6 +70,9 @@ const routes = [
       {
         path: '/spk/rule',
         name: 'Daftar Rule',
+        meta: {
+          pengelola: true,
+        },
         component: () => import('@/views/pages/spk/RuleSets.vue'),
       },
       {
@@ -115,12 +117,24 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  let token = window.$cookies.get('token')
+  const token = window.$cookies.get('token')
+  const role = localStorage.getItem('role')
   if (!to.meta.public) {
     if (token) next()
     else next('/login')
   } else {
     if (token ? (to.path === '/login' ? next('/') : true) : true) next()
+  }
+  if (to.meta.admin) {
+    if (role !== 'Admin') router.push('/')
+  } else {
+    next()
+  }
+  if (to.meta.pengelola) {
+    const allowedRoles = ['Pengelola', 'Admin']
+    if (!allowedRoles.includes(role)) router.push('/')
+  } else {
+    next()
   }
 })
 

@@ -67,7 +67,6 @@ import axios from 'axios'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import SubmitButton from '@/components/SubmitButton.vue'
-import jwt_decode from 'jwt-decode'
 
 export default {
   name: 'Login',
@@ -122,11 +121,9 @@ export default {
             headers: { "Content-Type": "application/json", }
           })
           .then((response) => {
-            const decoded = jwt_decode(JSON.stringify(response.data.token))
             this.$store.commit('saveLogin',
               {
                 "token": response.data.token,
-                "userData": decoded
               });
               this.$router.push('/').then(() => { this.$router.go() })
               this.isSendingForm = false;

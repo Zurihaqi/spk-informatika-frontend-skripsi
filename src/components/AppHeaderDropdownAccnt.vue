@@ -58,7 +58,7 @@ export default {
   name: 'AppHeaderDropdownAccnt',
   data() {
     return {
-      avatar: JSON.parse(localStorage.getItem('userdata')).profile_pic,
+      avatar: localStorage.getItem('profile_pic'),
       confirmLogout: false,
     }
   },

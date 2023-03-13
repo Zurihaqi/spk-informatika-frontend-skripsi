@@ -55,15 +55,17 @@
         <div class="card-body">
           <div class="d-flex flex-column align-items-center text-center">
             <img
-              :src="profilePic"
+              :src="userdata.profilePic"
               alt="Admin"
               class="rounded-circle"
               width="150"
             />
             <div class="mt-3">
-              <h4>{{ username }}</h4>
-              <p class="text-secondary mb-1">{{ role }}</p>
-              <p class="text-secondary font-size-sm">{{ studentId }}</p>
+              <h4>{{ userdata.name }}</h4>
+              <p class="text-secondary mb-1">{{ userdata.role }}</p>
+              <p class="text-secondary font-size-sm">
+                {{ userdata.student_id }}
+              </p>
             </div>
           </div>
         </div>
@@ -89,28 +91,28 @@
             <div class="col-sm-3">
               <h6 class="mb-0">Nama</h6>
             </div>
-            <div class="col-sm-9 text-secondary">{{ username }}</div>
+            <div class="col-sm-9 text-secondary">{{ userdata.name }}</div>
           </div>
           <hr />
           <div class="row">
             <div class="col-sm-3">
               <h6 class="mb-0">Email</h6>
             </div>
-            <div class="col-sm-9 text-secondary">{{ email }}</div>
+            <div class="col-sm-9 text-secondary">{{ userdata.email }}</div>
           </div>
           <hr />
           <div class="row">
             <div class="col-sm-3">
               <h6 class="mb-0">Nomor Pokok Mahasiswa</h6>
             </div>
-            <div class="col-sm-9 text-secondary">{{ studentId }}</div>
+            <div class="col-sm-9 text-secondary">{{ userdata.student_id }}</div>
           </div>
           <hr />
           <div class="row">
             <div class="col-sm-3">
               <h6 class="mb-0">Tanggal Dibuat</h6>
             </div>
-            <div class="col-sm-9 text-secondary">{{ createdAt }}</div>
+            <div class="col-sm-9 text-secondary">{{ userdata.createdAt }}</div>
           </div>
           <hr />
           <div class="row">
@@ -118,7 +120,7 @@
               <h6 class="mb-0">Terakhir Diperbarui</h6>
             </div>
             <div class="col-sm-9 text-secondary">
-              {{ updatedAt }}
+              {{ userdata.updatedAt }}
             </div>
           </div>
           <hr />
@@ -154,20 +156,24 @@ export default {
     SubmitButton,
   },
   setup() {
-    return { v$: useVuelidate() }
+    return {
+      v$: useVuelidate(),
+    }
   },
   data() {
     return {
       form: {
         password: '',
       },
-      profilePic: JSON.parse(localStorage.getItem('userdata')).profile_pic,
-      role: JSON.parse(localStorage.getItem('userdata')).role,
-      studentId: JSON.parse(localStorage.getItem('userdata')).student_id,
-      email: JSON.parse(localStorage.getItem('userdata')).email,
-      username: JSON.parse(localStorage.getItem('userdata')).name,
-      updatedAt: '',
-      createdAt: '',
+      userdata: {
+        profilePic: localStorage.getItem('profile_pic'),
+        role: localStorage.getItem('role'),
+        student_id: localStorage.getItem('student_id'),
+        email: localStorage.getItem('email'),
+        name: localStorage.getItem('name'),
+        createdAt: '',
+        updatedAt: '',
+      },
       errorMsg: '',
       showError: false,
       successMsg: '',
@@ -178,7 +184,10 @@ export default {
     }
   },
   beforeMount() {
-    this.getUserData()
+    if (!this.userdata.createdAt && !this.userdata.updatedAt) {
+      this.getUserData()
+    }
+    this.isLoaded = true
   },
   validations() {
     return {
@@ -237,8 +246,12 @@ export default {
         })
         .then((result) => {
           const userData = result.data.data
-          this.updatedAt = new Date(userData.updatedAt).toLocaleString('en-GB')
-          this.createdAt = new Date(userData.createdAt).toLocaleString('en-GB')
+          this.userdata.updatedAt = new Date(userData.updatedAt).toLocaleString(
+            'en-GB',
+          )
+          this.userdata.createdAt = new Date(userData.createdAt).toLocaleString(
+            'en-GB',
+          )
           this.isLoaded = true
         })
         .catch((error) => {

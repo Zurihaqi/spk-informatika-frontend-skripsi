@@ -1,5 +1,9 @@
 <template>
-  <div></div>
+  <CCard>
+    <CCardHeader>
+      <CCardBody> A </CCardBody>
+    </CCardHeader>
+  </CCard>
 </template>
 
 <script>

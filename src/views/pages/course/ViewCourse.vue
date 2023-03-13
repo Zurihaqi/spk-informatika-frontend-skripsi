@@ -231,7 +231,7 @@
     >
       <template #table-actions>
         <CButton
-          v-if="admin"
+          v-if="role === 'Pengelola' || role === 'Admin'"
           color="primary"
           class="me-3"
           size="sm"
@@ -324,7 +324,7 @@ export default {
         {
           label: 'Aksi',
           field: 'action',
-          hidden: !this.admin,
+          hidden: true,
         },
         {
           label: 'Id',
@@ -333,8 +333,7 @@ export default {
         },
       ],
       rows: [],
-      role: JSON.parse(localStorage.getItem('userdata')).role,
-      admin: false,
+      role: localStorage.getItem('role'),
       deleteModal: false,
       editModal: false,
       addModal: false,
@@ -366,10 +365,10 @@ export default {
     }
   },
   beforeMount() {
-    this.getCourseData()
-    if (this.role === 'Pengelola') {
-      this.admin = true
+    if (this.role === 'Pengelola' || this.role === 'Admin') {
+      this.columns[4].hidden = false
     }
+    this.getCourseData()
   },
   methods: {
     setTouched(theModel) {

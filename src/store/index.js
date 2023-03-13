@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
-import placeholder from '@/assets/images/avatars/placeholder.png'
+import jwtDecode from 'jwt-decode'
+import placeholder from '@/assets/images/placeholder.png'
 
 export default createStore({
   state: {
@@ -28,27 +29,25 @@ export default createStore({
       return true
     },
     saveLogin(state, LoginData) {
-      const userdata = {
-        name: `${LoginData.userData.name}`,
-        email: `${LoginData.userData.email}`,
-        role: `${
-          LoginData.userData.role === 'ADMIN' ? 'Pengelola' : 'Mahasiswa'
-        }`,
-        student_id: `${
-          LoginData.userData.student_id ? LoginData.userData.student_id : ''
-        }`,
-        profile_pic: `${
-          LoginData.userData.profile_pic
-            ? LoginData.userData.profile_pic
-            : placeholder
-        }`,
+      const decoded = jwtDecode(LoginData.token)
+      if (decoded) {
+        localStorage.setItem('role', decoded.role)
+        localStorage.setItem('name', decoded.name)
+        localStorage.setItem('email', decoded.email)
+        localStorage.setItem(
+          'student_id',
+          decoded.student_id ? decoded.student_id : '',
+        )
+        localStorage.setItem(
+          'profile_pic',
+          decoded.profile_pic ? decoded.profile_pic : placeholder,
+        )
       }
-      localStorage.setItem('userdata', JSON.stringify(userdata))
       window.$cookies.set('token', LoginData.token, '1h')
     },
     Logout() {
       window.$cookies.remove('token')
-      localStorage.removeItem('userdata')
+      localStorage.clear()
     },
   },
   actions: {},

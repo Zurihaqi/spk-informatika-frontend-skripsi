@@ -16,8 +16,8 @@
               <CFormLabel>Nama Lengkap</CFormLabel>
               <CFormInput
                 v-model.trim="form.name"
-                type="username"
-                :placeholder="placeholder.username"
+                type="name"
+                :placeholder="placeholder.name"
               />
             </CCol>
             <CCol :md="6">
@@ -34,7 +34,7 @@
               <CFormInput
                 v-model.trim="form.student_id"
                 type="text"
-                :placeholder="placeholder.studentId"
+                :placeholder="placeholder.student_id"
               />
             </CCol>
             <CCol :md="6">
@@ -67,6 +67,7 @@
 import axios from 'axios'
 import SubmitButton from '@/components/SubmitButton.vue'
 import Alerts from '@/components/Alerts.vue'
+import placeholder from '@/assets/images/placeholder.png'
 
 export default {
   name: 'EditProfile',
@@ -74,9 +75,9 @@ export default {
   data() {
     return {
       placeholder: {
-        username: JSON.parse(localStorage.getItem('userdata')).name,
-        studentId: JSON.parse(localStorage.getItem('userdata')).student_id,
-        email: JSON.parse(localStorage.getItem('userdata')).email,
+        name: localStorage.getItem('name'),
+        student_id: localStorage.getItem('student_id'),
+        email: localStorage.getItem('email'),
       },
       form: {
         name: '',
@@ -125,9 +126,18 @@ export default {
           })
           .then((response) => {
             if (response.status === 201) {
-              const result = response.data.data
-              result.student_id ? result.student_id : ''
-              localStorage.setItem('userdata', JSON.stringify(result))
+              const data = response.data.data
+              localStorage.setItem('name', data.name)
+              localStorage.setItem('email', data.email)
+              localStorage.setItem(
+                'student_id',
+                data.student_id ? data.student_id : '',
+              )
+              localStorage.setItem(
+                'profile_pic',
+                data.profile_pic ? data.profile_pic : placeholder,
+              )
+
               this.showSuccess = true
               this.successMsg = 'Berhasil merubah data.'
               this.isSendingForm = false

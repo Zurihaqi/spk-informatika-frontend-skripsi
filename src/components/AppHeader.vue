@@ -17,28 +17,6 @@
       </CToastBody>
     </CToast>
   </CToaster>
-  <CModal
-    :visible="confirmLogout"
-    @close="
-      () => {
-        confirmLogout = false
-      }
-    "
-  >
-    <CModalHeader>Konfirmasi Keluar</CModalHeader>
-    <CModalBody>Apakah anda yakin ingin keluar?</CModalBody
-    ><CModalFooter>
-      <CButton
-        color="secondary"
-        @click="
-          () => {
-            confirmLogout = false
-          }
-        "
-        >Batal</CButton
-      ><CButton color="primary" @click="logout()">Keluar</CButton>
-    </CModalFooter></CModal
-  >
   <CModal :visible="showSuccess" alignment="center">
     <CModalBody class="bg-success text-white">
       <h5>{{ successMsg }}</h5>
@@ -183,9 +161,16 @@ export default {
   },
   beforeMount() {
     this.checkConnection()
-    // console.log(JSON.parse(localStorage.getItem('userdata')))
   },
   methods: {
+    setTouched(theModel) {
+      if (theModel == 'title' || theModel == 'all') {
+        this.v$.form.title.$touch()
+      }
+      if (theModel == 'message' || theModel == 'all') {
+        this.v$.form.message.$touch()
+      }
+    },
     checkConnection() {
       axios
         .get(this.$store.state.backendUrl + 'check-connection', {
@@ -202,14 +187,6 @@ export default {
             this.toasts.content = 'Lakukan login ulang.'
           }
         })
-    },
-    setTouched(theModel) {
-      if (theModel == 'title' || theModel == 'all') {
-        this.v$.form.title.$touch()
-      }
-      if (theModel == 'message' || theModel == 'all') {
-        this.v$.form.message.$touch()
-      }
     },
     sendMessage() {
       this.setTouched('all')
