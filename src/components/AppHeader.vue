@@ -195,7 +195,11 @@ export default {
     },
     checkConnection() {
       const connection = this.$cookies.get('token')
-      if (!connection) this.logout()
+      if (!connection) {
+        this.toasts.title = 'Sesi telah habis'
+        this.toasts.content = 'Lakukan login ulang.'
+        this.errorToast = true
+      }
     },
     sendMessage() {
       this.setTouched('all')
