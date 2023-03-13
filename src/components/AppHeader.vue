@@ -194,21 +194,8 @@ export default {
       }
     },
     checkConnection() {
-      axios
-        .get(this.$store.state.backendUrl + 'check-connection', {
-          headers: {
-            Authorization: `Bearer ${this.$cookies.get('token')}`,
-            'Content-Type': 'application/json',
-          },
-        })
-        .then()
-        .catch((error) => {
-          if (error) {
-            this.errorToast = true
-            this.toasts.title = 'Sesi anda habis.'
-            this.toasts.content = 'Lakukan login ulang.'
-          }
-        })
+      const connection = this.$cookies.get('token')
+      if (!connection) this.logout()
     },
     sendMessage() {
       this.setTouched('all')
