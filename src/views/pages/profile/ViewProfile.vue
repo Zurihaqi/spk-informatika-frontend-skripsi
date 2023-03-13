@@ -167,7 +167,7 @@ export default {
       },
       userdata: {
         profilePic: localStorage.getItem('profile_pic'),
-        role: localStorage.getItem('role'),
+        role: this.$store.state.role,
         student_id: localStorage.getItem('student_id'),
         email: localStorage.getItem('email'),
         name: localStorage.getItem('name'),
@@ -186,8 +186,9 @@ export default {
   beforeMount() {
     if (!this.userdata.createdAt && !this.userdata.updatedAt) {
       this.getUserData()
+    } else {
+      this.isLoaded = true
     }
-    this.isLoaded = true
   },
   validations() {
     return {

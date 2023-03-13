@@ -1,4 +1,7 @@
-const role = localStorage.getItem('role')
+import store from './store'
+
+const role = store.state.role
+
 export default [
   {
     component: 'hr',

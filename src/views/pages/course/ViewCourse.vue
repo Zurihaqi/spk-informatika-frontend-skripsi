@@ -333,7 +333,7 @@ export default {
         },
       ],
       rows: [],
-      role: localStorage.getItem('role'),
+      role: this.$store.state.role,
       deleteModal: false,
       editModal: false,
       addModal: false,

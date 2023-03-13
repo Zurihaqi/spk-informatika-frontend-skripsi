@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '@/layouts/DefaultLayout'
+import store from '../store'
 
 const routes = [
   {
@@ -118,7 +119,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = window.$cookies.get('token')
-  const role = localStorage.getItem('role')
+  const role = store.state.role
   if (!to.meta.public) {
     if (token) next()
     else next('/login')

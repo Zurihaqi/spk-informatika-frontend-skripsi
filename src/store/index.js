@@ -1,12 +1,20 @@
 import { createStore } from 'vuex'
 import jwtDecode from 'jwt-decode'
 import placeholder from '@/assets/images/placeholder.png'
+import CryptoJS from 'crypto-js'
 
 export default createStore({
   state: {
     sidebarVisible: '',
     sidebarUnfoldable: false,
     token: '',
+    role:
+      localStorage.getItem('role') !== undefined
+        ? CryptoJS.AES.decrypt(
+            localStorage.getItem('role'),
+            process.env.VUE_APP_AES_SECRET,
+          ).toString(CryptoJS.enc.Utf8)
+        : 'asdasd',
     backendUrl: process.env.VUE_APP_BACKEND_URL,
   },
   mutations: {
