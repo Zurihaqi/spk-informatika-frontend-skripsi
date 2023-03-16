@@ -40,6 +40,7 @@
     "vue-good-table-next": "^0.2.1",
     "vue-router": "^4.1.6",
     "vue-table-dynamic": "^0.4.10",
+    "vue3-html2pdf": "^1.1.2",
     "vuex": "^4.1.0",
     "yup": "^1.0.0"
   },

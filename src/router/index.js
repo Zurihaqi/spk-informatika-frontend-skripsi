@@ -100,6 +100,11 @@ const routes = [
     component: () => import('@/views/pages/auth/Register.vue'),
   },
   {
+    path: '/form',
+    name: 'SpecForm',
+    component: () => import('@/views/pages/specForm/SpecForm.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: '404',
     meta: {
