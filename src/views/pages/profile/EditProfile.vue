@@ -138,8 +138,8 @@ export default {
                 data.profile_pic ? data.profile_pic : placeholder,
               )
               localStorage.setItem(
-                'createdAt',
-                new Date(data.createdAt).toLocaleString('en-GB'),
+                'updatedAt',
+                new Date(data.updatedAt).toLocaleString('en-GB'),
               )
 
               this.showSuccess = true
