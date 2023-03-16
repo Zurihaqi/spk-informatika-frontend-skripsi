@@ -85,9 +85,11 @@ import {
   cilUserFemale,
   cilUserFollow,
   cilXCircle,
+  cilTrash,
 } from '@coreui/icons'
 
 export const iconsSet = {
+  cilTrash,
   cilWarning,
   cilEducation,
   cilArrowBottom,

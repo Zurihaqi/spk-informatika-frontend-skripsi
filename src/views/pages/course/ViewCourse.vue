@@ -21,7 +21,8 @@
         @update:showSuccess="updateSuccess"
       />
       <div class="mb-3">
-        Apakah anda yakin ingin menghapus {{ selectedRow.course_name }}?
+        Apakah anda yakin ingin menghapus <b>{{ selectedRow.course_name }}</b
+        >?
       </div>
     </CModalBody>
     <CModalFooter class="justify-content-start">

@@ -103,10 +103,10 @@
           color="warning"
           @click="
             () => {
-              locked = false
+              locked ? (locked = false) : (locked = true)
             }
           "
-          >Ubah</CButton
+          >{{ locked ? 'Buka' : 'Kunci' }}</CButton
         >
       </div>
     </CCardFooter>
@@ -222,7 +222,8 @@ export default {
       } catch (error) {
         this.toTop()
         this.showError = true
-        this.errorMsg = error.data.message
+        this.errorMsg =
+          error.response !== undefined ? error.response.data.message : error
       }
     },
     async sendData() {
@@ -339,7 +340,8 @@ export default {
         this.isSendingForm = false
         this.toTop()
         this.showError = true
-        this.errorMsg = error.response.data.message
+        this.errorMsg =
+          error.response !== undefined ? error.response.data.message : error
         this.reloadPage()
       }
     },

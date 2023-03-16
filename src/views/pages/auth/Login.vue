@@ -112,9 +112,9 @@ export default {
     },
     onSubmit(event) {
       event.preventDefault()
-      this.setTouched('all');
+      this.setTouched('all')
       if (!this.v$.$invalid) {
-        this.isSendingForm = true;
+        this.isSendingForm = true
         axios.post(
           this.$store.state.backendUrl + 'login', this.form,
           {

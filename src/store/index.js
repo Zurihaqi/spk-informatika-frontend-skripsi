@@ -13,7 +13,7 @@ export default createStore({
           localStorage.getItem('role'),
           process.env.VUE_APP_AES_SECRET,
         ).toString(CryptoJS.enc.Utf8)
-      : 'asdasd',
+      : '',
     backendUrl: process.env.VUE_APP_BACKEND_URL,
   },
   mutations: {

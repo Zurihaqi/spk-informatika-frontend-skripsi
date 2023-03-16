@@ -5,6 +5,7 @@ import router from './router'
 import store from './store'
 import CoreuiVue from '@coreui/vue'
 import CIcon from '@coreui/icons-vue'
+import 'bootstrap-icons/font/bootstrap-icons.css'
 import { iconsSet as icons } from '@/assets/icons'
 
 const app = createApp(App)

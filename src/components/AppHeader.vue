@@ -195,7 +195,8 @@ export default {
     },
     checkConnection() {
       const connection = this.$cookies.get('token')
-      if (!connection) {
+      const role = this.$store.state.role
+      if (!connection || !role) {
         this.toasts.title = 'Sesi telah habis'
         this.toasts.content = 'Lakukan login ulang.'
         this.errorToast = true

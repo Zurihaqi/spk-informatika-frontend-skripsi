@@ -127,13 +127,13 @@ router.beforeEach((to, from, next) => {
     if (token ? (to.path === '/login' ? next('/') : true) : true) next()
   }
   if (to.meta.admin) {
-    if (role !== 'Admin') router.push('/')
+    if (role !== 'Admin') router.push({ name: '404' })
   } else {
     next()
   }
   if (to.meta.pengelola) {
     const allowedRoles = ['Pengelola', 'Admin']
-    if (!allowedRoles.includes(role)) router.push('/')
+    if (!allowedRoles.includes(role)) router.push({ name: '404' })
   } else {
     next()
   }

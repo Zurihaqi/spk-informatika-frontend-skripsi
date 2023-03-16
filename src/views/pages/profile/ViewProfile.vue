@@ -30,7 +30,7 @@
         :invalid="v$.form.password.$error"
       />
     </CModalBody>
-    <CModalFooter>
+    <CModalFooter class="justify-content-start">
       <CButton
         color="secondary"
         @click="
@@ -52,13 +52,14 @@
   <div class="row gutters-sm">
     <div class="col-md-4 mb-3">
       <div class="card">
-        <div class="card-body">
+        <div class="card-body user-select-none">
           <div class="d-flex flex-column align-items-center text-center">
-            <img
+            <CImage
               :src="userdata.profilePic"
-              alt="Admin"
+              alt="User Profile Picture"
               class="rounded-circle"
               width="150"
+              height="150"
             />
             <div class="mt-3">
               <h4>{{ userdata.name }}</h4>
@@ -75,7 +76,7 @@
       <div class="card mb-3">
         <CCardBody
           disabled
-          v-if="!isLoaded"
+          v-if="!userdata.createdAt && !userdata.updatedAt"
           class="justify-content-center text-center"
         >
           <CSpinner
@@ -86,7 +87,10 @@
           />
           Memuat...
         </CCardBody>
-        <div class="card-body" v-if="isLoaded">
+        <div
+          class="card-body user-select-none"
+          v-if="userdata.createdAt && userdata.updatedAt"
+        >
           <div class="row">
             <div class="col-sm-3">
               <h6 class="mb-0">Nama</h6>
@@ -98,7 +102,19 @@
             <div class="col-sm-3">
               <h6 class="mb-0">Email</h6>
             </div>
-            <div class="col-sm-9 text-secondary">{{ userdata.email }}</div>
+            <div class="col-sm-9 text-secondary">
+              {{ showEmail ? userdata.email : '■■■■■■■■' }}
+              <CButton
+                size="sm"
+                @click="
+                  () => {
+                    showEmail ? (showEmail = false) : (showEmail = true)
+                  }
+                "
+                ><i class="bi bi-eye-slash" v-if="!showEmail"></i>
+                <i class="bi bi-eye" v-if="showEmail"></i>
+              </CButton>
+            </div>
           </div>
           <hr />
           <div class="row">
@@ -112,7 +128,9 @@
             <div class="col-sm-3">
               <h6 class="mb-0">Tanggal Dibuat</h6>
             </div>
-            <div class="col-sm-9 text-secondary">{{ userdata.createdAt }}</div>
+            <div class="col-sm-9 text-secondary">
+              {{ userdata.createdAt }}
+            </div>
           </div>
           <hr />
           <div class="row">
@@ -171,8 +189,8 @@ export default {
         student_id: localStorage.getItem('student_id'),
         email: localStorage.getItem('email'),
         name: localStorage.getItem('name'),
-        createdAt: '',
-        updatedAt: '',
+        createdAt: localStorage.getItem('createdAt'),
+        updatedAt: localStorage.getItem('updatedAt'),
       },
       errorMsg: '',
       showError: false,
@@ -181,13 +199,12 @@ export default {
       visible: false,
       isLoaded: false,
       isSendingForm: false,
+      showEmail: false,
     }
   },
   beforeMount() {
-    if (!this.userdata.createdAt && !this.userdata.updatedAt) {
+    if (this.userdata.createdAt === null && this.userdata.updatedAt === null) {
       this.getUserData()
-    } else {
-      this.isLoaded = true
     }
   },
   validations() {
@@ -247,13 +264,15 @@ export default {
         })
         .then((result) => {
           const userData = result.data.data
-          this.userdata.updatedAt = new Date(userData.updatedAt).toLocaleString(
-            'en-GB',
+          localStorage.setItem(
+            'updatedAt',
+            new Date(userData.updatedAt).toLocaleString('en-GB'),
           )
-          this.userdata.createdAt = new Date(userData.createdAt).toLocaleString(
-            'en-GB',
+          localStorage.setItem(
+            'createdAt',
+            new Date(userData.createdAt).toLocaleString('en-GB'),
           )
-          this.isLoaded = true
+          this.$router.go()
         })
         .catch((error) => {
           this.showError = true

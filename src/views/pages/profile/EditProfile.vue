@@ -137,6 +137,10 @@ export default {
                 'profile_pic',
                 data.profile_pic ? data.profile_pic : placeholder,
               )
+              localStorage.setItem(
+                'createdAt',
+                new Date(data.createdAt).toLocaleString('en-GB'),
+              )
 
               this.showSuccess = true
               this.successMsg = 'Berhasil merubah data.'

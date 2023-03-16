@@ -23,10 +23,9 @@
           <CCol class="text-start"
             ><p>
               Data Science:
-              <b>{{ calculationResult.datasets[0].data[1] }}%</b
-              ><br /><br />Software Development:
-              <b>{{ calculationResult.datasets[0].data[0] }}%</b
-              ><br /><br />Infrastruktur dan Keamanan Jaringan:
+              <b>{{ calculationResult.datasets[0].data[1] }}%</b><br />Software
+              Development: <b>{{ calculationResult.datasets[0].data[0] }}%</b
+              ><br />Infrastruktur dan Keamanan Jaringan:
               <b>{{ calculationResult.datasets[0].data[2] }}%</b>
             </p>
           </CCol>
@@ -45,6 +44,7 @@
           </p>
         </div>
         <hr />
+        <CButton color="primary" class="me-3">Rincian</CButton>
         <CButton color="success">Cetak Hasil</CButton>
       </CCollapse>
     </CCardBody>
@@ -71,7 +71,7 @@ export default {
           },
         ],
       },
-      username: localStorage.getItem('username'),
+      username: localStorage.getItem('name'),
       showResult: false,
       showError: false,
       showSuccess: false,
@@ -142,7 +142,8 @@ export default {
           }
         })
         .catch((error) => {
-          this.errorMsg = error.response.data.message
+          this.errorMsg =
+            error.response !== undefined ? error.response.data.message : error
           this.isSendingForm = false
           this.showError = true
         })
