@@ -1,4 +1,43 @@
 <template>
+  <CModal
+    :visible="showDetail"
+    @close="
+      () => {
+        showDetail = false
+      }
+    "
+  >
+    <CModalHeader>
+      <CModalTitle>Rincian Rekomendasi</CModalTitle>
+    </CModalHeader>
+    <CModalBody>
+      <b>Nilai Keluaran Crisp</b><br />Software Development:
+      <b>{{ crispOutputs[0] }}</b>
+      <br />Data Science: <b>{{ crispOutputs[1] }}</b> <br />Infratruktur dan
+      Keamanan Jaringan: <b>{{ crispOutputs[2] }}</b> <br /><br /><b
+        >Rumus Perhitungan Persentase</b
+      ><br />Crisp Output / Σ Crisp Output * 100<br /><br />Software
+      Development:<br />{{ crispOutputs[0] }} /
+      {{ crispOutputs.reduce((a, b) => +a + +b, 0).toFixed(2) }} * 100 =
+      <b>~{{ calculationResult.datasets[0].data[0] }}%</b><br />Data Science:<br />{{
+        crispOutputs[1]
+      }}
+      / {{ crispOutputs.reduce((a, b) => +a + +b, 0).toFixed(2) }} * 100 =
+      <b>~{{ calculationResult.datasets[0].data[1] }}%</b><br />Infratruktur dan
+      Keamanan Jaringan:<br />{{ crispOutputs[2] }} /
+      {{ crispOutputs.reduce((a, b) => +a + +b, 0).toFixed(2) }} * 100 =
+      <b>~{{ calculationResult.datasets[0].data[2] }}%</b>
+    </CModalBody>
+  </CModal>
+  <CModal
+    :visible="print"
+    @close="
+      () => {
+        print = false
+      }
+    "
+    ><CModalBody>Blom jadi gan hehe</CModalBody></CModal
+  >
   <CCard class="col-sm-6 mx-auto mb-3">
     <CCardHeader>
       <h6>Hitung Rekomendasi Peminatan</h6>
@@ -13,6 +52,7 @@
         @update:showSuccess="updateSuccess"
       />
       <SubmitButton
+        v-if="!showResult"
         :isSendingForm="isSendingForm"
         @click="calculateFIS"
         title="Hitung"
@@ -44,8 +84,25 @@
           </p>
         </div>
         <hr />
-        <CButton color="primary" class="me-3">Rincian</CButton>
-        <CButton color="success">Cetak Hasil</CButton>
+        <CButton
+          color="primary"
+          class="me-3"
+          @click="
+            () => {
+              showDetail ? (showDetail = false) : (showDetail = true)
+            }
+          "
+          >Rincian</CButton
+        >
+        <CButton
+          color="success"
+          @click="
+            () => {
+              print = true
+            }
+          "
+          >Cetak Hasil</CButton
+        >
       </CCollapse>
     </CCardBody>
   </CCard>
@@ -82,7 +139,10 @@ export default {
         spec: '',
         percentage: '',
       },
+      crispOutputs: [],
       conclusion: '',
+      showDetail: false,
+      print: false,
     }
   },
   methods: {
@@ -102,6 +162,13 @@ export default {
         .then((result) => {
           if (result.status === 201) {
             const data = result.data.result
+
+            this.crispOutputs.push(
+              data.software_development.toFixed(2),
+              data.data_science.toFixed(2),
+              data.networking.toFixed(2),
+            )
+
             this.calculationResult.datasets[0].data.push(
               +data.softDevPercentage,
               +data.dataSciPercentage,
@@ -130,13 +197,10 @@ export default {
                 : ''
             if (maxes.length === 3) {
               this.conclusion = `Berdasarkan hasil perhitungan, ketiga peminatan memiliki persentase yang sama. Oleh karena itu, sistem pendukung keputusan tidak dapat memberikan rekomendasi khusus.`
-            }
-            if (maxes.length === 2) {
+            } else {
               this.conclusion = `Peminatan yang disarankan: ${this.recommended.spec}.`
             }
-            if (maxes.length === 1) {
-              this.conclusion = `Peminatan yang disarankan: ${this.recommended.spec}.`
-            }
+
             this.isSendingForm = false
             this.showResult = true
           }
