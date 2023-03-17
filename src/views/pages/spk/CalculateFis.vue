@@ -64,8 +64,14 @@
   >
     <CModalBody
       >Anda memiliki {{ recommended.spec.length }} rekomendasi peminatan. Pilih
-      salah satu:<br /><CFormSelect v-model="chosenSpec" class="mt-3">
-        <option value="undefined">Pilih</option>
+      salah satu:<br /><CFormSelect
+        v-model="chosenSpec"
+        class="mt-3"
+        @input="setTouched('chosenSpec')"
+        feedback="Pilih peminatan."
+        :invalid="v$.chosenSpec.$error"
+      >
+        <option value="undefined" selected disabled hidden>Pilih</option>
         <option v-for="(item, index) in recommended.spec" v-bind:key="index">
           {{ item }}
         </option>
@@ -151,11 +157,16 @@ import { CChart } from '@coreui/vue-chartjs'
 import Alerts from '@/components/Alerts.vue'
 import SubmitButton from '@/components/SubmitButton.vue'
 import axios from 'axios'
+import useVuelidate from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
 import NewForm from '@/views/pages/specForm/NewForm.vue'
 import Vue3Html2pdf from 'vue3-html2pdf'
 
 export default {
   name: 'CalculateFis',
+  setup() {
+    return { v$: useVuelidate() }
+  },
   components: { CChart, Alerts, SubmitButton, NewForm, Vue3Html2pdf },
   data() {
     return {
@@ -187,9 +198,24 @@ export default {
       chooseSpec: false,
     }
   },
+  validations() {
+    return {
+      chosenSpec: {
+        required,
+      },
+    }
+  },
   methods: {
+    setTouched(theModel) {
+      if (theModel == 'chosenSpec' || theModel == 'all') {
+        this.v$.chosenSpec.$touch()
+      }
+    },
     print() {
-      this.$refs.printMe.generatePdf()
+      this.setTouched('all')
+      if (!this.v$.$invalid) {
+        this.$refs.printMe.generatePdf()
+      }
     },
     calculateFIS() {
       this.isSendingForm = true

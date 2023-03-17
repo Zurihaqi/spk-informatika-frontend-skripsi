@@ -124,7 +124,13 @@ export default {
   data() {
     return {
       options: [
-        { label: 'Pilih', value: undefined },
+        {
+          label: 'Pilih',
+          value: undefined,
+          selected: true,
+          disabled: true,
+          hidden: true,
+        },
         { label: 'A', value: 'A' },
         { label: 'A-', value: 'A-' },
         { label: 'B+', value: 'B+' },
