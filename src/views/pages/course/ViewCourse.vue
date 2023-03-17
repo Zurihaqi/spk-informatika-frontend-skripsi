@@ -1,5 +1,6 @@
 <template>
   <CModal
+    alignment="center"
     :visible="deleteModal"
     @close="
       () => {
@@ -45,6 +46,7 @@
       ></SubmitButton>
     </CModalFooter> </CModal
   ><CModal
+    alignment="center"
     :visible="editModal"
     @close="
       () => {
@@ -119,6 +121,7 @@
     </CModalFooter>
   </CModal>
   <CModal
+    alignment="center"
     :visible="addModal"
     @close="
       () => {

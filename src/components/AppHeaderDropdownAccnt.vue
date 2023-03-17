@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/valid-v-for -->
 <template>
   <CModal
+    alignment="center"
     :visible="confirmLogout"
     @close="
       () => {

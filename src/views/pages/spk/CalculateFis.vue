@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/no-deprecated-slot-attribute -->
 <template>
   <CModal
+    alignment="center"
     :visible="showDetail"
     @close="
       () => {
@@ -33,7 +34,7 @@
   <template>
     <div>
       <vue3-html2pdf
-        :show-layout="false"
+        :show-layout="true"
         :float-layout="true"
         :enable-download="true"
         :preview-modal="true"
@@ -41,27 +42,40 @@
         :pdf-quality="2"
         pdf-format="a4"
         pdf-orientation="portrait"
-        @progress="onProgress($event)"
-        @hasStartedGeneration="hasStartedGeneration()"
-        @hasGenerated="hasGenerated($event)"
+        pdf-content-width="800px"
+        :manual-pagination="false"
+        :paginate-elements-by-height="1400"
         ref="printMe"
       >
         <template v-slot:pdf-content>
-          <SpecForm
+          <NewForm
             :name="username"
             :student_id="student_id"
-            :spec="
-              maxes.length === 3
-                ? `•Data Science<br />•Software Development<br />•Infratruktur dan Keamanan Jaringan`
-                : maxes.length === 2
-                ? `•${recommended.spec[0]}<br />•${recommended.spec[1]}`
-                : `•${recommended.spec[0]}`
-            "
+            :spec="chosenSpec"
           />
         </template>
       </vue3-html2pdf>
     </div>
   </template>
+  <CModal
+    :visible="chooseSpec"
+    @close="() => (chooseSpec = false)"
+    alignment="center"
+  >
+    <CModalBody
+      >Anda memiliki {{ recommended.spec.length }} rekomendasi peminatan. Pilih
+      salah satu:<br /><CFormSelect v-model="chosenSpec" class="mt-3">
+        <option value="undefined">Pilih</option>
+        <option v-for="(item, index) in recommended.spec" v-bind:key="index">
+          {{ item }}
+        </option>
+      </CFormSelect></CModalBody
+    ><CModalFooter class="justify-content-start"
+      ><CButton color="secondary" @click="() => (chooseSpec = false)"
+        >Batal</CButton
+      ><CButton color="success" @click="print()">Cetak</CButton></CModalFooter
+    >
+  </CModal>
   <CCard class="col-sm-6 mx-auto mb-3">
     <CCardHeader>
       <h6>Hitung Rekomendasi Peminatan</h6>
@@ -118,7 +132,15 @@
           "
           >Rincian</CButton
         >
-        <CButton color="success" @click="print">Cetak Hasil</CButton>
+        <CButton
+          color="success"
+          @click="
+            () => {
+              recommended.spec.length === 1 ? print() : (chooseSpec = true)
+            }
+          "
+          >Cetak Hasil</CButton
+        >
       </CCollapse>
     </CCardBody>
   </CCard>
@@ -129,12 +151,12 @@ import { CChart } from '@coreui/vue-chartjs'
 import Alerts from '@/components/Alerts.vue'
 import SubmitButton from '@/components/SubmitButton.vue'
 import axios from 'axios'
-import SpecForm from '@/views/pages/specForm/SpecForm.vue'
+import NewForm from '@/views/pages/specForm/NewForm.vue'
 import Vue3Html2pdf from 'vue3-html2pdf'
 
 export default {
   name: 'CalculateFis',
-  components: { CChart, Alerts, SubmitButton, SpecForm, Vue3Html2pdf },
+  components: { CChart, Alerts, SubmitButton, NewForm, Vue3Html2pdf },
   data() {
     return {
       calculationResult: {
@@ -161,7 +183,8 @@ export default {
       crispOutputs: [],
       conclusion: '',
       showDetail: false,
-      maxes: [],
+      chosenSpec: '',
+      chooseSpec: false,
     }
   },
   methods: {
@@ -198,43 +221,50 @@ export default {
             )
             const arr = this.calculationResult.datasets[0].data
             const m = Math.max(...arr)
-            this.maxes = arr.reduce(
+            const maxes = arr.reduce(
               // eslint-disable-next-line no-unused-vars
               (p, c, i, a) => (c == m ? p.concat(i) : p),
               [],
             )
 
-            this.maxes[0] === 0 && !this.maxes[1]
+            maxes.length === 3
+              ? this.recommended.spec.push(
+                  'Data Science',
+                  'Software Development',
+                  'Infrastruktur dan Keamanan Jaringan',
+                )
+              : maxes[0] === 0 && maxes.length == 1
               ? this.recommended.spec.push('Software Development')
-              : this.maxes[0] === 1 && !this.maxes[1]
+              : maxes[0] === 1 && maxes.length == 1
               ? this.recommended.spec.push('Data Science')
-              : this.maxes[0] === 2 && !this.maxes[1]
+              : maxes[0] === 2 && maxes.length == 1
               ? this.recommended.spec.push(
                   'Infrastruktur dan Keamanan Jaringan',
                 )
-              : this.maxes[0] === 0 && this.maxes[1] === 1
+              : maxes.length === 2 && maxes[0] === 0 && maxes[1] === 1
               ? this.recommended.spec.push(
                   'Software Development',
                   'Data Science',
                 )
-              : this.maxes[0] === 1 && this.maxes[1] === 2
+              : maxes.length === 2 && maxes[0] === 1 && maxes[1] === 2
               ? this.recommended.spec.push(
                   'Data Science',
                   'Infrastruktur dan Keamanan Jaringan',
                 )
-              : this.maxes[0] === 0 && this.maxes[1] === 2
+              : maxes.length === 2 && maxes[0] === 0 && maxes[1] === 2
               ? this.recommended.spec.push(
                   'Software Development',
                   'Infrastruktur dan Keamanan Jaringan',
                 )
               : []
-            if (this.maxes.length === 3) {
+            if (maxes.length === 3) {
               this.conclusion = `Berdasarkan hasil perhitungan, ketiga peminatan memiliki persentase yang sama. Oleh karena itu, sistem pendukung keputusan tidak dapat memberikan rekomendasi khusus.`
             }
-            if (this.maxes.length === 2) {
+            if (maxes.length === 2) {
               this.conclusion = `Peminatan yang disarankan: ${this.recommended.spec[0]} atau ${this.recommended.spec[1]}.`
             }
-            if (this.maxes.length === 1) {
+            if (maxes.length === 1) {
+              this.chosenSpec = this.recommended.spec[0]
               this.conclusion = `Peminatan yang disarankan: ${this.recommended.spec[0]}.`
             }
 

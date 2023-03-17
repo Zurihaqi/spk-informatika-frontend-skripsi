@@ -18,6 +18,7 @@
     </CToast>
   </CToaster>
   <CModal
+    alignment="center"
     :visible="confirmLogout"
     @close="
       () => {
@@ -50,6 +51,7 @@
     </CModalBody>
   </CModal>
   <CModal
+    alignment="center"
     :visible="showModal"
     @close="
       () => {
