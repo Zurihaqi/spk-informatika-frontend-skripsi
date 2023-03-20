@@ -84,6 +84,22 @@ const routes = [
     ],
   },
   {
+    path: '/admin',
+    name: 'Admin',
+    component: DefaultLayout,
+    redirect: '/admin/register',
+    children: [
+      {
+        path: '/admin/register',
+        name: 'Daftarkan Pengelola',
+        meta: {
+          admin: true,
+        },
+        component: () => import('@/views/pages/admin/RegisterAdmin.vue'),
+      },
+    ],
+  },
+  {
     path: '/login',
     name: 'Login',
     meta: {
@@ -118,25 +134,24 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const token = window.$cookies.get('token')
+  const isAuthenticated = !!window.$cookies.get('token')
   const role = store.state.role
+
   if (!to.meta.public) {
-    if (token) next()
-    else next('/login')
-  } else {
-    if (token ? (to.path === '/login' ? next('/') : true) : true) next()
+    if (!isAuthenticated) {
+      return next('/login')
+    }
   }
-  if (to.meta.admin) {
-    if (role !== 'Admin') router.push({ name: '404' })
-  } else {
-    next()
+
+  if (to.meta.admin && role !== 'Admin') {
+    return next({ name: '404' })
   }
-  if (to.meta.pengelola) {
-    const allowedRoles = ['Pengelola', 'Admin']
-    if (!allowedRoles.includes(role)) router.push({ name: '404' })
-  } else {
-    next()
+
+  if (to.meta.pengelola && !['Admin', 'Pengelola'].includes(role)) {
+    return next({ name: '404' })
   }
+
+  next()
 })
 
 export default router

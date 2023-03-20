@@ -4,16 +4,17 @@ const role = store.state.role
 
 export default [
   {
-    component: 'hr',
+    component: 'CNavItem',
+    name: <hr />,
   },
   {
     component: 'CNavItem',
     name: (
-      <p class="mt-2 text-center user-select-none h6">Masuk sebagai {role}</p>
+      <p class="text-center user-select-none">
+        Masuk sebagai <b>{role}</b>
+        <hr />
+      </p>
     ),
-  },
-  {
-    component: 'hr',
   },
   {
     component: 'CNavItem',
@@ -64,7 +65,8 @@ export default [
     ],
   },
   {
-    component: 'hr',
+    component: 'CNavItem',
+    name: <hr />,
   },
   {
     component: 'CNavGroup',
@@ -92,7 +94,7 @@ export default [
   {
     component: role === 'Admin' ? 'CNavGroup' : 'invisible',
     name: role === 'Admin' ? 'Admin' : '',
-    to: '/admin/view',
+    to: '/admin/register',
     icon: role === 'Admin' ? 'cil-warning' : '',
     items:
       role === 'Admin'
@@ -101,11 +103,6 @@ export default [
               component: 'CNavItem',
               name: 'Daftarkan Pengelola',
               to: '/admin/register',
-            },
-            {
-              component: 'CNavItem',
-              name: 'Data Pengguna',
-              to: '/admin/view',
             },
           ]
         : '',

@@ -86,9 +86,11 @@ import {
   cilUserFollow,
   cilXCircle,
   cilTrash,
+  cilAt,
 } from '@coreui/icons'
 
 export const iconsSet = {
+  cilAt,
   cilTrash,
   cilWarning,
   cilEducation,

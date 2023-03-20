@@ -87,7 +87,10 @@
       </CForm>
       <hr />
       <div class="user-select-none">
-        Catatan: Masukan nilai "E" jika nilai kosong atau belum ada nilai.
+        Catatan:
+        <li>Masukan nilai "E" jika nilai kosong atau belum ada nilai.</li>
+        <li>Tekan tombol "Buka" untuk merubah nilai.</li>
+        <li>Tekan tombol "Simpan" untuk menyimpan nilai yang telah diubah.</li>
       </div>
     </CCardBody>
     <CCardFooter v-if="isLoaded"
@@ -101,6 +104,7 @@
         ></SubmitButton>
         <CButton
           color="warning"
+          :disabled="isSendingForm"
           @click="
             () => {
               locked ? (locked = false) : (locked = true)

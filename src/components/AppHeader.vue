@@ -96,9 +96,6 @@
       <CHeaderToggler class="ps-1" @click="$store.commit('toggleSidebar')">
         <CIcon icon="cil-menu" size="lg" />
       </CHeaderToggler>
-      <CHeaderBrand v-if="!isMobile()" class="user-select-none mx-auto"
-        >SPK Peminatan Informatika</CHeaderBrand
-      >
       <CHeaderNav>
         <CNavItem>
           <CNavLink

@@ -248,7 +248,7 @@
         >
       </template>
       <template #table-row="props">
-        <span v-if="props.column.field == 'action'">
+        <span v-if="props.column.field === 'action'">
           <CButton
             color="primary"
             size="sm"

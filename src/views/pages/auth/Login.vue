@@ -1,61 +1,84 @@
 <template>
-  <!-- eslint-disable -->
   <div class="bg-light min-vh-100 d-flex flex-row align-items-center">
     <CContainer>
       <CRow class="justify-content-center">
-        <CCol :md="8">
-          <CCardGroup>
-            <CCard class="p-4">
-              <CCardBody>
-                <CAlert color="danger" :visible="ShowError" dismissible @close="() => { ShowError = false }">
-                  {{ errorMgs }}
-                </CAlert>
-                <CForm @submit="onSubmit">
-                  <h1>Masuk</h1>
-                  <p class="text-medium-emphasis">
-                    Masuk menggunakan email atau nomor pokok mahasiswa.
-                  </p>
-                  <CInputGroup class="mb-3">
-                    <CInputGroupText>
-                      <CIcon icon="cil-user" />
-                    </CInputGroupText>
-                    <CFormInput v-model.trim="form.email" @input="setTouched('email')" type="text" placeholder="Email/NPM" 
-                      autocomplete="email" feedback="Masukan email atau npm." :invalid="v$.form.email.$error" />
-                  </CInputGroup>
-                  <CInputGroup class="mb-3">
-                    <CInputGroupText>
-                      <CIcon icon="cil-lock-locked"/>
-                    </CInputGroupText>
-                    <CFormInput v-model.trim="form.password" @input="setTouched('password')" :type="passwordFieldType"
-                    placeholder="Kata sandi" autocomplete="current-password" feedback="Masukan kata sandi."
-                    :invalid="v$.form.password.$error" />    
-                  </CInputGroup>
-                  <div class="form-check form-switch mb-3">
-                    <CFormCheck type="checkbox" @click="togglePassword" /> Tampilkan kata sandi 
-                  </div>
-                  <CRow>
-                    <CCol :xs="6">
-                      <SubmitButton title="Masuk" :isSendingForm="isSendingForm" />
-                    </CCol>
-                  </CRow>
-                </CForm>
-              </CCardBody>
-            </CCard>
-            <CCard class="text-white bg-primary py-5">
-              <CCardBody class="text-center">
-                <div>
-                  <h2>Daftar</h2>
-                  <p>
-                    Belum memiliki akun? Daftar di sini.
-                  </p>
-                  <CButton color="light" variant="outline" class="mt-3" @click="Register">
-                    Daftar
-                  </CButton>
-                </div>
-              </CCardBody>
-            </CCard>
-          </CCardGroup>
-        </CCol>
+        <CCardGroup class="w-80">
+          <CCard>
+            <CCardBody class="mx-auto">
+              <CAlert
+                color="danger"
+                :visible="ShowError"
+                dismissible
+                @close="
+                  () => {
+                    ShowError = false
+                  }
+                "
+              >
+                {{ errorMgs }}
+              </CAlert>
+              <CForm @submit="onSubmit">
+                <h1 class="text-center py-4">Masuk</h1>
+                <CInputGroup class="mb-3">
+                  <CInputGroupText>
+                    <CIcon icon="cil-user" />
+                  </CInputGroupText>
+                  <CFormInput
+                    v-model.trim="form.email"
+                    @input="setTouched('email')"
+                    type="text"
+                    placeholder="Email/NPM"
+                    autocomplete="email"
+                    feedback="Masukan email atau npm."
+                    :invalid="v$.form.email.$error"
+                  />
+                </CInputGroup>
+                <CInputGroup class="mb-3 clickable">
+                  <CInputGroupText @click="togglePassword()">
+                    <i
+                      class="bi bi-eye-slash-fill"
+                      v-if="passwordFieldType === 'password'"
+                    ></i>
+                    <i
+                      class="bi bi-eye"
+                      v-if="passwordFieldType === 'text'"
+                    ></i>
+                  </CInputGroupText>
+                  <CFormInput
+                    v-model.trim="form.password"
+                    @input="setTouched('password')"
+                    :type="passwordFieldType"
+                    placeholder="Kata sandi"
+                    autocomplete="current-password"
+                    feedback="Masukan kata sandi."
+                    :invalid="v$.form.password.$error"
+                  />
+                </CInputGroup>
+                <CRow class="my-3">
+                  <SubmitButton
+                    shape="rounded-pill"
+                    title="Masuk"
+                    :isSendingForm="isSendingForm"
+                  />
+                </CRow>
+              </CForm>
+              <p class="text-center mt-2">
+                Belum punya akun?
+                <router-link to="register">Daftar di sini.</router-link>
+              </p>
+            </CCardBody>
+          </CCard>
+          <CCard>
+            <CCarousel controls indicators>
+              <CCarouselItem>
+                <img class="img-fluid" :src="logoBG" />
+              </CCarouselItem>
+              <CCarouselItem>
+                <img class="img-fluid" :src="logoBG" />
+              </CCarouselItem>
+            </CCarousel>
+          </CCard>
+        </CCardGroup>
       </CRow>
     </CContainer>
   </div>
@@ -67,6 +90,8 @@ import axios from 'axios'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import SubmitButton from '@/components/SubmitButton.vue'
+import logo from '@/assets/logo-trimmed.png'
+import logoBG from '@/assets/logoBG.png'
 
 export default {
   name: 'Login',
@@ -84,6 +109,9 @@ export default {
       errorMgs: '',
       ShowError: false,
       isSendingForm: false,
+      icon: 'bi bi-eye-slash',
+      logo: logo,
+      logoBG: logoBG,
     }
   },
   validations() {
@@ -102,9 +130,6 @@ export default {
     togglePassword() {
       this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password'
     },
-    Register() {
-      this.$router.push('/register')
-    },
     setTouched(theModel) {
       if (theModel == 'email' || theModel == 'all') { this.v$.form.email.$touch() }
 
@@ -121,12 +146,14 @@ export default {
             headers: { "Content-Type": "application/json", }
           })
           .then((response) => {
-            this.$store.commit('saveLogin',
-              {
-                "token": response.data.token,
-              });
-              this.$router.push('/').then(() => { this.$router.go() })
-              this.isSendingForm = false;
+            if(response.status === 201){
+              this.$store.commit('saveLogin',
+                {
+                  "token": response.data.token,
+                });
+                this.$router.push('/').then(() => {this.$router.go()})
+                this.isSendingForm = false;
+            }
           })
           .catch((error) => {
             this.ShowError = true;

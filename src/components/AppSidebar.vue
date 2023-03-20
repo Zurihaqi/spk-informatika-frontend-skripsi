@@ -11,6 +11,9 @@
         })
     "
   >
+    <CSidebarBrand>
+      <img :src="logo" class="img-fluid" style="max-width: 85%" />
+    </CSidebarBrand>
     <AppSidebarNav />
     <CSidebarToggler
       class="d-none d-lg-flex"
@@ -23,6 +26,7 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { AppSidebarNav } from './AppSidebarNav'
+import logo from '@/assets/logo-trimmed.png'
 
 export default {
   name: 'AppSidebar',
@@ -34,6 +38,11 @@ export default {
     return {
       sidebarUnfoldable: computed(() => store.state.sidebarUnfoldable),
       sidebarVisible: computed(() => store.state.sidebarVisible),
+    }
+  },
+  data() {
+    return {
+      logo: logo,
     }
   },
 }

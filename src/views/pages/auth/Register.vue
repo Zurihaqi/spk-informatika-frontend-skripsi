@@ -30,10 +30,7 @@
                 {{ successMsg }}
               </CAlert>
               <CForm @submit="onSubmit">
-                <h1>Daftar</h1>
-                <p class="text-medium-emphasis">
-                  Daftar untuk menggunakan SPK Peminatan Informatika.
-                </p>
+                <h1 class="text-center mb-4">Daftar</h1>
                 <CInputGroup class="mb-3">
                   <CInputGroupText>
                     <CIcon icon="cil-user" />
@@ -48,7 +45,7 @@
                   />
                 </CInputGroup>
                 <CInputGroup class="mb-3">
-                  <CInputGroupText>@</CInputGroupText>
+                  <CInputGroupText><CIcon icon="cil-at" /></CInputGroupText>
                   <CFormInput
                     v-model.trim="form.email"
                     @input="setTouched('email')"
@@ -60,7 +57,9 @@
                   />
                 </CInputGroup>
                 <CInputGroup class="mb-3">
-                  <CInputGroupText>ID</CInputGroupText>
+                  <CInputGroupText
+                    ><CIcon icon="cil-education"
+                  /></CInputGroupText>
                   <CFormInput
                     v-model.trim="form.student_id"
                     @input="setTouched('student_id')"
