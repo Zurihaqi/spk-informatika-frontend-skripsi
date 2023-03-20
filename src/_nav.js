@@ -101,7 +101,7 @@ export default [
         ? [
             {
               component: 'CNavItem',
-              name: 'Daftarkan Pengelola',
+              name: 'Data Pengguna',
               to: '/admin/register',
             },
           ]

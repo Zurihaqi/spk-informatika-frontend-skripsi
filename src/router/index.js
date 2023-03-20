@@ -91,7 +91,7 @@ const routes = [
     children: [
       {
         path: '/admin/register',
-        name: 'Daftarkan Pengelola',
+        name: 'Data Pengguna',
         meta: {
           admin: true,
         },
