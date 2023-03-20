@@ -101,7 +101,7 @@ export default [
         ? [
             {
               component: 'CNavItem',
-              name: 'Data Pengguna',
+              name: 'Daftar Pengguna',
               to: '/admin/register',
             },
           ]

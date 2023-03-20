@@ -27,17 +27,17 @@
         "
         >Batal</CButton
       >
-      <CButton
+      <SubmitButton
         v-if="userrole === 'Mahasiswa'"
         color="danger"
         @click="Promote(userid)"
-        >Promosikan</CButton
-      ><CButton
+        title="Promosikan"
+      /><SubmitButton
         v-if="userrole === 'Pengelola'"
         color="danger"
         @click="Demote(userid)"
-        >Turunkan</CButton
-      >
+        title="Turunkan"
+      />
     </CModalFooter>
   </CModal>
   <div class="mb-4">
@@ -128,10 +128,11 @@ import 'vue-good-table-next/dist/vue-good-table-next.css'
 import { VueGoodTable } from 'vue-good-table-next'
 import Alerts from '@/components/Alerts.vue'
 import axios from 'axios'
+import SubmitButton from '@/components/SubmitButton.vue'
 
 export default {
   name: 'RegisterAdmin',
-  components: { VueGoodTable, Alerts },
+  components: { VueGoodTable, Alerts, SubmitButton },
   data() {
     return {
       username: '',
@@ -143,15 +144,12 @@ export default {
       showSuccess: false,
       successMsg: '',
       isLoaded: false,
+      isSendingForm: false,
       rows: [],
       columns: [
         {
           label: 'Nama',
           field: 'name',
-        },
-        {
-          label: 'Email',
-          field: 'email',
         },
         {
           label: 'NPM',
@@ -199,6 +197,7 @@ export default {
         })
     },
     Promote(id) {
+      this.isSendingForm = true
       axios
         .patch(
           this.$store.state.backendUrl + 'user/add-admin/' + +id,
@@ -212,6 +211,7 @@ export default {
         )
         .then((result) => {
           if (result.status === 201) {
+            this.isSendingForm = false
             this.confirmModal = false
             this.showSuccess = true
             this.successMsg = 'Berhasil menambahkan pengelola!'
@@ -221,6 +221,7 @@ export default {
           }
         })
         .catch((error) => {
+          this.isSendingForm = false
           this.confirmModal = false
           this.showError = true
           this.errorMsg =
@@ -228,6 +229,7 @@ export default {
         })
     },
     Demote(id) {
+      this.isSendingForm = true
       axios
         .patch(
           this.$store.state.backendUrl + 'user/remove-admin/' + +id,
@@ -241,6 +243,7 @@ export default {
         )
         .then((result) => {
           if (result.status === 201) {
+            this.isSendingForm = false
             this.confirmModal = false
             this.showSuccess = true
             this.successMsg = 'Berhasil menghapus pengelola!'
@@ -250,6 +253,7 @@ export default {
           }
         })
         .catch((error) => {
+          this.isSendingForm = false
           this.confirmModal = false
           this.showError = true
           this.errorMsg =
