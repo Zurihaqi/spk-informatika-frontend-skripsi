@@ -111,7 +111,7 @@
             "
             ><i class="bi bi-arrow-down-square-fill"></i
           ></CButton>
-          <CButton v-else color="info" size="sm"
+          <CButton v-if="props.row.role === 'Admin'" color="info" size="sm"
             ><i class="bi bi-emoji-sunglasses-fill"></i
           ></CButton>
         </span>
