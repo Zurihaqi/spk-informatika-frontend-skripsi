@@ -32,11 +32,13 @@
         color="danger"
         @click="Promote(userid)"
         title="Promosikan"
+        :isSendingForm="isSendingForm"
       /><SubmitButton
         v-if="userrole === 'Pengelola'"
         color="danger"
         @click="Demote(userid)"
         title="Turunkan"
+        :isSendingForm="isSendingForm"
       />
     </CModalFooter>
   </CModal>
