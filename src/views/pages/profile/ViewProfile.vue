@@ -204,7 +204,7 @@ export default {
     }
   },
   beforeMount() {
-    if (this.userdata.createdAt === null && this.userdata.updatedAt === null) {
+    if (this.userdata.createdAt === null || this.userdata.updatedAt === null) {
       this.getUserData()
     }
   },
