@@ -187,9 +187,9 @@ export default {
       userdata: {
         profilePic: localStorage.getItem('profile_pic'),
         role: this.$store.state.role,
-        student_id: localStorage.getItem('student_id'),
-        email: localStorage.getItem('email'),
-        name: localStorage.getItem('name'),
+        student_id: this.$store.state.student_id,
+        email: this.$store.state.email,
+        name: this.$store.state.name,
         createdAt: localStorage.getItem('createdAt'),
         updatedAt: localStorage.getItem('updatedAt'),
       },

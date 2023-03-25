@@ -14,6 +14,24 @@ export default createStore({
           process.env.VUE_APP_AES_SECRET,
         ).toString(CryptoJS.enc.Utf8)
       : '',
+    email: localStorage.getItem('email')
+      ? CryptoJS.AES.decrypt(
+          localStorage.getItem('email'),
+          process.env.VUE_APP_AES_SECRET,
+        ).toString(CryptoJS.enc.Utf8)
+      : '',
+    name: localStorage.getItem('name')
+      ? CryptoJS.AES.decrypt(
+          localStorage.getItem('name'),
+          process.env.VUE_APP_AES_SECRET,
+        ).toString(CryptoJS.enc.Utf8)
+      : '',
+    student_id: localStorage.getItem('student_id')
+      ? CryptoJS.AES.decrypt(
+          localStorage.getItem('student_id'),
+          process.env.VUE_APP_AES_SECRET,
+        ).toString(CryptoJS.enc.Utf8)
+      : '',
     backendUrl: process.env.VUE_APP_BACKEND_URL,
   },
   mutations: {

@@ -68,6 +68,7 @@ import axios from 'axios'
 import SubmitButton from '@/components/SubmitButton.vue'
 import Alerts from '@/components/Alerts.vue'
 import placeholder from '@/assets/images/placeholder.png'
+import CryptoJS from 'crypto-js'
 
 export default {
   name: 'EditProfile',
@@ -75,9 +76,9 @@ export default {
   data() {
     return {
       placeholder: {
-        name: localStorage.getItem('name'),
-        student_id: localStorage.getItem('student_id'),
-        email: localStorage.getItem('email'),
+        name: this.$store.state.name,
+        student_id: this.$store.state.student_id,
+        email: this.$store.state.email,
       },
       form: {
         name: '',
@@ -127,11 +128,23 @@ export default {
           .then((response) => {
             if (response.status === 201) {
               const data = response.data.data
-              localStorage.setItem('name', data.name)
-              localStorage.setItem('email', data.email)
+              const encryptedName = CryptoJS.AES.encrypt(
+                data.name,
+                process.env.VUE_APP_AES_SECRET,
+              ).toString()
+              const encryptedEmail = CryptoJS.AES.encrypt(
+                data.email,
+                process.env.VUE_APP_AES_SECRET,
+              ).toString()
+              const encryptedStudentId = CryptoJS.AES.encrypt(
+                data.student_id,
+                process.env.VUE_APP_AES_SECRET,
+              ).toString()
+              localStorage.setItem('name', encryptedName)
+              localStorage.setItem('email', encryptedEmail)
               localStorage.setItem(
                 'student_id',
-                data.student_id ? data.student_id : '',
+                data.student_id ? encryptedStudentId : '',
               )
               localStorage.setItem(
                 'profile_pic',
