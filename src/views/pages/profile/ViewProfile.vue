@@ -77,7 +77,7 @@
       <div class="card mb-3">
         <CCardBody
           disabled
-          v-if="!userdata.createdAt && !userdata.updatedAt"
+          v-if="!userdata.createdAt || !userdata.updatedAt"
           class="justify-content-center text-center"
         >
           <CSpinner
