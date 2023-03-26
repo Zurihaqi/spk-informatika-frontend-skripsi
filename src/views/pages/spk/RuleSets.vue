@@ -355,18 +355,36 @@ export default {
   data() {
     return {
       options: [
-        { label: 'Pilih', value: undefined },
+        {
+          label: 'Pilih',
+          value: undefined,
+          selected: true,
+          disabled: true,
+          hidden: true,
+        },
         { label: 'Rendah', value: 'rendah' },
         { label: 'Sedang', value: 'sedang' },
         { label: 'Tinggi', value: 'tinggi' },
       ],
       options2: [
-        { label: 'Pilih', value: undefined },
+        {
+          label: 'Pilih',
+          value: undefined,
+          selected: true,
+          disabled: true,
+          hidden: true,
+        },
         { label: 'and', value: 'and' },
         { label: 'or', value: 'or' },
       ],
       options3: [
-        { label: 'Pilih', value: undefined },
+        {
+          label: 'Pilih',
+          value: undefined,
+          selected: true,
+          disabled: true,
+          hidden: true,
+        },
         { label: 'disarankan', value: 'disarankan' },
         { label: 'tidak-disarankan', value: 'tidak-disarankan' },
       ],

@@ -33,8 +33,8 @@
                     :invalid="v$.form.email.$error"
                   />
                 </CInputGroup>
-                <CInputGroup class="mb-3 clickable">
-                  <CInputGroupText @click="togglePassword()">
+                <CInputGroup class="mb-3">
+                  <CInputGroupText @click="togglePassword()" class="clickable">
                     <i
                       class="bi bi-eye-slash-fill"
                       v-if="passwordFieldType === 'password'"
