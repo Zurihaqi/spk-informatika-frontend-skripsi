@@ -71,6 +71,14 @@
       />
     </CModalFooter>
   </CModal>
+  <Alerts
+    :showError="showError"
+    :showSuccess="showSuccess"
+    :errorMsg="errorMsg"
+    :successMsg="successMsg"
+    @update:showError="updateError"
+    @update:showSuccess="updateSuccess"
+  />
   <CCard class="mb-3">
     <CCardHeader>
       <h6 class="text-center">Software Development</h6>
@@ -84,14 +92,6 @@
       Memuat...
     </CCardBody>
     <CCardBody v-if="isLoaded">
-      <Alerts
-        :showError="showError"
-        :showSuccess="showSuccess"
-        :errorMsg="errorMsg"
-        :successMsg="successMsg"
-        @update:showError="updateError"
-        @update:showSuccess="updateSuccess"
-      />
       <VueGoodTable
         :columns="columns1"
         :rows="rows1"
@@ -135,14 +135,6 @@
       Memuat...
     </CCardBody>
     <CCardBody v-if="isLoaded">
-      <Alerts
-        :showError="showError"
-        :showSuccess="showSuccess"
-        :errorMsg="errorMsg"
-        :successMsg="successMsg"
-        @update:showError="updateError"
-        @update:showSuccess="updateSuccess"
-      />
       <VueGoodTable
         :columns="columns2"
         :rows="rows2"
@@ -185,14 +177,6 @@
       Memuat...
     </CCardBody>
     <CCardBody v-if="isLoaded">
-      <Alerts
-        :showError="showError"
-        :showSuccess="showSuccess"
-        :errorMsg="errorMsg"
-        :successMsg="successMsg"
-        @update:showError="updateError"
-        @update:showSuccess="updateSuccess"
-      />
       <VueGoodTable
         :columns="columns3"
         :rows="rows3"
@@ -428,17 +412,9 @@ export default {
       try {
         this.setTouched('all')
         if (!this.v$.$invalid) {
+          if (!this.selectedCourse)
+            throw new Error('Mata Kuliah tidak ditemukan')
           const requests = [
-            axios.patch(
-              this.$store.state.backendUrl + 'course/' + this.selectedRow.id,
-              { spec_id: '0' },
-              {
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${this.$cookies.get('token')}`,
-                },
-              },
-            ),
             axios.patch(
               this.$store.state.backendUrl + 'course/' + this.selectedCourse,
               { spec_id: +this.selectedRow.spec_id },
@@ -449,17 +425,36 @@ export default {
                 },
               },
             ),
+            axios.patch(
+              this.$store.state.backendUrl + 'course/' + this.selectedRow.id,
+              { spec_id: '0' },
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${this.$cookies.get('token')}`,
+                },
+              },
+            ),
           ]
-
-          const result = await Promise.all(requests)
-          if (result) {
-            this.showSuccess = true
-            this.successMsg = 'Berhasil merubah data!'
-            this.editModal = false
-            setTimeout(() => {
-              this.$router.go()
-            }, 1000)
-          }
+          await Promise.all(requests)
+            .then((result) => {
+              if (result[0].status === 201 && result[0].status === 201) {
+                this.showSuccess = true
+                this.successMsg = 'Berhasil merubah data!'
+                this.editModal = false
+                setTimeout(() => {
+                  this.$router.go()
+                }, 1000)
+              }
+            })
+            .catch((error) => {
+              this.editModal = false
+              this.showError = true
+              this.errorMsg =
+                error.response !== undefined
+                  ? error.response.data.message
+                  : error
+            })
         }
       } catch (error) {
         this.editModal = false

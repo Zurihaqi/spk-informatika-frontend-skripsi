@@ -38,7 +38,7 @@
         :float-layout="true"
         :enable-download="true"
         :preview-modal="true"
-        filename="form-peminatan"
+        :filename="username"
         :pdf-quality="2"
         pdf-format="a4"
         pdf-orientation="portrait"
@@ -82,74 +82,76 @@
       ><CButton color="success" @click="print()">Cetak</CButton></CModalFooter
     >
   </CModal>
-  <CCard class="col-sm-6 mx-auto mb-3">
-    <CCardHeader>
-      <h6>Hitung Rekomendasi Peminatan</h6>
-    </CCardHeader>
-    <CCardBody class="text-center">
-      <Alerts
-        :showError="showError"
-        :showSuccess="showSuccess"
-        :errorMsg="errorMsg"
-        :successMsg="successMsg"
-        @update:showError="updateError"
-        @update:showSuccess="updateSuccess"
-      />
-      <SubmitButton
-        v-if="!showResult"
-        :isSendingForm="isSendingForm"
-        @click="calculateFIS"
-        title="Hitung"
-      /><CCollapse :visible="showResult">
-        <hr />
-        <CRow>
-          <h6 class="mb-4">Rekomendasi Peminatan Untuk {{ username }}</h6>
-          <CCol class="text-start"
-            ><p>
-              Data Science:
-              <b>{{ calculationResult.datasets[0].data[1] }}%</b><br />Software
-              Development: <b>{{ calculationResult.datasets[0].data[0] }}%</b
-              ><br />Infrastruktur dan Keamanan Jaringan:
-              <b>{{ calculationResult.datasets[0].data[2] }}%</b>
+  <CCol xs>
+    <CCard class="col-md-6 mx-auto mb-3">
+      <CCardHeader>
+        <h6>Hitung Rekomendasi Peminatan</h6>
+      </CCardHeader>
+      <CCardBody class="text-center">
+        <Alerts
+          :showError="showError"
+          :showSuccess="showSuccess"
+          :errorMsg="errorMsg"
+          :successMsg="successMsg"
+          @update:showError="updateError"
+          @update:showSuccess="updateSuccess"
+        />
+        <SubmitButton
+          v-if="!showResult"
+          :isSendingForm="isSendingForm"
+          @click="calculateFIS"
+          title="Hitung"
+        /><CCollapse :visible="showResult">
+          <CRow>
+            <h6 class="mb-4">Rekomendasi Peminatan Untuk {{ username }}</h6>
+            <CCol class="text-start"
+              ><p>
+                Data Science:
+                <b>{{ calculationResult.datasets[0].data[1] }}%</b
+                ><br />Software Development:
+                <b>{{ calculationResult.datasets[0].data[0] }}%</b
+                ><br />Infrastruktur dan Keamanan Jaringan:
+                <b>{{ calculationResult.datasets[0].data[2] }}%</b>
+              </p>
+            </CCol>
+            <CCol style="width: 120px">
+              <CChart
+                type="pie"
+                v-if="calculationResult.datasets[0].data.length !== 0"
+                :data="calculationResult"
+              />
+            </CCol>
+          </CRow>
+          <div class="text-start">
+            <h6>Kesimpulan:</h6>
+            <p>
+              {{ conclusion }}
             </p>
-          </CCol>
-          <CCol>
-            <CChart
-              type="pie"
-              v-if="calculationResult.datasets[0].data.length !== 0"
-              :data="calculationResult"
-            />
-          </CCol>
-        </CRow>
-        <div class="text-start">
-          <h6>Kesimpulan:</h6>
-          <p>
-            {{ conclusion }}
-          </p>
-        </div>
-        <hr />
-        <CButton
-          color="primary"
-          class="me-3"
-          @click="
-            () => {
-              showDetail ? (showDetail = false) : (showDetail = true)
-            }
-          "
-          >Rincian</CButton
-        >
-        <CButton
-          color="success"
-          @click="
-            () => {
-              recommended.spec.length === 1 ? print() : (chooseSpec = true)
-            }
-          "
-          >Cetak Hasil</CButton
-        >
-      </CCollapse>
-    </CCardBody>
-  </CCard>
+          </div>
+          <hr />
+          <CButton
+            color="primary"
+            class="me-3"
+            @click="
+              () => {
+                showDetail ? (showDetail = false) : (showDetail = true)
+              }
+            "
+            >Rincian</CButton
+          >
+          <CButton
+            color="success"
+            @click="
+              () => {
+                recommended.spec.length === 1 ? print() : (chooseSpec = true)
+              }
+            "
+            >Cetak Hasil</CButton
+          >
+        </CCollapse>
+      </CCardBody>
+    </CCard>
+  </CCol>
 </template>
 
 <script>
@@ -197,6 +199,11 @@ export default {
       chosenSpec: '',
       chooseSpec: false,
     }
+  },
+  computed: {
+    mdCols() {
+      return this.pastCalculationResult.show ? { cols: 2 } : { cols: 1 }
+    },
   },
   validations() {
     return {
