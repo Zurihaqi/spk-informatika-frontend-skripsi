@@ -30,7 +30,7 @@
                 {{ successMsg }}
               </CAlert>
               <CForm @submit="onSubmit">
-                <h1 class="text-center mb-4">Daftar</h1>
+                <h1 class="text-center mb-4">Daftar Pengelola</h1>
                 <CInputGroup class="mb-3">
                   <CInputGroupText>
                     <CIcon icon="cil-user" />
@@ -57,16 +57,14 @@
                   />
                 </CInputGroup>
                 <CInputGroup class="mb-3">
-                  <CInputGroupText
-                    ><CIcon icon="cil-education"
-                  /></CInputGroupText>
-                  <CFormInput
-                    v-model.trim="form.student_id"
-                    @input="setTouched('student_id')"
+                  <CInputGroupText><CIcon icon="cil-info" /></CInputGroupText>
+                  <CFormTextarea
+                    v-model.trim="form.reason"
+                    @input="setTouched('reason')"
                     type="text"
-                    placeholder="Nomor Pokok Mahasiswa"
-                    feedback="Masukan nomor pokok mahasiswa yang valid."
-                    :invalid="v$.form.student_id.$error"
+                    placeholder="Alasan menjadi pengelola."
+                    feedback="Kolom ini wajib diisi."
+                    :invalid="v$.form.reason.$error"
                   />
                 </CInputGroup>
                 <CInputGroup class="mb-3">
@@ -117,7 +115,7 @@ import { required, email, minLength, sameAs } from '@vuelidate/validators'
 import SubmitButton from '@/components/SubmitButton.vue'
 
 export default {
-  name: 'Register',
+  name: 'AdminRegister',
   setup() {
     return { v$: useVuelidate() }
   },
@@ -126,7 +124,7 @@ export default {
       form: {
         name: '',
         email: '',
-        student_id: '',
+        reason: '',
         password: '',
         confirmPassword: '',
       },
@@ -144,7 +142,7 @@ export default {
           required,
           email,
         },
-        student_id: {
+        reason: {
           required,
         },
         password: {
@@ -166,8 +164,8 @@ export default {
       if (theModel == 'email' || theModel == 'all') {
         this.v$.form.email.$touch()
       }
-      if (theModel == 'student_id' || theModel == 'all') {
-        this.v$.form.student_id.$touch()
+      if (theModel == 'reason' || theModel == 'all') {
+        this.v$.form.reason.$touch()
       }
       if (theModel == 'password' || theModel == 'all') {
         this.v$.form.password.$touch()
@@ -185,13 +183,14 @@ export default {
       if (!this.v$.$invalid) {
         this.isSendingForm = true
         axios
-          .post(this.$store.state.backendUrl + 'register', this.form, {
+          .post(this.$store.state.backendUrl + 'admin-register', this.form, {
             headers: { 'Content-Type': 'application/json' },
           })
           .then((response) => {
             if (response.status === 201) {
               this.success = true
-              this.successMsg = 'Berhasil mendaftar.'
+              this.successMsg =
+                'Berhasil mendaftar! Harap tunggu persetujuan Admin.'
               this.isSendingForm = false
               this.v$.form.$reset()
               this.form = {}

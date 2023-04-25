@@ -8,13 +8,11 @@
     "
   >
     <CModalHeader>
-      <CModalTitle>Konfirmasi Ubah Role</CModalTitle>
+      <CModalTitle>Konfirmasi Persetujuan Pengelola Baru</CModalTitle>
     </CModalHeader>
-    <CModalBody v-if="userrole === 'Pengelola'"
-      >Apakah anda yakin ingin menurunkan role dari user <b>{{ username }}</b
-      >?</CModalBody
-    ><CModalBody v-if="userrole === 'Mahasiswa'"
-      >Apakah anda yakin ingin mempromosikan role dari user <b>{{ username }}</b
+    <CModalBody
+      >Apakah anda yakin ingin menyetujui {{ userrole }} dengan nama
+      <b>{{ username }}</b
       >?</CModalBody
     >
     <CModalFooter class="justify-content-start">
@@ -28,16 +26,9 @@
         >Batal</CButton
       >
       <SubmitButton
-        v-if="userrole === 'Mahasiswa'"
-        color="danger"
-        @click="Promote(userid)"
-        title="Promosikan"
-        :isSendingForm="isSendingForm"
-      /><SubmitButton
-        v-if="userrole === 'Pengelola'"
-        color="danger"
-        @click="Demote(userid)"
-        title="Turunkan"
+        color="success"
+        @click="Approve(userid)"
+        title="Setujui"
         :isSendingForm="isSendingForm"
       />
     </CModalFooter>
@@ -86,7 +77,6 @@
       <template #table-row="props">
         <span v-if="props.column.field === 'action'">
           <CButton
-            v-if="props.row.role === 'Mahasiswa'"
             color="success"
             size="sm"
             @click="
@@ -97,24 +87,7 @@
                 confirmModal = true
               }
             "
-            ><i class="bi bi-arrow-up-square-fill"> Promosikan</i></CButton
-          >
-          <CButton
-            v-if="props.row.role === 'Pengelola'"
-            color="danger"
-            size="sm"
-            @click="
-              () => {
-                username = props.row.name
-                userid = props.row.id
-                userrole = props.row.role
-                confirmModal = true
-              }
-            "
-            ><i class="bi bi-arrow-down-square-fill"> Turunkan</i></CButton
-          >
-          <CButton v-if="props.row.role === 'Admin'" color="info" size="sm"
-            ><i class="bi bi-emoji-sunglasses-fill"> Admin</i></CButton
+            ><i class="bi bi-check2-square"> Setujui</i></CButton
           >
         </span>
         <span v-else>
@@ -133,7 +106,7 @@ import axios from 'axios'
 import SubmitButton from '@/components/SubmitButton.vue'
 
 export default {
-  name: 'RegisterAdmin',
+  name: 'ApproveAdmin',
   components: { VueGoodTable, Alerts, SubmitButton },
   data() {
     return {
@@ -179,7 +152,7 @@ export default {
   methods: {
     getUser() {
       axios
-        .get(this.$store.state.backendUrl + 'user/get-all?isVerified=true', {
+        .get(this.$store.state.backendUrl + 'user/get-all?isVerified=false', {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${this.$cookies.get('token')}`,
@@ -198,11 +171,11 @@ export default {
             error.response !== undefined ? error.response.data.message : error
         })
     },
-    Promote(id) {
+    Approve(id) {
       this.isSendingForm = true
       axios
         .patch(
-          this.$store.state.backendUrl + 'user/add-admin/' + +id,
+          this.$store.state.backendUrl + 'user/approve-admin/' + +id,
           {},
           {
             headers: {
@@ -216,39 +189,7 @@ export default {
             this.isSendingForm = false
             this.confirmModal = false
             this.showSuccess = true
-            this.successMsg = 'Berhasil menambahkan pengelola!'
-            setTimeout(() => {
-              this.$router.go()
-            }, 1000)
-          }
-        })
-        .catch((error) => {
-          this.isSendingForm = false
-          this.confirmModal = false
-          this.showError = true
-          this.errorMsg =
-            error.response !== undefined ? error.response.data.message : error
-        })
-    },
-    Demote(id) {
-      this.isSendingForm = true
-      axios
-        .patch(
-          this.$store.state.backendUrl + 'user/remove-admin/' + +id,
-          {},
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${this.$cookies.get('token')}`,
-            },
-          },
-        )
-        .then((result) => {
-          if (result.status === 201) {
-            this.isSendingForm = false
-            this.confirmModal = false
-            this.showSuccess = true
-            this.successMsg = 'Berhasil menghapus pengelola!'
+            this.successMsg = 'Berhasil mennyetujui pengelola!'
             setTimeout(() => {
               this.$router.go()
             }, 1000)

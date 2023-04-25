@@ -503,6 +503,7 @@ export default {
               this.isSendingForm = false
               this.showSuccess = true
               this.successMsg = 'Berhasil menambahkan data!'
+              this.v$.form.$reset()
               this.resetInput()
               setTimeout(() => {
                 this.getCourseData()

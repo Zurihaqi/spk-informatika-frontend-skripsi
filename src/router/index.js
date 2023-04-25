@@ -97,6 +97,14 @@ const routes = [
         },
         component: () => import('@/views/pages/admin/RegisterAdmin.vue'),
       },
+      {
+        path: '/admin/approve',
+        name: 'Setujui Pengelola Baru',
+        meta: {
+          admin: true,
+        },
+        component: () => import('@/views/pages/admin/ApproveAdmin.vue'),
+      },
     ],
   },
   {
@@ -114,6 +122,14 @@ const routes = [
       public: true,
     },
     component: () => import('@/views/pages/auth/Register.vue'),
+  },
+  {
+    path: '/admin-register',
+    name: 'AdminRegister',
+    meta: {
+      public: true,
+    },
+    component: () => import('@/views/pages/auth/AdminRegister.vue'),
   },
   {
     path: '/:pathMatch(.*)*',

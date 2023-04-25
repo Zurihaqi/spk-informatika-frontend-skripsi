@@ -104,6 +104,11 @@ export default [
               name: 'Daftar Pengguna',
               to: '/admin/register',
             },
+            {
+              component: 'CNavItem',
+              name: 'Setujui Pengelola Baru',
+              to: '/admin/approve',
+            },
           ]
         : '',
   },

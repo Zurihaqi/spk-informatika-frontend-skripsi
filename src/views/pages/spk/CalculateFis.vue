@@ -200,11 +200,6 @@ export default {
       chooseSpec: false,
     }
   },
-  computed: {
-    mdCols() {
-      return this.pastCalculationResult.show ? { cols: 2 } : { cols: 1 }
-    },
-  },
   validations() {
     return {
       chosenSpec: {

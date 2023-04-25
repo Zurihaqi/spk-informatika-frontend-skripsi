@@ -64,7 +64,10 @@
               </CForm>
               <p class="text-center mt-2">
                 Belum punya akun?
-                <router-link to="register">Daftar di sini.</router-link>
+                <router-link to="register">Daftar di sini.</router-link> Atau
+                <router-link to="admin-register"
+                  >daftar menjadi pengelola.</router-link
+                >
               </p>
             </CCardBody>
           </CCard>
