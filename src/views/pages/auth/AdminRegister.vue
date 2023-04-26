@@ -149,7 +149,7 @@ export default {
       isSendingForm: false,
       showRecaptcha: true,
       siteKey: this.$store.state.siteKey,
-      recaptchaToken: '',
+      recaptchaTokenValid: false,
     }
   },
   validations() {
@@ -177,8 +177,25 @@ export default {
     }
   },
   methods: {
-    recaptchaVerified(response) {
-      this.recaptchaToken = response
+    async recaptchaVerified(token) {
+      try {
+        const response = await axios.post(
+          this.$store.state.backendUrl + 'verify',
+          { response_key: token },
+          {
+            headers: { 'Content-Type': 'application/json' },
+          },
+        )
+
+        if (response.status === 201) {
+          this.recaptchaTokenValid = true
+        }
+      } catch (error) {
+        this.ShowError = true
+        this.errorMgs =
+          error.response !== undefined ? error.response.data.message : error
+        this.isSendingForm = false
+      }
     },
     recaptchaExpired() {
       this.$refs.vueRecaptcha.reset()
@@ -212,7 +229,7 @@ export default {
       if (!this.v$.$invalid) {
         this.isSendingForm = true
         try {
-          if (!this.recaptchaToken) {
+          if (!this.recaptchaTokenValid) {
             throw 'Harap centang kotak reCAPTCHA.'
           }
           axios
@@ -228,6 +245,14 @@ export default {
                 this.v$.form.$reset()
                 this.form = {}
               }
+            })
+            .catch((error) => {
+              this.ShowError = true
+              this.errorMgs =
+                error.response !== undefined
+                  ? error.response.data.message
+                  : error
+              this.isSendingForm = false
             })
         } catch (error) {
           this.ShowError = true
