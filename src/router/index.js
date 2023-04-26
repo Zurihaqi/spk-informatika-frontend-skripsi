@@ -81,6 +81,11 @@ const routes = [
         name: 'Hitung Peminatan',
         component: () => import('@/views/pages/spk/CalculateFis.vue'),
       },
+      {
+        path: '/spk/history',
+        name: 'Riwayat Rekomendasi',
+        component: () => import('@/views/pages/spk/CalculationHistory.vue'),
+      },
     ],
   },
   {

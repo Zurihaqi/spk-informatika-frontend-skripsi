@@ -146,7 +146,7 @@
                 recommended.spec.length === 1 ? print() : (chooseSpec = true)
               }
             "
-            >Cetak Hasil</CButton
+            >Ajukan Peminatan</CButton
           >
         </CCollapse>
       </CCardBody>
@@ -237,9 +237,9 @@ export default {
             const data = result.data.result
 
             this.crispOutputs.push(
-              data.software_development.toFixed(2),
-              data.data_science.toFixed(2),
-              data.networking.toFixed(2),
+              data.software_development,
+              data.data_science,
+              data.networking,
             )
 
             this.calculationResult.datasets[0].data.push(

@@ -44,6 +44,11 @@ export default [
         name: 'Hitung Peminatan',
         to: '/spk/calculate',
       },
+      {
+        component: 'CNavItem',
+        name: 'Riwayat Rekomendasi',
+        to: '/spk/history',
+      },
     ],
   },
   {
