@@ -97,6 +97,19 @@
                     :invalid="v$.form.confirmPassword.$error"
                   />
                 </CInputGroup>
+                <vue-recaptcha
+                  class="d-flex justify-content-center mb-3"
+                  v-show="showRecaptcha"
+                  :sitekey="siteKey"
+                  size="normal"
+                  theme="light"
+                  hl="id"
+                  @verify="recaptchaVerified"
+                  @expire="recaptchaExpired"
+                  @fail="recaptchaFailed"
+                  ref="vueRecaptcha"
+                >
+                </vue-recaptcha>
                 <div class="d-grid gap-2">
                   <SubmitButton title="Daftar" :isSendingForm="isSendingForm" />
                   <CButton color="primary" @click="goBack()">Kembali</CButton>
@@ -115,6 +128,7 @@ import axios from 'axios'
 import useVuelidate from '@vuelidate/core'
 import { required, email, minLength, sameAs } from '@vuelidate/validators'
 import SubmitButton from '@/components/SubmitButton.vue'
+import vueRecaptcha from 'vue3-recaptcha2'
 
 export default {
   name: 'Register',
@@ -135,6 +149,9 @@ export default {
       successMsg: '',
       success: false,
       isSendingForm: false,
+      showRecaptcha: true,
+      siteKey: this.$store.state.siteKey,
+      recaptchaToken: '',
     }
   },
   validations() {
@@ -162,6 +179,18 @@ export default {
     }
   },
   methods: {
+    recaptchaVerified(response) {
+      this.recaptchaToken = response
+    },
+    recaptchaExpired() {
+      this.$refs.vueRecaptcha.reset()
+    },
+    recaptchaFailed(error) {
+      this.ShowError = true
+      this.errorMgs =
+        error.response !== undefined ? error.response.data.message : error
+      this.isSendingForm = false
+    },
     setTouched(theModel) {
       if (theModel == 'email' || theModel == 'all') {
         this.v$.form.email.$touch()
@@ -184,31 +213,35 @@ export default {
       this.setTouched('all')
       if (!this.v$.$invalid) {
         this.isSendingForm = true
-        axios
-          .post(this.$store.state.backendUrl + 'register', this.form, {
-            headers: { 'Content-Type': 'application/json' },
-          })
-          .then((response) => {
-            if (response.status === 201) {
-              this.success = true
-              this.successMsg = 'Berhasil mendaftar.'
-              this.isSendingForm = false
-              this.v$.form.$reset()
-              this.form = {}
-            }
-          })
-          .catch((error) => {
-            this.ShowError = true
-            this.errorMgs =
-              error.response !== undefined ? error.response.data.message : error
-            this.isSendingForm = false
-          })
+        try {
+          if (!this.recaptchaToken) {
+            throw 'Harap centang kotak reCAPTCHA.'
+          }
+          axios
+            .post(this.$store.state.backendUrl + 'register', this.form, {
+              headers: { 'Content-Type': 'application/json' },
+            })
+            .then((response) => {
+              if (response.status === 201) {
+                this.success = true
+                this.successMsg = 'Berhasil mendaftar.'
+                this.isSendingForm = false
+                this.v$.form.$reset()
+                this.form = {}
+              }
+            })
+        } catch (error) {
+          this.ShowError = true
+          this.errorMgs =
+            error.response !== undefined ? error.response.data.message : error
+          this.isSendingForm = false
+        }
       }
     },
     goBack() {
       this.$router.push('login')
     },
   },
-  components: { SubmitButton },
+  components: { SubmitButton, vueRecaptcha },
 }
 </script>

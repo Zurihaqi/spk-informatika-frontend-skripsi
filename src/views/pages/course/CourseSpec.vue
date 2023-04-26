@@ -412,8 +412,7 @@ export default {
       try {
         this.setTouched('all')
         if (!this.v$.$invalid) {
-          if (!this.selectedCourse)
-            throw new Error('Mata Kuliah tidak ditemukan')
+          if (!this.selectedCourse) throw 'Mata Kuliah tidak ditemukan'
           const requests = [
             axios.patch(
               this.$store.state.backendUrl + 'course/' + this.selectedCourse,

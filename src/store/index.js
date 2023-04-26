@@ -33,6 +33,7 @@ export default createStore({
         ).toString(CryptoJS.enc.Utf8)
       : '',
     backendUrl: process.env.VUE_APP_BACKEND_URL,
+    siteKey: process.env.VUE_APP_RECAPTCHA_SITE_KEY,
   },
   mutations: {
     toggleSidebar(state) {

@@ -4,7 +4,7 @@
       <CRow class="justify-content-center">
         <CCardGroup class="w-80">
           <CCard>
-            <CCardBody class="mx-auto" style="width: 300px">
+            <CCardBody class="mx-auto" style="width: 350px">
               <CAlert
                 color="danger"
                 :visible="ShowError"

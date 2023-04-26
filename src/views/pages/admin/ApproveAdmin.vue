@@ -60,7 +60,7 @@
       }"
       :sort-options="{
         enabled: true,
-        initialSortBy: { field: 'student_id', type: 'asc' },
+        initialSortBy: { field: 'createdAt', type: 'asc' },
       }"
       :pagination-options="{
         enabled: true,
@@ -127,8 +127,8 @@ export default {
           field: 'name',
         },
         {
-          label: 'NPM',
-          field: 'student_id',
+          label: 'Tanggal Daftar',
+          field: 'createdAt',
         },
         {
           label: 'Role',
@@ -160,6 +160,17 @@ export default {
         })
         .then((result) => {
           if (result.status === 201) {
+            const options = {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            }
+            for (let i = 0; i < result.data.result.length; i++) {
+              result.data.result[i].createdAt = new Date(
+                result.data.result[i].createdAt,
+              ).toLocaleDateString('id-ID', options)
+            }
             this.rows = result.data.result
             this.isLoaded = true
           }
@@ -189,7 +200,7 @@ export default {
             this.isSendingForm = false
             this.confirmModal = false
             this.showSuccess = true
-            this.successMsg = 'Berhasil mennyetujui pengelola!'
+            this.successMsg = 'Berhasil menyetujui pengelola!'
             setTimeout(() => {
               this.$router.go()
             }, 1000)

@@ -162,6 +162,10 @@ export default {
           field: 'role',
         },
         {
+          label: 'Tanggal Daftar',
+          field: 'createdAt',
+        },
+        {
           label: 'Aksi',
           field: 'action',
         },
@@ -187,6 +191,17 @@ export default {
         })
         .then((result) => {
           if (result.status === 201) {
+            const options = {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            }
+            for (let i = 0; i < result.data.result.length; i++) {
+              result.data.result[i].createdAt = new Date(
+                result.data.result[i].createdAt,
+              ).toLocaleDateString('id-ID', options)
+            }
             this.rows = result.data.result
             this.isLoaded = true
           }
