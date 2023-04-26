@@ -1,24 +1,24 @@
 <template>
   <div class="bg-light min-vh-100 d-flex flex-row align-items-center">
     <CContainer>
-      <CRow class="justify-content-center">
-        <CCardGroup class="w-80">
-          <CCard>
-            <CCardBody class="mx-auto" style="width: 350px">
-              <CAlert
-                color="danger"
-                :visible="ShowError"
-                dismissible
-                @close="
-                  () => {
-                    ShowError = false
-                  }
-                "
-              >
-                {{ errorMgs }}
-              </CAlert>
+      <CAlert
+        color="danger"
+        :visible="ShowError"
+        dismissible
+        @close="
+          () => {
+            ShowError = false
+          }
+        "
+      >
+        {{ errorMgs }}
+      </CAlert>
+      <CRow :xs="{ cols: 1, gutter: 2 }" :md="{ cols: 2 }">
+        <CCol xs>
+          <CCard class="h-100">
+            <CCardBody class="mx-auto" style="width: 300px">
               <CForm @submit="onSubmit">
-                <h1 class="text-center py-4">Masuk</h1>
+                <h1 class="text-center py-2">Masuk</h1>
                 <CInputGroup class="mb-3">
                   <CInputGroupText>
                     <CIcon icon="cil-user" />
@@ -71,17 +71,28 @@
               </p>
             </CCardBody>
           </CCard>
-          <CCard>
+        </CCol>
+        <CCol xs>
+          <CCard
+            class="h-100 justify-content-center align-self-center"
+            style="background-color: #2b4b82"
+          >
             <CCarousel controls indicators>
               <CCarouselItem>
-                <img class="img-fluid" :src="logoBG" />
+                <img class="img-fluid" :src="slide1" />
               </CCarouselItem>
               <CCarouselItem>
-                <img class="img-fluid" :src="logoBG" />
+                <img class="img-fluid" :src="slide2" />
+              </CCarouselItem>
+              <CCarouselItem>
+                <img class="img-fluid" :src="slide3" />
+              </CCarouselItem>
+              <CCarouselItem>
+                <img class="img-fluid" :src="slide4" />
               </CCarouselItem>
             </CCarousel>
           </CCard>
-        </CCardGroup>
+        </CCol>
       </CRow>
     </CContainer>
   </div>
@@ -93,8 +104,11 @@ import axios from 'axios'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import SubmitButton from '@/components/SubmitButton.vue'
-import logo from '@/assets/logo-trimmed.png'
-import logoBG from '@/assets/logoBG.png'
+import slide1 from '@/assets/images/1.png'
+import slide2 from '@/assets/images/2.png'
+import slide3 from '@/assets/images/3.png'
+import slide4 from '@/assets/images/4.png'
+
 
 export default {
   name: 'Login',
@@ -113,8 +127,10 @@ export default {
       ShowError: false,
       isSendingForm: false,
       icon: 'bi bi-eye-slash',
-      logo: logo,
-      logoBG: logoBG,
+      slide1: slide1,
+      slide2: slide2,
+      slide3: slide3,
+      slide4: slide4,
     }
   },
   validations() {

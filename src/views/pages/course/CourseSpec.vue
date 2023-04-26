@@ -334,6 +334,7 @@ export default {
       selectedRow: '',
       selectedCourse: '',
       showResults: false,
+      isSendingForm: false,
     }
   },
   validations() {
@@ -412,6 +413,7 @@ export default {
       try {
         this.setTouched('all')
         if (!this.v$.$invalid) {
+          this.isSendingForm = true
           if (!this.selectedCourse) throw 'Mata Kuliah tidak ditemukan'
           const requests = [
             axios.patch(
@@ -438,6 +440,7 @@ export default {
           await Promise.all(requests)
             .then((result) => {
               if (result[0].status === 201 && result[0].status === 201) {
+                this.isSendingForm = false
                 this.showSuccess = true
                 this.successMsg = 'Berhasil merubah data!'
                 this.editModal = false
@@ -447,6 +450,7 @@ export default {
               }
             })
             .catch((error) => {
+              this.isSendingForm = false
               this.editModal = false
               this.showError = true
               this.errorMsg =
@@ -456,6 +460,7 @@ export default {
             })
         }
       } catch (error) {
+        this.isSendingForm = false
         this.editModal = false
         this.showError = true
         this.errorMsg =
