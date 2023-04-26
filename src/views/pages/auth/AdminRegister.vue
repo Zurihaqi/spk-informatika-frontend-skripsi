@@ -198,9 +198,11 @@ export default {
       }
     },
     recaptchaExpired() {
+      this.recaptchaTokenValid = false
       this.$refs.vueRecaptcha.reset()
     },
     recaptchaFailed(error) {
+      this.recaptchaTokenValid = false
       this.ShowError = true
       this.errorMgs =
         error.response !== undefined ? error.response.data.message : error
