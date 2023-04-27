@@ -267,6 +267,7 @@ export default {
         })
     },
     clearNotif() {
+      this.notification = []
       axios
         .delete(this.$store.state.backendUrl + 'notification', {
           headers: {

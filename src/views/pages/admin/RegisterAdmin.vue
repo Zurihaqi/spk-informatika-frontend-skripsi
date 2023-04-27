@@ -42,6 +42,44 @@
       />
     </CModalFooter>
   </CModal>
+  <CModal
+    :visible="notifyModal"
+    @close="
+      () => {
+        notifyModal = false
+      }
+    "
+  >
+    <CModalHeader>
+      <CModalTitle>Kirim Notifikasi</CModalTitle>
+    </CModalHeader>
+    <CModalBody>
+      <CForm>
+        <CFormTextarea
+          placeholder="Pesan Notifikasi"
+          v-model.trim="notifMsg"
+          label="Pesan"
+        ></CFormTextarea>
+      </CForm>
+    </CModalBody>
+    <CModalFooter class="justify-content-start">
+      <CButton
+        color="secondary"
+        @click="
+          () => {
+            notifyModal = false
+          }
+        "
+        >Batal</CButton
+      >
+      <SubmitButton
+        color="primary"
+        @click="Notify(userid)"
+        title="Kirim Notifikasi"
+        :isSendingForm="isSendingForm"
+      />
+    </CModalFooter>
+  </CModal>
   <div class="mb-4">
     <Alerts
       :showError="showError"
@@ -87,6 +125,7 @@
         <span v-if="props.column.field === 'action'">
           <CButton
             v-if="props.row.role === 'Mahasiswa'"
+            class="me-2"
             color="success"
             size="sm"
             @click="
@@ -101,6 +140,7 @@
           >
           <CButton
             v-if="props.row.role === 'Pengelola'"
+            class="me-2"
             color="danger"
             size="sm"
             @click="
@@ -113,8 +153,23 @@
             "
             ><i class="bi bi-arrow-down-square-fill"> Turunkan</i></CButton
           >
-          <CButton v-if="props.row.role === 'Admin'" color="info" size="sm"
+          <CButton
+            v-if="props.row.role === 'Admin'"
+            color="info"
+            size="sm"
+            class="me-2"
             ><i class="bi bi-emoji-sunglasses-fill"> Admin</i></CButton
+          >
+          <CButton
+            color="warning"
+            size="sm"
+            @click="
+              () => {
+                userid = props.row.id
+                notifyModal = true
+              }
+            "
+            ><i class="bi bi-bell-fill"> Notify</i></CButton
           >
         </span>
         <span v-else>
@@ -141,6 +196,8 @@ export default {
       userid: '',
       userrole: '',
       confirmModal: false,
+      notifyModal: false,
+      notifMsg: '',
       showError: false,
       errorMsg: '',
       showSuccess: false,
@@ -232,9 +289,7 @@ export default {
             this.confirmModal = false
             this.showSuccess = true
             this.successMsg = 'Berhasil menambahkan pengelola!'
-            setTimeout(() => {
-              this.$router.go()
-            }, 1000)
+            this.getUser()
           }
         })
         .catch((error) => {
@@ -264,9 +319,36 @@ export default {
             this.confirmModal = false
             this.showSuccess = true
             this.successMsg = 'Berhasil menghapus pengelola!'
-            setTimeout(() => {
-              this.$router.go()
-            }, 1000)
+            this.getUser()
+          }
+        })
+        .catch((error) => {
+          this.isSendingForm = false
+          this.confirmModal = false
+          this.showError = true
+          this.errorMsg =
+            error.response !== undefined ? error.response.data.message : error
+        })
+    },
+    Notify() {
+      this.isSendingForm = true
+      axios
+        .post(
+          this.$store.state.backendUrl + 'notification',
+          { id: this.userid, content: this.notifMsg },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${this.$cookies.get('token')}`,
+            },
+          },
+        )
+        .then((result) => {
+          if (result.status === 201) {
+            this.isSendingForm = false
+            this.notifyModal = false
+            this.showSuccess = true
+            this.successMsg = 'Berhasil mengirim notifikasi!'
           }
         })
         .catch((error) => {

@@ -245,9 +245,7 @@ export default {
             this.confirmModal = false
             this.showSuccess = true
             this.successMsg = 'Berhasil menyetujui pengelola!'
-            setTimeout(() => {
-              this.$router.go()
-            }, 1000)
+            this.getUser()
           }
         })
         .catch((error) => {
@@ -280,9 +278,7 @@ export default {
             this.confirmModal = false
             this.showSuccess = true
             this.successMsg = 'Berhasil menolak pengelola!'
-            setTimeout(() => {
-              this.$router.go()
-            }, 1000)
+            this.getUser()
           }
         })
         .catch((error) => {
