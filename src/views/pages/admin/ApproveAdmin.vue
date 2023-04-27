@@ -8,14 +8,24 @@
     "
   >
     <CModalHeader>
-      <CModalTitle>Konfirmasi Persetujuan Pengelola Baru</CModalTitle>
+      <CModalTitle v-if="action === 'approve'"
+        >Konfirmasi Persetujuan Pengelola Baru</CModalTitle
+      >
+      <CModalTitle v-if="action === 'decline'"
+        >Konfirmasi Penolakan Pengelola Baru</CModalTitle
+      >
     </CModalHeader>
-    <CModalBody
+    <CModalBody v-if="action === 'approve'"
       >Apakah anda yakin ingin menyetujui {{ userrole }} dengan nama
       <b>{{ username }}</b
       >?</CModalBody
     >
-    <CModalFooter class="justify-content-start">
+    <CModalBody v-if="action === 'decline'"
+      >Apakah anda yakin ingin menolak {{ userrole }} dengan nama
+      <b>{{ username }}</b
+      >?</CModalBody
+    >
+    <CModalFooter class="justify-content-start" v-if="action === 'approve'">
       <CButton
         color="secondary"
         @click="
@@ -29,6 +39,23 @@
         color="success"
         @click="Approve(userid)"
         title="Setujui"
+        :isSendingForm="isSendingForm"
+      />
+    </CModalFooter>
+    <CModalFooter class="justify-content-start" v-if="action === 'decline'">
+      <CButton
+        color="secondary"
+        @click="
+          () => {
+            confirmModal = false
+          }
+        "
+        >Batal</CButton
+      >
+      <SubmitButton
+        color="danger"
+        @click="Disapprove(userid)"
+        title="Tolak"
         :isSendingForm="isSendingForm"
       />
     </CModalFooter>
@@ -77,6 +104,7 @@
       <template #table-row="props">
         <span v-if="props.column.field === 'action'">
           <CButton
+            class="me-2"
             color="success"
             size="sm"
             @click="
@@ -84,10 +112,25 @@
                 username = props.row.name
                 userid = props.row.id
                 userrole = props.row.role
+                action = 'approve'
                 confirmModal = true
               }
             "
             ><i class="bi bi-check2-square"> Setujui</i></CButton
+          >
+          <CButton
+            color="danger"
+            size="sm"
+            @click="
+              () => {
+                username = props.row.name
+                userid = props.row.id
+                userrole = props.row.role
+                action = 'decline'
+                confirmModal = true
+              }
+            "
+            ><i class="bi bi-x-square-fill"> Tolak</i></CButton
           >
         </span>
         <span v-else>
@@ -120,6 +163,7 @@ export default {
       successMsg: '',
       isLoaded: false,
       isSendingForm: false,
+      action: '',
       rows: [],
       columns: [
         {
@@ -201,6 +245,41 @@ export default {
             this.confirmModal = false
             this.showSuccess = true
             this.successMsg = 'Berhasil menyetujui pengelola!'
+            setTimeout(() => {
+              this.$router.go()
+            }, 1000)
+          }
+        })
+        .catch((error) => {
+          this.isSendingForm = false
+          this.confirmModal = false
+          this.showError = true
+          this.errorMsg =
+            error.response !== undefined ? error.response.data.message : error
+        })
+    },
+    Disapprove(id) {
+      this.isSendingForm = true
+      axios
+        .patch(
+          this.$store.state.backendUrl +
+            'user/approve-admin/' +
+            +id +
+            '?declined=true',
+          {},
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${this.$cookies.get('token')}`,
+            },
+          },
+        )
+        .then((result) => {
+          if (result.status === 201) {
+            this.isSendingForm = false
+            this.confirmModal = false
+            this.showSuccess = true
+            this.successMsg = 'Berhasil menolak pengelola!'
             setTimeout(() => {
               this.$router.go()
             }, 1000)

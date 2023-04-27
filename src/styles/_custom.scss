@@ -1,7 +1,11 @@
 .scrollable{
     overflow-y: auto;
     max-height: 300px;
-  }
+}
+
+.noHover{
+    pointer-events: none;
+}
 
 .clickable { cursor: pointer; }
 

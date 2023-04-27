@@ -92,21 +92,63 @@
     </CModalFooter>
   </CModal>
   <CHeader position="sticky" class="mb-4">
-    <CContainer fluid>
+    <CContainer fluid class="d-flex">
       <CHeaderToggler class="ps-1" @click="$store.commit('toggleSidebar')">
         <CIcon icon="cil-menu" size="lg" />
       </CHeaderToggler>
+      <CHeaderNav class="d-md-flex me-auto">
+        <CDropdown variant="nav-item" class="mt-1 position-relative">
+          <CDropdownToggle placement="bottom-end" class="py-0" :caret="false">
+            <CIcon icon="cil-bell" size="lg" />
+            <CBadge
+              color="danger"
+              shape="rounded-circle"
+              position="top-end"
+              class="border border-light"
+              v-show="notification.length !== 0"
+            >
+              <span style="font-size: 0.9em">{{ notification.length }}</span>
+            </CBadge>
+          </CDropdownToggle>
+          <CDropdownMenu class="pt-0">
+            <CDropdownHeader>Notifikasi</CDropdownHeader>
+            <CContainer>
+              <h6
+                v-if="notification.length === 0"
+                class="text-muted"
+                style="font-size: 0.9em"
+              >
+                Tidak ada notifikasi baru.
+              </h6>
+              <h6
+                v-for="(item, index) in notification"
+                :key="index"
+                style="font-size: 0.9em"
+              >
+                {{ item }}
+              </h6>
+            </CContainer>
+            <CDropdownItem
+              v-if="notification.length !== 0"
+              style="font-size: 0.9em"
+              class="btn"
+              @click="clearNotif()"
+              ><CIcon icon="cil-trash" />Bersihkan notifikasi</CDropdownItem
+            >
+          </CDropdownMenu>
+        </CDropdown>
+      </CHeaderNav>
       <CHeaderNav>
         <CNavItem>
           <CNavLink
-            class="btn"
+            class="clickable"
             @click="
               () => {
                 showModal = true
               }
             "
           >
-            Laporkan Masalah
+            <a> Laporkan Masalah </a>
           </CNavLink>
         </CNavItem>
         <div class="vr"></div>
@@ -117,9 +159,9 @@
                 confirmLogout = true
               }
             "
-            class="btn"
+            class="clickable"
           >
-            Keluar
+            <a> Keluar </a>
           </CNavLink>
         </CNavItem>
         <AppHeaderDropdownAccnt />
@@ -166,6 +208,7 @@ export default {
       successSent: false,
       confirmLogout: false,
       toasts: {},
+      notification: [],
     }
   },
   validations() {
@@ -182,6 +225,7 @@ export default {
   },
   beforeMount() {
     this.checkConnection()
+    this.getNotification()
   },
   methods: {
     setTouched(theModel) {
@@ -200,6 +244,47 @@ export default {
         this.toasts.content = 'Lakukan login ulang.'
         this.errorToast = true
       }
+    },
+    getNotification() {
+      axios
+        .get(this.$store.state.backendUrl + 'notification', {
+          headers: {
+            Authorization: `Bearer ${this.$cookies.get('token')}`,
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((result) => {
+          const data = result.data.data
+          data.forEach((item) => {
+            this.notification.push(item.content)
+          })
+        })
+        .catch((error) => {
+          this.errorToast = true
+          this.toasts.title = 'Error'
+          this.toasts.content =
+            error.response !== undefined ? error.response.data.message : error
+        })
+    },
+    clearNotif() {
+      axios
+        .delete(this.$store.state.backendUrl + 'notification', {
+          headers: {
+            Authorization: `Bearer ${this.$cookies.get('token')}`,
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((result) => {
+          if (result.status === 201) {
+            this.notification = []
+          }
+        })
+        .catch((error) => {
+          this.errorToast = true
+          this.toasts.title = 'Error'
+          this.toasts.content =
+            error.response !== undefined ? error.response.data.message : error
+        })
     },
     sendMessage() {
       this.setTouched('all')
