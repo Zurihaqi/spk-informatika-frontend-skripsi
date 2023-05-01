@@ -56,6 +56,7 @@
                 </CInputGroup>
                 <CRow class="my-3">
                   <SubmitButton
+                    :disabled="isSendingForm"
                     shape="rounded-pill"
                     title="Masuk"
                     :isSendingForm="isSendingForm"

@@ -109,7 +109,11 @@
                 >
                 </vue-recaptcha>
                 <div class="d-grid gap-2">
-                  <SubmitButton title="Daftar" :isSendingForm="isSendingForm" />
+                  <SubmitButton
+                    :disabled="isSendingForm"
+                    title="Daftar"
+                    :isSendingForm="isSendingForm"
+                  />
                   <CButton color="primary" @click="goBack()">Kembali</CButton>
                 </div>
               </CForm>

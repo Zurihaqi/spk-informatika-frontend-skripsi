@@ -64,7 +64,8 @@
         >Batal</CButton
       >
       <SubmitButton
-        title="Ubah"
+        :disabled="isSendingForm"
+        :title="isSendingForm ? 'Menyimpan' : 'Simpan'"
         :isSendingForm="isSendingForm"
         color="warning"
         @click="editCourse()"

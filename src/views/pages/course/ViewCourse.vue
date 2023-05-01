@@ -39,8 +39,9 @@
         Batal
       </CButton>
       <SubmitButton
+        :disabled="isSendingForm"
         :isSendingForm="isSendingForm"
-        title="Hapus"
+        :title="isSendingForm ? 'Menghapus' : 'Hapus'"
         color="danger"
         @click="deleteCourse"
       ></SubmitButton>
@@ -113,8 +114,9 @@
         Batal
       </CButton>
       <SubmitButton
+        :disabled="isSendingForm"
         :isSendingForm="isSendingForm"
-        title="Simpan"
+        :title="isSendingForm ? 'Menyimpan' : 'Simpan'"
         color="primary"
         @click="editCourse"
       ></SubmitButton>
@@ -192,8 +194,9 @@
         Batal
       </CButton>
       <SubmitButton
+        :disabled="isSendingForm"
         :isSendingForm="isSendingForm"
-        title="Simpan"
+        :title="isSendingForm ? 'Menyimpan' : 'Simpan'"
         color="primary"
         @click="addCourse"
       ></SubmitButton>

@@ -43,8 +43,9 @@
         Batal
       </CButton>
       <SubmitButton
+        :disabled="isSendingForm"
         color="danger"
-        title="Hapus"
+        :title="isSendingForm ? 'Menghapus' : 'Hapus'"
         :isSendingForm="isSendingForm"
         @click="deleteProfile"
       />

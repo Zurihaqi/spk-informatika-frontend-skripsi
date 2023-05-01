@@ -32,8 +32,9 @@
         "
         >Batal</CButton
       ><SubmitButton
+        :disabled="isSendingForm"
         :isSendingForm="isSendingForm"
-        title="Hapus"
+        :title="isSendingForm ? 'Menghapus' : 'Hapus'"
         color="danger"
         @click="deleteRule()"
       ></SubmitButton
@@ -172,8 +173,9 @@
         "
         >Batal</CButton
       ><SubmitButton
+        :disabled="isSendingForm"
         :isSendingForm="isSendingForm"
-        title="Simpan"
+        :title="isSendingForm ? 'Menyimpan' : 'Simpan'"
         color="primary"
         @click="addRule"
       ></SubmitButton

@@ -98,9 +98,10 @@
         />
         <SubmitButton
           v-if="!showResult"
+          :disabled="isSendingForm"
           :isSendingForm="isSendingForm"
           @click="calculateFIS"
-          title="Hitung"
+          :title="isSendingForm ? 'Menghitung' : 'Hitung'"
         /><CCollapse :visible="showResult">
           <CRow>
             <h6 class="mb-4">Rekomendasi Peminatan Untuk {{ username }}</h6>

@@ -85,7 +85,8 @@
     </CModalBody>
     <CModalFooter class="justify-content-start"
       ><SubmitButton
-        title="Kirim"
+        :disabled="isSendingForm"
+        :title="isSendingForm ? 'Mengirim' : 'Kirim'"
         :isSendingForm="isSendingForm"
         @click="sendMessage"
       />

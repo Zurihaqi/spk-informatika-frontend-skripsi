@@ -53,7 +53,11 @@
             </CRow>
             <CRow class="mt-3">
               <CCol>
-                <SubmitButton title="Simpan" :isSendingForm="isSendingForm" />
+                <SubmitButton
+                  :disabled="isSendingForm"
+                  :title="isSendingForm ? 'Menyimpan' : 'Simpan'"
+                  :isSendingForm="isSendingForm"
+                />
               </CCol>
               <CCol class="form-check form-switch text-right">
                 <CFormCheck type="checkbox" @click="togglePassword" />

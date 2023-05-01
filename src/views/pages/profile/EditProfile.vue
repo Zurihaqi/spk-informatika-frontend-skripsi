@@ -54,7 +54,11 @@
               </CProgress>
             </CCol>
             <CCol :xs="12">
-              <SubmitButton title="Simpan" :isSendingForm="isSendingForm" />
+              <SubmitButton
+                :disabled="isSendingForm"
+                :title="isSendingForm ? 'Menyimpan' : 'Simpan'"
+                :isSendingForm="isSendingForm"
+              />
             </CCol>
           </CForm>
         </CCardBody>

@@ -96,9 +96,10 @@
     <CCardFooter v-if="isLoaded"
       ><div class="d-md-flex justify-content-md-start me-6">
         <SubmitButton
+          :disabled="isSendingForm"
           class="me-3"
           :isSendingForm="isSendingForm"
-          title="Simpan"
+          :title="isSendingForm ? 'Menyimpan' : 'Simpan'"
           color="primary"
           @click="sendData()"
         ></SubmitButton>
