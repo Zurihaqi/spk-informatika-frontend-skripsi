@@ -29,7 +29,7 @@
                 autocomplete="email"
               />
             </CCol>
-            <CCol :md="6">
+            <CCol :md="6" v-if="placeholder.role !== 'Pengelola'">
               <CFormLabel>Nomor Pokok Mahasiswa</CFormLabel>
               <CFormInput
                 v-model.trim="form.student_id"
@@ -79,6 +79,7 @@ export default {
         name: this.$store.state.name,
         student_id: this.$store.state.student_id,
         email: this.$store.state.email,
+        role: this.$store.state.role,
       },
       form: {
         name: '',

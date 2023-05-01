@@ -65,7 +65,10 @@
             <div class="mt-3">
               <h4>{{ userdata.name }}</h4>
               <p class="text-secondary mb-1">{{ userdata.role }}</p>
-              <p class="text-secondary font-size-sm">
+              <p
+                v-if="userdata.role !== 'Pengelola'"
+                class="text-secondary font-size-sm"
+              >
                 {{ userdata.student_id }}
               </p>
             </div>
@@ -117,8 +120,8 @@
               </CButton>
             </div>
           </div>
-          <hr />
-          <div class="row">
+          <hr v-if="userdata.role !== 'Pengelola'" />
+          <div v-if="userdata.role !== 'Pengelola'" class="row">
             <div class="col-sm-3">
               <h6 class="mb-0">Nomor Pokok Mahasiswa</h6>
             </div>
