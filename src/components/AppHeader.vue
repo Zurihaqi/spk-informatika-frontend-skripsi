@@ -111,8 +111,10 @@
             </CBadge>
           </CDropdownToggle>
           <CDropdownMenu class="pt-0">
-            <CDropdownHeader>Notifikasi</CDropdownHeader>
-            <CContainer>
+            <CDropdownHeader class="bg-light fw-semibold py-2"
+              >Notifikasi</CDropdownHeader
+            >
+            <CContainer class="mt-1">
               <h6
                 v-if="notification.length === 0"
                 class="text-muted"
@@ -125,7 +127,11 @@
                 :key="index"
                 style="font-size: 0.9em"
               >
-                {{ item }}
+                {{ item.content }}
+                <p class="text-muted">
+                  {{ item.time }}
+                </p>
+                <hr />
               </h6>
             </CContainer>
             <CDropdownItem
@@ -181,6 +187,21 @@ import SubmitButton from '@/components/SubmitButton.vue'
 import axios from 'axios'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
+
+function timeDifference(date1, date2) {
+  const diffInMs = Math.abs(date1 - new Date(date2))
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
+  const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60))
+  const diffInMinutes = Math.floor(diffInMs / (1000 * 60))
+
+  if (diffInDays > 0) {
+    return `${diffInDays} hari lalu`
+  } else if (diffInHours > 0) {
+    return `${diffInHours} jam lalu`
+  } else {
+    return `${diffInMinutes} menit lalu`
+  }
+}
 
 export default {
   name: 'AppHeader',
@@ -256,7 +277,10 @@ export default {
         .then((result) => {
           const data = result.data.data
           data.forEach((item) => {
-            this.notification.push(item.content)
+            this.notification.push({
+              content: item.content,
+              time: timeDifference(new Date(), item.createdAt),
+            })
           })
         })
         .catch((error) => {
