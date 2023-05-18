@@ -241,8 +241,6 @@ export default {
             percentageArray.push(networkingPercentage)
 
             this.pieData.datasets[0].data = percentageArray
-
-            this.isLoaded = true
           }
         })
     },
@@ -317,8 +315,6 @@ export default {
             this.dataSciGrades.datasets = sortedData.data_science
             this.softDevGrades.datasets = sortedData.software_development
             this.networkingGrades.datasets = sortedData.networking
-            console.log(this.dataSciGrades)
-            console.log(this.data)
           }
           function getBackgroundColor(spec_id) {
             const randomShade = Math.random()
@@ -333,8 +329,6 @@ export default {
                 return '#000000'
             }
           }
-
-          console.log(getBackgroundColor(1))
 
           function generateShade(color, shade) {
             const minBrightness = 0.5
@@ -361,6 +355,7 @@ export default {
               .padStart(2, '0')}${blue.toString(16).padStart(2, '0')}`
             return hex
           }
+          this.isLoaded = true
         })
     },
     updateAlerts(type) {
