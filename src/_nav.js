@@ -49,6 +49,12 @@ export default [
         name: 'Riwayat Rekomendasi',
         to: '/spk/history',
       },
+      {
+        component:
+          role === 'Pengelola' || role === 'Admin' ? 'CNavItem' : 'invisible',
+        name: role === 'Pengelola' || role === 'Admin' ? 'Laporan SPK' : '',
+        to: '/spk/report',
+      },
     ],
   },
   {

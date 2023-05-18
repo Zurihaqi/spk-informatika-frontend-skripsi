@@ -16,7 +16,7 @@
       <CRow :xs="{ cols: 1, gutter: 2 }" :md="{ cols: 2 }">
         <CCol xs>
           <CCard class="h-100">
-            <CCardBody class="mx-auto" style="width: 300px">
+            <CCardBody class="card-body-login">
               <CForm @submit="onSubmit">
                 <h1 class="text-center py-2">Masuk</h1>
                 <CInputGroup class="mb-3">
@@ -56,7 +56,7 @@
                 </CInputGroup>
                 <CRow class="my-3">
                   <SubmitButton
-                    :disabled="isSendingForm"
+                    :disabled="isSendingForm || !isFormValid"
                     shape="rounded-pill"
                     title="Masuk"
                     :isSendingForm="isSendingForm"
@@ -80,16 +80,16 @@
           >
             <CCarousel controls indicators>
               <CCarouselItem>
-                <img class="img-fluid" :src="slide1" />
+                <img class="img-fluid" :src="slides[0]" />
               </CCarouselItem>
               <CCarouselItem>
-                <img class="img-fluid" :src="slide2" />
+                <img class="img-fluid" :src="slides[1]" />
               </CCarouselItem>
               <CCarouselItem>
-                <img class="img-fluid" :src="slide3" />
+                <img class="img-fluid" :src="slides[2]" />
               </CCarouselItem>
               <CCarouselItem>
-                <img class="img-fluid" :src="slide4" />
+                <img class="img-fluid" :src="slides[3]" />
               </CCarouselItem>
             </CCarousel>
           </CCard>
@@ -99,8 +99,14 @@
   </div>
 </template>
 
+<style>
+.card-body-login {
+  margin: 0 auto;
+  width: 300px;
+}
+</style>
+
 <script>
-/* eslint-disable */
 import axios from 'axios'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
@@ -110,11 +116,15 @@ import slide2 from '@/assets/images/2.png'
 import slide3 from '@/assets/images/3.png'
 import slide4 from '@/assets/images/4.png'
 
-
 export default {
   name: 'Login',
   setup() {
     return { v$: useVuelidate() }
+  },
+  computed: {
+    isFormValid() {
+      return !this.v$.$invalid
+    },
   },
   components: { SubmitButton },
   data() {
@@ -127,11 +137,7 @@ export default {
       errorMgs: '',
       ShowError: false,
       isSendingForm: false,
-      icon: 'bi bi-eye-slash',
-      slide1: slide1,
-      slide2: slide2,
-      slide3: slide3,
-      slide4: slide4,
+      slides: [slide1, slide2, slide3, slide4],
     }
   },
   validations() {
@@ -148,39 +154,50 @@ export default {
   },
   methods: {
     togglePassword() {
-      this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password'
+      this.passwordFieldType =
+        this.passwordFieldType === 'password' ? 'text' : 'password'
     },
     setTouched(theModel) {
-      if (theModel == 'email' || theModel == 'all') { this.v$.form.email.$touch() }
+      if (theModel == 'email' || theModel == 'all') {
+        this.v$.form.email.$touch()
+      }
 
-      if (theModel == 'password' || theModel == 'all') { this.v$.form.password.$touch() }
+      if (theModel == 'password' || theModel == 'all') {
+        this.v$.form.password.$touch()
+      }
     },
-    onSubmit(event) {
+    async onSubmit(event) {
       event.preventDefault()
       this.setTouched('all')
       if (!this.v$.$invalid) {
         this.isSendingForm = true
-        axios.post(
-          this.$store.state.backendUrl + 'login', this.form,
-          {
-            headers: { "Content-Type": "application/json", }
-          })
-          .then((response) => {
-            if(response.status === 201){
-              this.$store.commit('saveLogin',
-                {
-                  "token": response.data.token,
-                });
-                this.$router.push('/').then(() => {this.$router.go()})
-                this.isSendingForm = false;
-            }
-          })
-          .catch((error) => {
-            this.ShowError = true;
-            this.errorMgs = error.response !== undefined ? error.response.data.message : error
-            this.isSendingForm = false;
-          });
+
+        try {
+          const { email, password } = this.form
+          const response = await axios.post(
+            this.$store.state.backendUrl + 'login',
+            { email, password },
+            {
+              headers: { 'Content-Type': 'application/json' },
+            },
+          )
+
+          if (response.status === 201) {
+            this.$store.commit('saveLogin', {
+              token: response.data.token,
+            })
+            this.$router.push('/').then(() => {
+              this.$router.go()
+            })
+            this.isSendingForm = false
+          }
+        } catch (error) {
+          this.ShowError = true
+          this.errorMgs = error.response.data.message
         }
+
+        this.isSendingForm = false
+      }
     },
   },
 }

@@ -118,7 +118,7 @@
             <CCol style="width: 120px">
               <CChart
                 type="pie"
-                v-if="calculationResult.datasets[0].data.length !== 0"
+                v-show="calculationResult.datasets[0].data.length !== 0"
                 :data="calculationResult"
               />
             </CCol>
@@ -174,7 +174,7 @@ export default {
   data() {
     return {
       calculationResult: {
-        labels: ['Software Development', 'Data Science', 'Jaringan'],
+        labels: ['Software Development(%)', 'Data Science(%)', 'Jaringan(%)'],
         datasets: [
           {
             backgroundColor: ['#41B883', '#E46651', '#00D8FF'],

@@ -86,6 +86,14 @@ const routes = [
         name: 'Riwayat Rekomendasi',
         component: () => import('@/views/pages/spk/CalculationHistory.vue'),
       },
+      {
+        path: '/spk/report',
+        name: 'Laporan SPK',
+        meta: {
+          pengelola: true,
+        },
+        component: () => import('@/views/pages/spk/FisReports.vue'),
+      },
     ],
   },
   {

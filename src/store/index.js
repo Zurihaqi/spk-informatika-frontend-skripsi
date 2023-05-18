@@ -71,9 +71,14 @@ export default createStore({
       }
       window.$cookies.set('token', LoginData.token, '1h')
     },
-    Logout() {
+    logout(state) {
       window.$cookies.remove('token')
       localStorage.clear()
+      state.token = ''
+      state.role = ''
+      state.email = ''
+      state.name = ''
+      state.student_id = ''
     },
   },
   actions: {},

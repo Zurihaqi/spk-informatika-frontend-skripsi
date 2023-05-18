@@ -5,6 +5,14 @@
       v-if="!isLoaded"
       class="justify-content-center text-center"
     >
+      <Alerts
+        :showError="showError"
+        :showSuccess="showSuccess"
+        :errorMsg="errorMsg"
+        :successMsg="successMsg"
+        @update:showError="updateError"
+        @update:showSuccess="updateSuccess"
+      />
       <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
       Memuat...
     </CCardBody>
@@ -127,7 +135,6 @@ export default {
             ).toLocaleString('id-ID', options)
           }
           this.rows = result.data.data
-          console.log(this.rows)
           this.isLoaded = true
         })
         .catch((error) => {

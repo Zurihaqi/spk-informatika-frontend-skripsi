@@ -18,8 +18,8 @@
         :showSuccess="showSuccess"
         :errorMsg="errorMsg"
         :successMsg="successMsg"
-        @update:showError="updateError"
-        @update:showSuccess="updateSuccess"
+        @update:showError="updateAlerts('error')"
+        @update:showSuccess="updateAlerts('success')"
       />
       <div class="mb-3">Masukan kata sandi untuk menghapus akun.</div>
       <CFormInput
@@ -81,9 +81,17 @@
       <div class="card mb-3">
         <CCardBody
           disabled
-          v-if="!userdata.createdAt || !userdata.updatedAt"
+          v-show="!dateLoaded"
           class="justify-content-center text-center"
         >
+          <Alerts
+            :showError="showError"
+            :showSuccess="showSuccess"
+            :errorMsg="errorMsg"
+            :successMsg="successMsg"
+            @update:showError="updateError"
+            @update:showSuccess="updateSuccess"
+          />
           <CSpinner
             component="span"
             size="sm"
@@ -92,10 +100,7 @@
           />
           Memuat...
         </CCardBody>
-        <div
-          class="card-body user-select-none"
-          v-if="userdata.createdAt && userdata.updatedAt"
-        >
+        <div class="card-body user-select-none" v-show="dateLoaded">
           <div class="row">
             <div class="col-sm-3">
               <h6 class="mb-0">Nama</h6>
@@ -108,21 +113,15 @@
               <h6 class="mb-0">Email</h6>
             </div>
             <div class="col-sm-9 text-secondary">
-              {{ showEmail ? userdata.email : '■■■■■■■■' }}
-              <CButton
-                size="sm"
-                @click="
-                  () => {
-                    showEmail ? (showEmail = false) : (showEmail = true)
-                  }
-                "
-                ><i class="bi bi-eye-slash" v-if="!showEmail"></i>
-                <i class="bi bi-eye" v-if="showEmail"></i>
+              {{ showEmail ? userdata.email : '' }}
+              <CButton size="sm" @click.prevent="showEmail = !showEmail">
+                <i class="bi bi-eye-slash" v-show="!showEmail"> Tampilkan</i>
+                <i class="bi bi-eye" v-show="showEmail"></i>
               </CButton>
             </div>
           </div>
-          <hr v-if="userdata.role !== 'Pengelola'" />
-          <div v-if="userdata.role !== 'Pengelola'" class="row">
+          <hr v-if="shouldShowStudentID" />
+          <div v-if="shouldShowStudentID" class="row">
             <div class="col-sm-3">
               <h6 class="mb-0">Nomor Pokok Mahasiswa</h6>
             </div>
@@ -178,6 +177,11 @@ export default {
     Alerts,
     SubmitButton,
   },
+  computed: {
+    shouldShowStudentID() {
+      return this.userdata.role !== 'Pengelola'
+    },
+  },
   setup() {
     return {
       v$: useVuelidate(),
@@ -205,11 +209,14 @@ export default {
       isLoaded: false,
       isSendingForm: false,
       showEmail: false,
+      dateLoaded: false,
     }
   },
   beforeMount() {
-    if (this.userdata.createdAt === null || this.userdata.updatedAt === null) {
+    if (!this.userdata.createdAt || !this.userdata.updatedAt) {
       this.getUserData()
+    } else {
+      this.dateLoaded = true
     }
   },
   validations() {
@@ -250,6 +257,7 @@ export default {
             }
           })
           .catch((error) => {
+            this.isSendingForm = false
             this.showError = true
             this.errorMsg =
               error.response !== undefined ? error.response.data.message : error
@@ -268,16 +276,18 @@ export default {
           },
         })
         .then((result) => {
-          const userData = result.data.data
-          localStorage.setItem(
-            'updatedAt',
-            new Date(userData.updatedAt).toLocaleString('en-GB'),
-          )
-          localStorage.setItem(
-            'createdAt',
-            new Date(userData.createdAt).toLocaleString('en-GB'),
-          )
-          this.$router.go()
+          if (result.status === 201) {
+            const userData = result.data.data
+            localStorage.setItem(
+              'createdAt',
+              new Date(userData.createdAt).toLocaleString(),
+            )
+            localStorage.setItem(
+              'updatedAt',
+              new Date(userData.updatedAt).toLocaleString(),
+            )
+            this.$router.go()
+          }
         })
         .catch((error) => {
           this.showError = true
@@ -285,11 +295,9 @@ export default {
             error.response !== undefined ? error.response.data.message : error
         })
     },
-    updateError(value) {
-      this.showError = value
-    },
-    updateSuccess(value) {
-      this.showSuccess = value
+    updateAlerts(type) {
+      this.showSuccess = type === 'success'
+      this.showError = type === 'error'
     },
   },
 }

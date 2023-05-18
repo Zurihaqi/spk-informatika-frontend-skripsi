@@ -4,7 +4,7 @@
       v-if="errorToast"
       @close="
         () => {
-          this.$store.commit('Logout')
+          this.$store.commit('logout')
           this.$router.push('/login')
         }
       "
@@ -342,7 +342,7 @@ export default {
       }
     },
     logout() {
-      this.$store.commit('Logout')
+      this.$store.commit('logout')
       this.$router.push('/login')
     },
     isMobile() {
