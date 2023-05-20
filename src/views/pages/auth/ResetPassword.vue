@@ -134,6 +134,7 @@ export default {
       event.preventDefault()
       this.setTouched('all')
       if (!this.v$.$invalid) {
+        this.isSendingForm = true
         try {
           const token = this.$route.params.token
 
