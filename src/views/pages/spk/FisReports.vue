@@ -1,5 +1,5 @@
 <template>
-  <CCard>
+  <CCard class="mb-4">
     <CCardHeader> <h6>Laporan SPK</h6> </CCardHeader>
     <CCardBody
       disabled
