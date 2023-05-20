@@ -71,7 +71,7 @@ export default {
     return {
       columns: [
         {
-          label: 'Software Development',
+          label: this.isMobile() ? 'Software Dev' : 'Software Development',
           field: 'softDev',
         },
         {
@@ -144,15 +144,14 @@ export default {
         })
     },
     isMobile() {
-      if (
-        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-          navigator.userAgent,
-        )
-      ) {
-        return true
-      } else {
-        return false
-      }
+      const viewportWidth = Math.max(
+        document.documentElement.clientWidth,
+        window.innerWidth || 0,
+      )
+
+      const mobileWidthThreshold = 768
+
+      return viewportWidth < mobileWidthThreshold
     },
     updateError(value) {
       this.showError = value

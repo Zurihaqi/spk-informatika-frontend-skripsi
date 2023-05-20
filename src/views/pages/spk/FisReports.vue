@@ -106,7 +106,7 @@ export default {
         labels: ['Data Science', 'Software Development', 'Jaringan'],
         datasets: [
           {
-            label: 'Persebaran Rekomendasi Peminatan',
+            label: 'Jumlah Mahasiswa',
             backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
             data: [],
           },
@@ -155,9 +155,7 @@ export default {
         responsive: true, // Enable responsiveness
         maintainAspectRatio: true, // Allow the chart to adjust its size
         indexAxis: 'x',
-        legend: {
-          display: true,
-        },
+        plugins: { legend: { display: false } },
         scales: {
           x: {
             display: true,
@@ -208,15 +206,14 @@ export default {
       this.showError = type === 'error'
     },
     isMobile() {
-      if (
-        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-          navigator.userAgent,
-        )
-      ) {
-        return true
-      } else {
-        return false
-      }
+      const viewportWidth = Math.max(
+        document.documentElement.clientWidth,
+        window.innerWidth || 0,
+      )
+
+      const mobileWidthThreshold = 768
+
+      return viewportWidth < mobileWidthThreshold
     },
   },
 }

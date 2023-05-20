@@ -527,15 +527,14 @@ export default {
       this.form = {}
     },
     isMobile() {
-      if (
-        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-          navigator.userAgent,
-        )
-      ) {
-        return true
-      } else {
-        return false
-      }
+      const viewportWidth = Math.max(
+        document.documentElement.clientWidth,
+        window.innerWidth || 0,
+      )
+
+      const mobileWidthThreshold = 768
+
+      return viewportWidth < mobileWidthThreshold
     },
     updateError(value) {
       this.showError = value

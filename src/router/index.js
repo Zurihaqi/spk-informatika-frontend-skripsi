@@ -145,6 +145,14 @@ const routes = [
     component: () => import('@/views/pages/auth/AdminRegister.vue'),
   },
   {
+    path: '/forget-pass',
+    name: 'ForgetPassword',
+    meta: {
+      public: true,
+    },
+    component: () => import('@/views/pages/auth/ForgetPassword.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: '404',
     meta: {

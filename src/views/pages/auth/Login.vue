@@ -63,12 +63,13 @@
                   />
                 </CRow>
               </CForm>
-              <p class="text-center mt-2">
+              <p class="text-center">
                 Belum punya akun?
                 <router-link to="register">Daftar di sini.</router-link> Atau
                 <router-link to="admin-register"
                   >daftar menjadi pengelola.</router-link
-                >
+                ><br />
+                <router-link to="forget-pass">Lupa Kata Sandi</router-link>
               </p>
             </CCardBody>
           </CCard>
