@@ -69,7 +69,7 @@
                 <router-link to="admin-register"
                   >daftar menjadi pengelola.</router-link
                 ><br />
-                <router-link to="forget-pass">Lupa Kata Sandi</router-link>
+                <router-link to="forget-password">Lupa Kata Sandi</router-link>
               </p>
             </CCardBody>
           </CCard>

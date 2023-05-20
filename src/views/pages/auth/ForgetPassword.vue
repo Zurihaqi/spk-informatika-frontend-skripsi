@@ -151,7 +151,7 @@ export default {
         this.v$.form.email.$touch()
       }
     },
-    onSubmit(event) {
+    async onSubmit(event) {
       event.preventDefault()
       this.setTouched('all')
       if (!this.v$.$invalid) {
@@ -160,10 +160,22 @@ export default {
           if (!this.recaptchaTokenValid) {
             throw 'Harap centang kotak reCAPTCHA.'
           }
-          this.isSendingForm = false
-          this.v$.form.$reset()
-          this.form = {}
-          throw 'Mohon maaf, fitur ini masih dalam pengembangan.'
+          const response = await axios.post(
+            this.$store.state.backendUrl + 'forgot-pass',
+            this.form,
+            {
+              headers: { 'Content-Type': 'application/json' },
+            },
+          )
+
+          if (response.status === 201) {
+            this.success = true
+            this.successMsg =
+              'Berhasil mengirim, harap cek kotak masuk email anda.'
+            this.isSendingForm = false
+            this.v$.form.$reset()
+            this.form = {}
+          }
         } catch (error) {
           this.ShowError = true
           this.errorMgs =
