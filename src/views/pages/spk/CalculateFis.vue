@@ -32,30 +32,12 @@
     </CModalBody>
   </CModal>
   <template>
-    <div>
-      <vue3-html2pdf
-        :show-layout="true"
-        :float-layout="true"
-        :enable-download="true"
-        :preview-modal="true"
-        :filename="username"
-        :pdf-quality="2"
-        pdf-format="a4"
-        pdf-orientation="portrait"
-        pdf-content-width="800px"
-        :manual-pagination="false"
-        :paginate-elements-by-height="1400"
-        ref="printMe"
-      >
-        <template v-slot:pdf-content>
-          <NewForm
-            :name="username"
-            :student_id="student_id"
-            :spec="chosenSpec"
-          />
-        </template>
-      </vue3-html2pdf>
-    </div>
+    <NewForm
+      id="printMe"
+      :name="username"
+      :student_id="student_id"
+      :spec="chosenSpec"
+    />
   </template>
   <CModal
     :visible="chooseSpec"
@@ -163,14 +145,13 @@ import axios from 'axios'
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import NewForm from '@/views/pages/specForm/NewForm.vue'
-import Vue3Html2pdf from 'vue3-html2pdf'
 
 export default {
   name: 'CalculateFis',
   setup() {
     return { v$: useVuelidate() }
   },
-  components: { CChart, Alerts, SubmitButton, NewForm, Vue3Html2pdf },
+  components: { CChart, Alerts, SubmitButton, NewForm },
   data() {
     return {
       calculationResult: {
@@ -199,6 +180,7 @@ export default {
       showDetail: false,
       chosenSpec: '',
       chooseSpec: false,
+      isPageHidden: true,
     }
   },
   validations() {
@@ -217,7 +199,7 @@ export default {
     print() {
       this.setTouched('all')
       if (!this.v$.$invalid) {
-        this.$refs.printMe.generatePdf()
+        this.$htmlToPaper('printMe')
       }
     },
     calculateFIS() {
