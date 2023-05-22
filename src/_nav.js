@@ -103,6 +103,13 @@ export default [
     ],
   },
   {
+    component:
+      role === 'Pengelola' || role === 'Admin' ? 'CNavItem' : 'invisible',
+    name: role === 'Pengelola' || role === 'Admin' ? 'Riwayat Audit' : '',
+    to: '/audit',
+    icon: role === 'Pengelola' || role === 'Admin' ? 'cil-description' : '',
+  },
+  {
     component: role === 'Admin' ? 'CNavGroup' : 'invisible',
     name: role === 'Admin' ? 'Admin' : '',
     to: '/admin/register',

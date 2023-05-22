@@ -121,6 +121,22 @@ const routes = [
     ],
   },
   {
+    path: '/audit',
+    name: 'Audit',
+    component: DefaultLayout,
+    redirect: '/audit',
+    children: [
+      {
+        path: '/audit',
+        name: 'Riwayat Audit',
+        meta: {
+          pengelola: true,
+        },
+        component: () => import('@/views/pages/audit/Audit.vue'),
+      },
+    ],
+  },
+  {
     path: '/login',
     name: 'Login',
     meta: {

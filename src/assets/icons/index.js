@@ -1,4 +1,5 @@
 import {
+  cilDescription,
   cilWarning,
   cilEducation,
   cibFacebook,
@@ -90,6 +91,7 @@ import {
 } from '@coreui/icons'
 
 export const iconsSet = {
+  cilDescription,
   cilAt,
   cilTrash,
   cilWarning,
