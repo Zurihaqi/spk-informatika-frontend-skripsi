@@ -204,6 +204,8 @@ export default {
               structuredData = []
               this.isLoaded = true
             }
+
+            this.isLoaded = true
           }
         })
         .catch((error) => {
