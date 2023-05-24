@@ -169,7 +169,7 @@ const routes = [
     component: () => import('@/views/pages/auth/ForgetPassword.vue'),
   },
   {
-    path: '/reset-password/:token',
+    path: '/reset-password/:token%26:userid',
     name: 'ResetPassword',
     meta: {
       public: true,

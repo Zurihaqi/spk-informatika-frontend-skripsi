@@ -1,6 +1,6 @@
 <template>
   <div class="bg-light min-vh-100 d-flex flex-row align-items-center">
-    <CContainer>
+    <CContainer v-if="validOtp">
       <CRow class="justify-content-center">
         <CCol :md="9" :lg="7" :xl="6">
           <CCard class="mx-4">
@@ -79,6 +79,15 @@
         </CCol>
       </CRow>
     </CContainer>
+    <CContainer v-else>
+      <CRow class="justify-content-center">
+        <CCol :md="9" :lg="7" :xl="6">
+          <CCard class="mx-4 text-center">
+            <CCardBody> <h4>Link ini sudah tidak berlaku.</h4> </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+    </CContainer>
   </div>
 </template>
 
@@ -105,6 +114,7 @@ export default {
       successMsg: '',
       success: false,
       isSendingForm: false,
+      validOtp: false,
     }
   },
   validations() {
@@ -120,6 +130,9 @@ export default {
         },
       },
     }
+  },
+  beforeMount() {
+    this.validateOtp()
   },
   methods: {
     setTouched(theModel) {
@@ -137,23 +150,32 @@ export default {
         this.isSendingForm = true
         try {
           const token = this.$route.params.token
+          const userId = this.$route.params.userid
 
           const response = await axios.post(
             this.$store.state.backendUrl + 'forgot-pass/validate',
-            { password: this.form.password, otp: token },
+            { password: this.form.password, otp: token, user_id: userId },
             {
               headers: { 'Content-Type': 'application/json' },
             },
           )
 
           if (response.status === 201) {
+            let time = 5
+
+            const countdown = (remainingTime) => {
+              if (remainingTime === 0) {
+                this.$router.push({ path: '/login' })
+              } else {
+                this.successMsg = `Berhasil mengubah kata sandi.\nAnda akan diarahkan ke halaman login dalam ${remainingTime}.`
+                setTimeout(() => {
+                  countdown(remainingTime - 1)
+                }, 1000)
+              }
+            }
+            countdown(time)
             this.success = true
-            this.successMsg =
-              'Berhasil mengubah kata sandi. Silahkan lakukan login.'
             this.isSendingForm = false
-            setTimeout(() => {
-              this.$router.push({ path: '/login' })
-            }, 1000)
           }
         } catch (error) {
           this.ShowError = true
@@ -162,6 +184,29 @@ export default {
           this.isSendingForm = false
         }
       }
+    },
+    validateOtp() {
+      const token = this.$route.params.token
+      const userId = this.$route.params.userid
+
+      axios
+        .post(
+          this.$store.state.backendUrl + 'forgot-pass/validate?beforeLoad=true',
+          { otp: token, user_id: userId },
+          {
+            headers: { 'Content-Type': 'application/json' },
+          },
+        )
+        .then((result) => {
+          if (result.status === 201) {
+            this.validOtp = true
+          }
+        })
+        .catch((error) => {
+          if (error) {
+            this.validOtp = false
+          }
+        })
     },
     togglePassword() {
       this.passwordFieldType =
