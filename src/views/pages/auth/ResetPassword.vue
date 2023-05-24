@@ -1,5 +1,8 @@
 <template>
-  <div class="bg-light min-vh-100 d-flex flex-row align-items-center">
+  <div
+    class="bg-light min-vh-100 d-flex flex-row align-items-center"
+    v-if="isLoaded"
+  >
     <CContainer v-if="validOtp">
       <CRow class="justify-content-center">
         <CCol :md="9" :lg="7" :xl="6">
@@ -115,6 +118,7 @@ export default {
       success: false,
       isSendingForm: false,
       validOtp: false,
+      isLoaded: false,
     }
   },
   validations() {
@@ -199,11 +203,13 @@ export default {
         )
         .then((result) => {
           if (result.status === 201) {
+            this.isLoaded = true
             this.validOtp = true
           }
         })
         .catch((error) => {
           if (error) {
+            this.isLoaded = true
             this.validOtp = false
           }
         })
