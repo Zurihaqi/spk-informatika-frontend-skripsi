@@ -135,8 +135,10 @@ export default {
       },
     }
   },
-  beforeMount() {
-    this.validateOtp()
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      vm.validateOtp()
+    })
   },
   methods: {
     setTouched(theModel) {
