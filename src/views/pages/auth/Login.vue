@@ -33,7 +33,7 @@
                     :invalid="v$.form.email.$error"
                   />
                 </CInputGroup>
-                <CInputGroup class="mb-3">
+                <CInputGroup>
                   <CInputGroupText @click="togglePassword()" class="clickable">
                     <i
                       class="bi bi-eye-slash-fill"
@@ -54,7 +54,12 @@
                     :invalid="v$.form.password.$error"
                   />
                 </CInputGroup>
-                <CRow class="my-3">
+                <p class="text-end">
+                  <router-link to="forget-password"
+                    >Lupa Kata Sandi</router-link
+                  >
+                </p>
+                <CRow class="mb-3">
                   <SubmitButton
                     :disabled="isSendingForm || !isFormValid"
                     shape="rounded-pill"
@@ -69,7 +74,6 @@
                 <router-link to="admin-register"
                   >daftar menjadi pengelola.</router-link
                 ><br />
-                <router-link to="forget-password">Lupa Kata Sandi</router-link>
               </p>
             </CCardBody>
           </CCard>
