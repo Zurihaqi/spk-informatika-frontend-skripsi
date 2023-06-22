@@ -38,6 +38,9 @@
               :data="data"
               class="mb-2"
             />
+            <p v-show="!data.datasets[0].data.length" class="text-center">
+              Tidak ada data
+            </p>
           </CCol>
           <CCol class="d-flex flex-column align-items-center">
             <CChart
@@ -46,6 +49,9 @@
               :data="pieData"
               class="w-75"
             />
+            <p v-show="!pieData.datasets[0].data.length" class="text-center">
+              Tidak ada data
+            </p>
           </CCol>
         </CRow>
         <hr />
@@ -62,6 +68,9 @@
               :options="barChartOptions"
               class="mb-2"
             />
+            <p v-show="!dataSciGrades.datasets.length" class="text-center">
+              Tidak ada data
+            </p>
             <br />
             <b>Software Development</b>
             <CChart
@@ -71,6 +80,9 @@
               :options="barChartOptions"
               class="mb-2"
             />
+            <p v-show="!softDevGrades.datasets.length" class="text-center">
+              Tidak ada data
+            </p>
             <br />
             <b>Infrastruktur dan Keamanan Jaringan</b>
             <CChart
@@ -80,6 +92,9 @@
               :options="barChartOptions"
               class="mb-2"
             />
+            <p v-show="!networkingGrades.datasets.length" class="text-center">
+              Tidak ada data
+            </p>
           </CCol>
         </CRow>
       </div>
@@ -184,8 +199,13 @@ export default {
         .then((result) => {
           if (result.status === 201) {
             const data = result.data
-            this.data.datasets[0].data = data.recs_stats.result
-            this.pieData.datasets[0].data = data.recs_stats.percentageResult
+            this.data.datasets[0].data = data.recs_stats.result.filter(
+              (value) => value !== 0 && value !== '' && value !== null,
+            )
+            this.pieData.datasets[0].data =
+              data.recs_stats.percentageResult.filter(
+                (value) => value !== 0 && value !== '' && value !== null,
+              )
 
             this.softDevGrades = data.grade_stats.softDevGrades
             this.dataSciGrades = data.grade_stats.dataSciGrades
